@@ -1,6 +1,8 @@
 {
   "name": "opti-gsd",
+  "description": "Spec-driven development with fresh context execution",
   "version": "0.1.0",
-  "description": "Spec-driven development with fresh context execution. Orchestrates workflows, manages state, and integrates with skills and MCPs for maximum development velocity.",
-  "commands": "commands/"
+  "author": {
+    "name": "apittopti"
+  }
 }
