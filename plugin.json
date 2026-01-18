@@ -1,0 +1,6 @@
+{
+  "name": "opti-gsd",
+  "version": "0.1.0",
+  "description": "Spec-driven development with fresh context execution",
+  "commands": "commands/"
+}
