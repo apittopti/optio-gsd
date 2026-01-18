@@ -1,10 +1,10 @@
 {
-  "name": "optio-gsd-marketplace",
+  "name": "optimotive-marketplace",
   "owner": {
     "name": "apittopti"
   },
   "metadata": {
-    "description": "opti-gsd plugin marketplace",
+    "description": "Optimotive plugins for Claude Code",
     "version": "1.0.0",
     "pluginRoot": "."
   },
