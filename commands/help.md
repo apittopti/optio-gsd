@@ -2,11 +2,11 @@
 description: Display all available opti-gsd commands with descriptions.
 ---
 
-# help
+Display the following help information to the user exactly as formatted below:
 
-Display all available opti-gsd commands with descriptions.
+---
 
-## Commands
+## opti-gsd Commands
 
 ### Project Setup
 | Command | Description |
@@ -66,10 +66,10 @@ Display all available opti-gsd commands with descriptions.
 | `/opti-gsd:issues` | Track and manage project issues |
 | `/opti-gsd:skills` | Discover and configure Claude skills |
 | `/opti-gsd:mcps` | Discover and configure MCP servers |
-| `/opti-gsd:mode [interactive\|yolo]` | Switch workflow mode |
+| `/opti-gsd:mode [interactive|yolo]` | Switch workflow mode |
 | `/opti-gsd:whats-new` | Check for updates and changelog |
 
-## Quick Start
+### Quick Start
 
 ```
 1. /opti-gsd:new-project     # Set up project
@@ -79,46 +79,10 @@ Display all available opti-gsd commands with descriptions.
 5. /opti-gsd:verify 1        # Verify completion
 ```
 
-## For Existing Projects
+### For Existing Projects
 
 ```
 1. /opti-gsd:map-codebase    # Understand structure
 2. /opti-gsd:init            # Initialize opti-gsd
 3. /opti-gsd:roadmap         # Plan your work
 ```
-
-## Workflow Modes
-
-- **interactive**: Confirm before phases, show plans for approval, pause at checkpoints
-- **yolo**: Execute without confirmation, maximum velocity, only stop on errors
-
-Switch with: `/opti-gsd:mode yolo` or `/opti-gsd:mode interactive`
-
-## File Structure
-
-When initialized, opti-gsd creates `.gsd/` in your project root:
-
-```
-.gsd/
-├── config.md           # Project configuration
-├── PROJECT.md          # Vision, goals, constraints
-├── REQUIREMENTS.md     # REQ-IDs with phase mapping
-├── ROADMAP.md          # Phase progress tracking
-├── STATE.md            # Session state (compact)
-├── TODOS.md            # Quick task capture
-├── ISSUES.md           # Issue tracking
-├── DECISIONS.md        # Architecture decisions
-├── CODEBASE.md         # Codebase map (if analyzed)
-└── plans/              # Phase plans with XML tasks
-```
-
-## Context Efficiency
-
-opti-gsd is designed to minimize token usage:
-- Fresh context per task execution
-- Automatic phase archival
-- Lazy loading of files
-- YAML frontmatter for compact state
-
-Monitor usage: `/opti-gsd:context`
-Reduce footprint: `/opti-gsd:compact`
