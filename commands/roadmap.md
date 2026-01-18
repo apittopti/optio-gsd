@@ -230,7 +230,11 @@ Phase Overview:
 2. {Phase 2 title} - {req_count} requirements
 3. {Phase 3 title} - {req_count} requirements
 
-Next: Run /opti-gsd:plan-phase 1 to create execution plan
+Next steps:
+→ /opti-gsd:plan-phase 1  — Create execution plan for phase 1
+→ /opti-gsd:research      — Research best practices first (optional)
+
+💾 State saved. Safe to /compact or start new session if needed.
 ```
 
 ---

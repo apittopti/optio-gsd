@@ -95,6 +95,7 @@ You are a focused implementation agent for opti-gsd. Complete ONLY this task.
   <action>
     {task.action}
   </action>
+  <libraries>{task.libraries}</libraries>
   <verify>
     {task.verify}
   </verify>
@@ -105,15 +106,31 @@ You are a focused implementation agent for opti-gsd. Complete ONLY this task.
   {For each skill in task.skills, include full skill instructions}
 </skills>
 
+<context7>
+  {If Context7 MCP is available AND task.libraries is not "none":}
+  Before implementing, use Context7 to fetch current documentation for: {task.libraries}
+  This ensures you use up-to-date APIs and avoid deprecated patterns.
+
+  {If Context7 MCP not available:}
+  Context7 not configured. Proceed with built-in knowledge.
+</context7>
+
 <known_issues>
   {Open issues from ISSUES.md that might affect this task}
 </known_issues>
+
+<mcps>
+  {List MCPs from .gsd/config.md that are available}
+  Example: filesystem, postgres, github, browser
+  Use these MCP tools when they would help complete the task.
+</mcps>
 
 <browser enabled="{config.browser.enabled}" base_url="{config.base_url}" />
 
 <rules>
   <rule>Only modify files listed in files element</rule>
   <rule>Follow skills exactly if provided</rule>
+  <rule>If libraries listed and Context7 available, fetch current docs before implementing</rule>
   <rule>Complete ALL verification checks before reporting done</rule>
   <rule>Do not expand scope beyond this task</rule>
   <rule>Do not refactor unrelated code</rule>
@@ -240,10 +257,12 @@ git commit -m "docs: complete phase {N}"
 **Auto-Fixes:** {count if any}
 **Issues Found:** {count if any}
 
-### Next Steps
-- Run `/opti-gsd:verify {N}` to verify phase completion
-- Run `/opti-gsd:plan-phase {N+1}` to plan next phase
-- Run `/opti-gsd:archive {N}` to free context
+Next steps:
+→ /opti-gsd:verify {N}       — Verify phase completion
+→ /opti-gsd:plan-phase {N+1} — Plan next phase
+→ /opti-gsd:archive {N}      — Archive phase to free context
+
+💾 State saved. Safe to /compact or start new session if needed.
 ```
 
 ---

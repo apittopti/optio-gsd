@@ -91,9 +91,14 @@ Based on project type and workflow needs:
    - Screenshot verification in `/opti-gsd:verify`
    - E2E flow checking
 
+5. **context7** — Up-to-date library documentation
+   - Used during `/opti-gsd:execute` for current APIs
+   - Prevents deprecated patterns
+   - Only fetched when task lists specific libraries
+
 ### Optional
 
-5. **slack** — Team notifications
+6. **slack** — Team notifications
    - Notify on milestone completion
    - Alert on critical issues
 
@@ -161,7 +166,7 @@ Verify MCP availability:
 | debug | Database MCPs for data inspection |
 | verify | Browser MCP for visual checks |
 | complete-milestone | GitHub MCP for PR creation |
-| execute | Filesystem MCP for file ops |
+| execute | Filesystem MCP for file ops, Context7 for library docs |
 
 ---
 
@@ -170,6 +175,7 @@ Verify MCP availability:
 | MCP | Purpose | Install |
 |-----|---------|---------|
 | filesystem | File operations | Built-in |
+| context7 | Library documentation | @context7/mcp |
 | postgres | PostgreSQL queries | @mcp/postgres |
 | mysql | MySQL queries | @mcp/mysql |
 | github | GitHub API | @mcp/github |

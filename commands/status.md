@@ -26,11 +26,11 @@ Display this format (adapt values from actual state):
 Phase Progress:
 ──────────────────────────────────────────────────────────────
 Phase 1: Auth           [████████████████████] 100% ✓ complete
-Phase 2: Core Features  [████████████░░░░░░░░]  60% ← current
+Phase 2: Core Features  [████████████▎░░░░░░░]  62% ← current
 Phase 3: Settings       [░░░░░░░░░░░░░░░░░░░░]   0%   pending
 Phase 4: Payments       [░░░░░░░░░░░░░░░░░░░░]   0%   pending
 ──────────────────────────────────────────────────────────────
-Overall: [████████░░░░░░░░░░░░] 40%
+Overall: [████████▏░░░░░░░░░░░] 41%
 
 Current Phase Tasks:
 ──────────────────────────────────────────────────────────────
@@ -41,20 +41,37 @@ Current Phase Tasks:
 [ ] Task 5: Write tests
 ──────────────────────────────────────────────────────────────
 
-Context: ~80k tokens (40% of budget) ████████░░░░░░░░░░░░
+Context: ~80k tokens (40% of budget) [████████░░░░░░░░░░░░]
 
 Open Issues: 2 (0 critical, 1 medium, 1 low)
 
-→ Next: /opti-gsd:execute to continue Task 3
+Next steps:
+→ /opti-gsd:execute        — Continue Task 3
+→ /opti-gsd:discuss-phase  — Refine decisions (optional)
 ```
 
 ## Progress Bar Generation
 
-Use these characters for progress bars:
-- Full block: █
-- Empty block: ░
-- Bar width: 20 characters
-- Calculate: filled = (percentage / 100) * 20
+Use Unicode eighth-block characters for smooth progress bars:
+
+**Characters (8 levels of fill):**
+```
+█ = full    ▉ = 7/8    ▊ = 3/4    ▋ = 5/8
+▌ = 1/2    ▍ = 3/8    ▎ = 1/4    ▏ = 1/8    ░ = empty
+```
+
+**Algorithm (bar width = 20):**
+1. `total_eighths = (percentage / 100) * 20 * 8`
+2. `whole_blocks = floor(total_eighths / 8)` → use █
+3. `partial = total_eighths % 8` → pick from: `["", "▏", "▎", "▍", "▌", "▋", "▊", "▉"]`
+4. `empty_blocks = 20 - whole_blocks - (partial > 0 ? 1 : 0)` → use ░
+
+**Examples:**
+```
+37% → [███████▍░░░░░░░░░░░░]  (7 full + ▍ + 12 empty)
+63% → [████████████▌░░░░░░░]  (12 full + ▌ + 7 empty)
+100% → [████████████████████]  (20 full)
+```
 
 ## State Detection
 
@@ -62,7 +79,8 @@ Use these characters for progress bars:
 |-----------|-------------|
 | No .gsd/ folder | `/opti-gsd:init` or `/opti-gsd:new-project` |
 | No ROADMAP.md | `/opti-gsd:roadmap` |
-| Phase not planned | `/opti-gsd:plan-phase {N}` |
-| Tasks in progress | `/opti-gsd:execute` |
+| Phase not planned | `/opti-gsd:discuss-phase {N}` (optional) then `/opti-gsd:plan-phase {N}` |
+| Phase planned, no tasks started | `/opti-gsd:execute` or `/opti-gsd:discuss-phase` (to refine) |
+| Tasks in progress | `/opti-gsd:execute` (resume) |
 | Phase done, not verified | `/opti-gsd:verify {N}` |
 | All phases complete | `/opti-gsd:complete-milestone` |

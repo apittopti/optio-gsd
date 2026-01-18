@@ -52,15 +52,20 @@ Read these files (lazy loading):
 
 ### Step 4: Research (Conditional)
 
-**Skip research if:**
+**Check for project-level research first:**
+- If `.gsd/research/SUMMARY.md` exists, load it for context
+- If missing and this is phase 1, suggest: "Run `/opti-gsd:research` first for domain best practices?"
+
+**Skip phase research if:**
 - `--skip-research` flag
 - `.gsd/plans/phase-{N}/RESEARCH.md` already exists
 - Discovery level 0 in config
 
-**Do research if:**
+**Do phase research if:**
 - `--research` flag
-- No existing research
+- No existing phase research
 - Phase involves new technology/integration
+- Project research identified relevant pitfalls for this phase
 
 If researching, spawn opti-gsd-phase-researcher agent:
 
@@ -71,10 +76,17 @@ Requirements to cover:
 - {REQ-ID-1}: {description}
 - {REQ-ID-2}: {description}
 
+Project context (from SUMMARY.md if exists):
+- Recommended patterns: {patterns}
+- Pitfalls to avoid: {pitfalls}
+
 Focus on:
-- Best libraries/patterns for these requirements
-- Common pitfalls
-- Integration considerations
+- Best practices for implementing these requirements
+- Libraries/patterns that fit the existing codebase
+- Common mistakes to avoid for this feature type
+- How to integrate with existing code conventions
+- Security considerations if applicable
+- Performance considerations if applicable
 ```
 
 Save output to `.gsd/plans/phase-{N}/RESEARCH.md`.
@@ -87,6 +99,8 @@ Spawn opti-gsd-planner agent with:
 - Research from RESEARCH.md (if exists)
 - Conventions from codebase analysis (if exists)
 - Known issues from ISSUES.md
+- **Available MCPs from .gsd/config.md** (e.g., postgres, github, browser)
+- **Available skills from .gsd/config.md** (e.g., commit, review-pr)
 
 The planner will:
 1. Derive must-haves using goal-backward methodology
@@ -148,6 +162,7 @@ estimated_tokens: {estimate}
     - {Detail 2}
     - Reference: {relevant file or doc}
   </action>
+  <libraries>{libraries needing current docs, e.g., "tanstack-query, zod" or "none"}</libraries>
   <verify>
     <check type="test" cmd="{command}">{description}</check>
     <check type="browser" url="{url}">{description}</check>
@@ -226,7 +241,11 @@ Wave 2 (sequential): Task 04
 ### Estimated Context
 ~{tokens}k tokens ({percentage}% of budget)
 
-Ready to execute? Run /opti-gsd:execute
+Next steps:
+→ /opti-gsd:execute         — Start executing tasks
+→ /opti-gsd:discuss-phase   — Refine decisions before executing (optional)
+
+💾 State saved. Safe to /compact or start new session if needed.
 ```
 
 ---

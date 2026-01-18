@@ -4,7 +4,11 @@ description: Capture implementation decisions and constraints before planning a 
 
 # discuss-phase [phase]
 
-Capture implementation decisions and constraints before planning a phase.
+Capture implementation decisions and constraints for a phase.
+
+Can be run:
+- **Before planning** — to inform the initial plan
+- **After planning** — to refine decisions, then re-run `plan-phase` to regenerate
 
 ## Arguments
 
@@ -156,8 +160,9 @@ git commit -m "doc: capture phase {N} discussion"
 Saved to: `.gsd/plans/phase-{N}/DISCUSSION.md`
 
 Next steps:
-- Plan the phase: `/opti-gsd:plan-phase {N}`
-- Add more notes: `/opti-gsd:discuss-phase {N}` (appends)
+→ /opti-gsd:plan-phase {N}    — Generate/regenerate plan with these decisions
+→ /opti-gsd:discuss-phase {N} — Add more notes (appends)
+→ /opti-gsd:execute           — Start executing (if plan exists)
 ```
 
 ---

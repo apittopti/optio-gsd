@@ -182,9 +182,10 @@ Display summary:
 - MCPs configured: {list}
 - Codebase analysis: {yes/no}
 
-Suggest next command:
+Suggest next commands:
 - If PROJECT.md doesn't exist: `/opti-gsd:new-project`
 - If PROJECT.md exists: `/opti-gsd:roadmap`
+- Optional: `/opti-gsd:research` — Get domain best practices before planning
 
 ## Output
 
@@ -201,5 +202,10 @@ Created:
   .gsd/config.md
   .gsd/STATE.md
 
-Next: Run /opti-gsd:new-project to define your project
+Next steps:
+→ /opti-gsd:new-project  — Define your project
+→ /opti-gsd:research     — Research best practices (optional)
+→ /opti-gsd:roadmap      — Create roadmap (if PROJECT.md exists)
+
+💾 State saved. Safe to /compact or start new session if needed.
 ```

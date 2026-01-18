@@ -104,6 +104,13 @@ All checks passed:
 - [x] All artifacts substantive and wired
 
 Phase {N} is ready for milestone completion.
+
+Next steps:
+→ /opti-gsd:plan-phase {N+1}      — Plan next phase
+→ /opti-gsd:complete-milestone    — If all phases done
+→ /opti-gsd:archive {N}           — Archive to free context
+
+💾 State saved. Safe to /compact or start new session if needed.
 ```
 
 Mark phase as verified in STATE.md.
