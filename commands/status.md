@@ -2,14 +2,14 @@
 description: Show current project state and suggest next action.
 ---
 
-Read the opti-gsd project state and display a status report with visual progress bars.
+Read the opti-gsd project state and display a comprehensive status report with visual progress bars.
 
 ## Your Task
 
 1. Check if `.gsd/` directory exists
 2. If not, display "opti-gsd not initialized" and suggest `/opti-gsd:init`
-3. If yes, read STATE.md and ROADMAP.md
-4. Display status with progress bars as shown below
+3. If yes, read STATE.md, ROADMAP.md, and check for phase plans/verification files
+4. Display status with progress bars and workflow stages as shown below
 
 ## Output Format
 
@@ -23,9 +23,20 @@ Display this format (adapt values from actual state):
 ║  Phase: 2 of 4            Mode: interactive                  ║
 ╚══════════════════════════════════════════════════════════════╝
 
+Workflow Stages:
+──────────────────────────────────────────────────────────────
+[✓] Init        → Project initialized
+[✓] Roadmap     → 4 phases defined
+[✓] Research    → Phase 2 researched (optional)
+[▸] Planning    → Phase 2 planned, Phase 3-4 pending
+[▸] Execution   → Phase 2 in progress (62%)
+[ ] Verification → Phase 1 verified, Phase 2 pending
+[ ] Release     → Awaiting milestone completion
+──────────────────────────────────────────────────────────────
+
 Phase Progress:
 ──────────────────────────────────────────────────────────────
-Phase 1: Auth           [████████████████████] 100% ✓ complete
+Phase 1: Auth           [████████████████████] 100% ✓ verified
 Phase 2: Core Features  [████████████▎░░░░░░░]  62% ← current
 Phase 3: Settings       [░░░░░░░░░░░░░░░░░░░░]   0%   pending
 Phase 4: Payments       [░░░░░░░░░░░░░░░░░░░░]   0%   pending
@@ -45,9 +56,25 @@ Context: ~80k tokens (40% of budget) [████████░░░░░░
 
 Open Issues: 2 (0 critical, 1 medium, 1 low)
 
-Next steps:
-→ /opti-gsd:execute        — Continue Task 3
-→ /opti-gsd:discuss-phase  — Refine decisions (optional)
+┌──────────────────────────────────────────────────────────────┐
+│ Next Steps                                                   │
+├──────────────────────────────────────────────────────────────┤
+│ → /opti-gsd:execute        — Continue Task 3                 │
+│ → /opti-gsd:verify 1       — Verify completed phase          │
+│ → /opti-gsd:discuss-phase  — Refine decisions (optional)     │
+└──────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────┐
+│ Safe Actions (can run anytime)                               │
+├──────────────────────────────────────────────────────────────┤
+│ → /opti-gsd:status         — Refresh this status view        │
+│ → /opti-gsd:context        — Check context usage details     │
+│ → /opti-gsd:add-todo       — Capture idea for later          │
+│ → /opti-gsd:todos          — View/manage captured todos      │
+│ → /opti-gsd:decisions      — Log or view decisions           │
+│ → /opti-gsd:issues         — Track issues                    │
+│ → /opti-gsd:help           — Show all commands               │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ## Progress Bar Generation
@@ -73,14 +100,40 @@ Use Unicode eighth-block characters for smooth progress bars:
 100% → [████████████████████]  (20 full)
 ```
 
-## State Detection
+## Workflow Stage Detection
 
-| Condition | Next Action |
-|-----------|-------------|
-| No .gsd/ folder | `/opti-gsd:init` or `/opti-gsd:new-project` |
-| No ROADMAP.md | `/opti-gsd:roadmap` |
-| Phase not planned | `/opti-gsd:discuss-phase {N}` (optional) then `/opti-gsd:plan-phase {N}` |
-| Phase planned, no tasks started | `/opti-gsd:execute` or `/opti-gsd:discuss-phase` (to refine) |
-| Tasks in progress | `/opti-gsd:execute` (resume) |
-| Phase done, not verified | `/opti-gsd:verify {N}` |
-| All phases complete | `/opti-gsd:complete-milestone` |
+Determine each stage's status by checking:
+
+| Stage | Check | Status Indicators |
+|-------|-------|-------------------|
+| **Init** | `.gsd/` exists | ✓ if exists, ✗ if not |
+| **Roadmap** | `ROADMAP.md` exists | ✓ = defined, show phase count |
+| **Research** | `.gsd/research/` or phase RESEARCH.md | ✓ = done, ○ = skipped, ▸ = in progress |
+| **Planning** | `.gsd/plans/phase-N/plan.md` | Show planned/pending counts |
+| **Execution** | Tasks completed in current phase | ▸ = in progress, ✓ = phase done |
+| **Verification** | `VERIFICATION.md` exists per phase | Show verified/pending counts |
+| **Release** | All phases verified | ✓ = ready, [ ] = awaiting |
+
+## Next Steps Detection
+
+Based on current state, show the most relevant actions:
+
+| Condition | Primary Action | Secondary Actions |
+|-----------|---------------|-------------------|
+| No .gsd/ folder | `/opti-gsd:init` or `/opti-gsd:new-project` | — |
+| No ROADMAP.md | `/opti-gsd:roadmap` | — |
+| Phase not planned | `/opti-gsd:plan-phase {N}` | `/opti-gsd:discuss-phase {N}` (optional) |
+| Phase planned, not started | `/opti-gsd:execute` | `/opti-gsd:discuss-phase` (refine) |
+| Tasks in progress | `/opti-gsd:execute` (resume) | `/opti-gsd:execute-task {N}` (specific) |
+| Phase complete, not verified | `/opti-gsd:verify {N}` | `/opti-gsd:plan-phase {N+1}` |
+| Phase verified, more phases | `/opti-gsd:plan-phase {N+1}` | `/opti-gsd:archive {N}` |
+| All phases complete & verified | `/opti-gsd:complete-milestone` | — |
+
+## Safe Actions
+
+Always show the "Safe Actions" section with commands that:
+- **Don't modify project state destructively**
+- **Can be run at any point in the workflow**
+- **Help with information gathering or note-taking**
+
+These include: `status`, `context`, `add-todo`, `todos`, `decisions`, `issues`, `help`

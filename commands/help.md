@@ -2,11 +2,41 @@
 description: Display all available opti-gsd commands with descriptions.
 ---
 
-Display the following help information to the user exactly as formatted below:
+Display the following help information to the user. First, read `.claude-plugin/plugin.json` for version info. If `.gsd/` exists, also read `.gsd/config.md` to show current configuration.
+
+## Output Format
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║                         opti-gsd                             ║
+║          Spec-driven development with fresh context          ║
+╠══════════════════════════════════════════════════════════════╣
+║  Version: 0.1.0            Author: apittopti                 ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+If `.gsd/` exists, show current configuration:
+
+```
+Current Configuration:
+──────────────────────────────────────────────────────────────
+  Project: [name from config]
+  Mode: [interactive|yolo]
+  Branching: [per-milestone|per-phase|none]
+  Context Budget: [tokens]k per agent
+──────────────────────────────────────────────────────────────
+```
+
+If `.gsd/` does not exist:
+
+```
+Project: Not initialized
+  → Run /opti-gsd:init or /opti-gsd:new-project to get started
+```
 
 ---
 
-## opti-gsd Commands
+## Commands
 
 ### Project Setup
 | Command | Description |
@@ -53,24 +83,28 @@ Display the following help information to the user exactly as formatted below:
 | `/opti-gsd:archive [phase]` | Archive completed phase to save context |
 | `/opti-gsd:compact` | Reduce context footprint of project files |
 
-### Todos
+### Todos & Notes
 | Command | Description |
 |---------|-------------|
 | `/opti-gsd:add-todo [desc]` | Capture idea or task for later |
 | `/opti-gsd:todos` | List and manage pending todos |
+| `/opti-gsd:decisions` | Log and view architectural decisions |
+| `/opti-gsd:issues` | Track and manage project issues |
 
 ### Utilities
 | Command | Description |
 |---------|-------------|
-| `/opti-gsd:decisions` | Log and view architectural decisions |
-| `/opti-gsd:issues` | Track and manage project issues |
 | `/opti-gsd:skills` | Discover and configure Claude skills |
 | `/opti-gsd:mcps` | Discover and configure MCP servers |
 | `/opti-gsd:mode [interactive|yolo]` | Switch workflow mode |
 | `/opti-gsd:whats-new` | Check for updates and changelog |
+| `/opti-gsd:research [topic]` | Research a topic using Context7 |
 
-### Quick Start
+---
 
+## Quick Start
+
+**New Project:**
 ```
 1. /opti-gsd:new-project     # Set up project
 2. /opti-gsd:roadmap         # Define phases
@@ -79,10 +113,37 @@ Display the following help information to the user exactly as formatted below:
 5. /opti-gsd:verify 1        # Verify completion
 ```
 
-### For Existing Projects
-
+**Existing Project:**
 ```
 1. /opti-gsd:map-codebase    # Understand structure
 2. /opti-gsd:init            # Initialize opti-gsd
 3. /opti-gsd:roadmap         # Plan your work
 ```
+
+---
+
+## Safe Commands (run anytime)
+
+These commands are read-only or non-destructive:
+- `/opti-gsd:status` - View current state
+- `/opti-gsd:context` - Check context usage
+- `/opti-gsd:help` - This help screen
+- `/opti-gsd:add-todo` - Capture ideas
+- `/opti-gsd:todos` - View todos
+- `/opti-gsd:decisions` - View/add decisions
+- `/opti-gsd:issues` - View/add issues
+- `/opti-gsd:whats-new` - Check updates
+
+---
+
+## Workflow Overview
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  INIT → ROADMAP → [RESEARCH] → PLAN → EXECUTE → VERIFY     │
+│    ↓                                              ↓         │
+│  Setup project    Repeat for each phase      RELEASE        │
+└─────────────────────────────────────────────────────────────┘
+```
+
+For detailed status and next actions, run `/opti-gsd:status`
