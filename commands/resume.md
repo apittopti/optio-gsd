@@ -8,7 +8,30 @@ Resume work from last session.
 
 ## Behavior
 
-### Step 1: Load State
+### Step 1: Validate Prerequisites
+
+Check for required files and report standardized errors:
+
+If `.gsd/` doesn't exist:
+```
+⚠️ opti-gsd Not Initialized
+─────────────────────────────────────
+No .gsd/ directory found in this project.
+
+→ Run /opti-gsd:init to initialize an existing project
+→ Run /opti-gsd:new-project to start a new project
+```
+
+If `.gsd/STATE.md` missing:
+```
+⚠️ Project State Missing
+─────────────────────────────────────
+.gsd/STATE.md not found. No session to resume.
+
+→ Run /opti-gsd:init to start fresh
+```
+
+### Step 2: Load State
 
 Read `.gsd/STATE.md` for:
 - Current milestone, phase, task

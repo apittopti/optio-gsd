@@ -8,6 +8,29 @@ Create or view the project roadmap.
 
 ## Behavior
 
+### Step 1: Validate Prerequisites
+
+Check for required files and report standardized errors:
+
+If `.gsd/` doesn't exist:
+```
+⚠️ opti-gsd Not Initialized
+─────────────────────────────────────
+No .gsd/ directory found in this project.
+
+→ Run /opti-gsd:init to initialize an existing project
+→ Run /opti-gsd:new-project to start a new project
+```
+
+If `.gsd/STATE.md` missing:
+```
+⚠️ Project State Missing
+─────────────────────────────────────
+.gsd/STATE.md not found.
+
+→ Run /opti-gsd:init to reinitialize
+```
+
 This command has two modes: **create** (if no roadmap exists) or **view** (if roadmap exists).
 
 ---
@@ -16,11 +39,11 @@ This command has two modes: **create** (if no roadmap exists) or **view** (if ro
 
 If `.gsd/ROADMAP.md` exists, display it with live status:
 
-### Step 1: Load State
+### Step 2: Load State
 
 Read `.gsd/STATE.md` and `.gsd/ROADMAP.md`.
 
-### Step 2: Display Roadmap with Status
+### Step 3: Display Roadmap with Status
 
 ```markdown
 # Roadmap: v1.0

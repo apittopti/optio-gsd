@@ -8,11 +8,27 @@ Configure or view CI/CD toolchain and deployment settings.
 
 ## Behavior
 
-### Step 1: Check Initialization
+### Step 1: Validate Prerequisites
+
+Check for required files and report standardized errors:
 
 If `.gsd/` doesn't exist:
 ```
-opti-gsd not initialized. Run /opti-gsd:init first.
+⚠️ opti-gsd Not Initialized
+─────────────────────────────────────
+No .gsd/ directory found in this project.
+
+→ Run /opti-gsd:init to initialize an existing project
+→ Run /opti-gsd:new-project to start a new project
+```
+
+If `.gsd/config.md` missing:
+```
+⚠️ Configuration Missing
+─────────────────────────────────────
+.gsd/config.md not found.
+
+→ Run /opti-gsd:init to reinitialize
 ```
 
 ### Step 2: Auto-Detect Toolchain

@@ -12,7 +12,30 @@ Archive a completed phase to save context.
 
 ## Behavior
 
-### Step 1: Identify Phases to Archive
+### Step 1: Validate Prerequisites
+
+Check for required files and report standardized errors:
+
+If `.gsd/` doesn't exist:
+```
+⚠️ opti-gsd Not Initialized
+─────────────────────────────────────
+No .gsd/ directory found in this project.
+
+→ Run /opti-gsd:init to initialize an existing project
+→ Run /opti-gsd:new-project to start a new project
+```
+
+If `.gsd/STATE.md` missing:
+```
+⚠️ Project State Missing
+─────────────────────────────────────
+.gsd/STATE.md not found.
+
+→ Run /opti-gsd:init to reinitialize
+```
+
+### Step 2: Identify Phases to Archive
 
 If phase specified:
 - Verify phase is complete (check ROADMAP.md)
@@ -22,7 +45,7 @@ If no phase:
 - Find all completed, non-archived phases
 - Archive all of them
 
-### Step 2: Verify Phase Complete
+### Step 3: Verify Phase Complete
 
 Check:
 - Phase marked complete in ROADMAP.md
