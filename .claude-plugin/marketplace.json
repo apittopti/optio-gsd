@@ -11,9 +11,9 @@
   "plugins": [
     {
       "name": "opti-gsd",
-      "source": ".",
+      "source": "./",
       "description": "Spec-driven development with fresh context execution",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "author": {
         "name": "apittopti"
       }
