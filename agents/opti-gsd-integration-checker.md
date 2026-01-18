@@ -6,6 +6,7 @@ tools:
   - Glob
   - Grep
   - Bash
+  - mcp__*
 ---
 
 # Opti-GSD Integration Checker Agent

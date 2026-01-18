@@ -7,6 +7,7 @@ tools:
   - Grep
   - Bash
   - Browser
+  - mcp__*
 ---
 
 # Opti-GSD Verifier Agent
