@@ -4,13 +4,14 @@
     "name": "apittopti"
   },
   "metadata": {
-    "description": "Private opti-gsd plugin marketplace",
-    "version": "1.0.0"
+    "description": "opti-gsd plugin marketplace",
+    "version": "1.0.0",
+    "pluginRoot": "."
   },
   "plugins": [
     {
       "name": "opti-gsd",
-      "source": ".",
+      "source": "./",
       "description": "Spec-driven development with fresh context execution",
       "version": "0.1.0",
       "author": {
