@@ -15,14 +15,36 @@ Generate an executable plan for phase N with XML-structured tasks.
 
 ## Behavior
 
-### Step 1: Validate Environment
+### Step 1: Validate Prerequisites
 
-```bash
-# Check .gsd/ exists
-test -d .gsd || echo "Run /opti-gsd:init first"
+Check for required files and report standardized errors:
 
-# Check ROADMAP.md exists
-test -f .gsd/ROADMAP.md || echo "Run /opti-gsd:roadmap first"
+If `.gsd/` doesn't exist:
+```
+⚠️ opti-gsd Not Initialized
+─────────────────────────────────────
+No .gsd/ directory found in this project.
+
+→ Run /opti-gsd:init to initialize an existing project
+→ Run /opti-gsd:new-project to start a new project
+```
+
+If `.gsd/STATE.md` missing:
+```
+⚠️ Project State Missing
+─────────────────────────────────────
+.gsd/STATE.md not found.
+
+→ Run /opti-gsd:init to reinitialize
+```
+
+If `.gsd/ROADMAP.md` missing:
+```
+⚠️ No Roadmap Found
+─────────────────────────────────────
+.gsd/ROADMAP.md not found. Create a roadmap before planning phases.
+
+→ Run /opti-gsd:roadmap to create a roadmap
 ```
 
 ### Step 2: Determine Phase

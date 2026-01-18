@@ -10,13 +10,45 @@ Execute the current phase plan with wave-based parallelization and fresh context
 
 This is the core execution engine. It spawns subagents for each task to maintain fresh context.
 
-### Step 1: Load State
+### Step 1: Validate Prerequisites
+
+Check for required files and report standardized errors:
+
+If `.gsd/` doesn't exist:
+```
+⚠️ opti-gsd Not Initialized
+─────────────────────────────────────
+No .gsd/ directory found in this project.
+
+→ Run /opti-gsd:init to initialize an existing project
+→ Run /opti-gsd:new-project to start a new project
+```
+
+If `.gsd/STATE.md` missing:
+```
+⚠️ Project State Missing
+─────────────────────────────────────
+.gsd/STATE.md not found.
+
+→ Run /opti-gsd:init to reinitialize
+```
+
+If no plan exists for current phase:
+```
+⚠️ Phase Not Planned
+─────────────────────────────────────
+No plan found for phase {N}.
+
+→ Run /opti-gsd:plan-phase {N} to create a plan
+```
+
+### Step 2: Load State
 
 Read (minimal context):
 - `.gsd/config.md` — mode, budgets, browser config
 - `.gsd/STATE.md` — current phase and task position
 
-### Step 2: Load Current Plan
+### Step 3: Load Current Plan
 
 Read `.gsd/plans/phase-{N}/plan.md`.
 

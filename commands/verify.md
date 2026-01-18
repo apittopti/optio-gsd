@@ -12,7 +12,39 @@ Verify phase completion with goal-backward analysis and integration checking.
 
 ## Behavior
 
-### Step 1: Load Context
+### Step 1: Validate Prerequisites
+
+Check for required files and report standardized errors:
+
+If `.gsd/` doesn't exist:
+```
+⚠️ opti-gsd Not Initialized
+─────────────────────────────────────
+No .gsd/ directory found in this project.
+
+→ Run /opti-gsd:init to initialize an existing project
+→ Run /opti-gsd:new-project to start a new project
+```
+
+If `.gsd/STATE.md` missing:
+```
+⚠️ Project State Missing
+─────────────────────────────────────
+.gsd/STATE.md not found.
+
+→ Run /opti-gsd:init to reinitialize
+```
+
+If phase summary doesn't exist:
+```
+⚠️ Phase Not Executed
+─────────────────────────────────────
+Phase {N} has not been executed yet.
+
+→ Run /opti-gsd:execute to execute the phase first
+```
+
+### Step 2: Load Context
 
 Read:
 - `.gsd/config.md` — for CI commands and URLs
@@ -21,7 +53,7 @@ Read:
 - `.gsd/plans/phase-{N}/plan.md` — for task details
 - `.gsd/plans/phase-{N}/summary.md` — for execution results
 
-### Step 2: Run CI Commands
+### Step 3: Run CI Commands
 
 Read CI configuration from `.gsd/config.md` and run in order:
 

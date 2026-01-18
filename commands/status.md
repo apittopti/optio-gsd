@@ -6,10 +6,33 @@ Read the opti-gsd project state and display a comprehensive status report with v
 
 ## Your Task
 
-1. Check if `.gsd/` directory exists
-2. If not, display "opti-gsd not initialized" and suggest `/opti-gsd:init`
-3. If yes, read STATE.md, ROADMAP.md, and check for phase plans/verification files
-4. Display status with progress bars and workflow stages as shown below
+### Step 1: Validate Prerequisites
+
+Check for required files and report standardized errors:
+
+If `.gsd/` doesn't exist:
+```
+⚠️ opti-gsd Not Initialized
+─────────────────────────────────────
+No .gsd/ directory found in this project.
+
+→ Run /opti-gsd:init to initialize an existing project
+→ Run /opti-gsd:new-project to start a new project
+```
+
+If `.gsd/STATE.md` missing:
+```
+⚠️ Project State Missing
+─────────────────────────────────────
+.gsd/STATE.md not found.
+
+→ Run /opti-gsd:init to reinitialize
+```
+
+### Step 2: Load State
+
+1. Read STATE.md, ROADMAP.md, and check for phase plans/verification files
+2. Display status with progress bars and workflow stages as shown below
 
 ## Output Format
 
