@@ -1,14 +1,13 @@
 ---
-milestone: v0.4.0
-phase: 1
-task: 3/3
-branch: gsd/v0.4.0
-status: complete
+milestone: null
+phase: null
+task: null
+branch: master
 
 last_active: 2026-01-19
 session_tokens: 0
 
-phases_complete: [1]
+phases_complete: []
 phases_in_progress: []
 phases_pending: []
 
@@ -16,8 +15,10 @@ open_issues: []
 ---
 
 ## Session Context
-Milestone v0.4.0 complete. All phases verified. Ready for release.
+v0.5.0 released. Ready for next milestone.
 
 ## Recent Decisions
-- Skip README/docs (user preference)
-- Skip example project (user preference)
+- Simplified workflow: removed REQUIREMENTS.md
+- Stories replace requirements
+- PROJECT.md now optional
+- Renamed todos to ideas
