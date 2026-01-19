@@ -1,12 +1,13 @@
-# Roadmap: opti-gsd v0.8.0
+# Roadmap: opti-gsd v0.8.0 [COMPLETE]
 
 ## Milestone Goal
 Improve workflow: push before verify (for preview deployments), always create PR before merge.
 
 ---
 
-## Phase 1: Workflow Refinement
+## Phase 1: Workflow Refinement [COMPLETE]
 **Status:** COMPLETE
+**Verified:** 2026-01-19
 **Goal:** Update verify and complete-milestone commands
 
 ### Delivers
