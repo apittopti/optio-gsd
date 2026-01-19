@@ -8,6 +8,7 @@ branching: milestone
 prefix: gsd/
 base: master
 commits: conventional
+workflow: solo  # solo = merge directly, team = create PR
 
 # Execution Mode
 mode: interactive

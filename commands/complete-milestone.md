@@ -81,21 +81,34 @@ Write to `.gsd/CHANGELOG-{milestone}.md`.
 ...
 ```
 
-### Step 5: Push Branch
+### Step 5: Merge or Create PR
 
+Read `workflow` from `.gsd/config.md` (defaults to `solo`).
+
+**If workflow = solo (default):**
+
+Merge directly to base branch:
+```bash
+git checkout {base}
+git merge {branch} --no-ff -m "release({milestone}): merge milestone {milestone}"
+git push origin {base}
+```
+
+**If workflow = team:**
+
+Push branch and create PR:
 ```bash
 git push -u origin {branch}
 ```
 
-### Step 6: Create Pull Request (if gh available)
-
+If `gh` available:
 ```bash
 gh pr create \
   --title "Release: {milestone}" \
   --body "$(cat .gsd/CHANGELOG-{milestone}.md)"
 ```
 
-If gh not available:
+If `gh` not available:
 ```markdown
 ## Create Pull Request
 
@@ -104,11 +117,11 @@ Please create a PR manually:
 - **To:** {base}
 - **Title:** Release: {milestone}
 - **Body:** See .gsd/CHANGELOG-{milestone}.md
+
+After merging, run `/opti-gsd:complete-milestone --finalize` to tag and archive.
 ```
 
-### Step 7: Tag Release
-
-After PR is merged (or if no PR workflow):
+### Step 6: Tag Release
 
 ```bash
 git tag -a {milestone} -m "Release {milestone}"
@@ -156,12 +169,30 @@ git add .gsd/
 git commit -m "chore: complete milestone {name}"
 ```
 
+**If workflow = solo:**
 ```markdown
-## Milestone Complete! 🎉
+## Milestone Complete!
 
 **Milestone:** {name}
 **Phases:** {count} completed
-**Requirements:** {count} delivered
+
+**Artifacts:**
+- Tag: {milestone}
+- Changelog: .gsd/CHANGELOG-{milestone}.md
+- Archive: .gsd/milestones/{milestone}/
+
+Code merged to {base} branch.
+
+**Next:**
+→ /opti-gsd:start-milestone {next}
+```
+
+**If workflow = team:**
+```markdown
+## Milestone Complete!
+
+**Milestone:** {name}
+**Phases:** {count} completed
 
 **Artifacts:**
 - Branch: {branch}
@@ -171,8 +202,8 @@ git commit -m "chore: complete milestone {name}"
 - Archive: .gsd/milestones/{milestone}/
 
 **Next:**
-- Merge the PR
-- Start next milestone: `/opti-gsd:start-milestone {next}`
+→ Merge the PR
+→ /opti-gsd:start-milestone {next}
 ```
 
 ---
