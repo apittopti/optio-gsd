@@ -1,11 +1,11 @@
-# Roadmap: v0.8.1
+# Roadmap: v0.8.1 [COMPLETE]
 
 ## Overview
 Bug fix release to resolve plugin path resolution issues in help and whats-new commands.
 
-## Milestone: v0.8.1
+## Milestone: v0.8.1 [COMPLETE]
 
-### Phase 1: Fix Plugin Path Resolution
+### Phase 1: Fix Plugin Path Resolution [COMPLETE]
 **Goal:** Use `${CLAUDE_PLUGIN_ROOT}` for reliable plugin file access
 
 **Problem:** Commands like `/opti-gsd:help` search multiple directories before finding `plugin.json`, causing errors and noise.
@@ -17,6 +17,6 @@ Bug fix release to resolve plugin path resolution issues in help and whats-new c
 - `commands/whats-new.md` - Update plugin.json path reference
 
 **Acceptance Criteria:**
-- [ ] Help command reads plugin.json without directory search errors
-- [ ] Whats-new command reads plugin.json without directory search errors
-- [ ] Both commands use `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json`
+- [x] Help command reads plugin.json without directory search errors
+- [x] Whats-new command reads plugin.json without directory search errors
+- [x] Both commands use `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json`
