@@ -253,6 +253,37 @@ If gaps found, spawn opti-gsd-integration-checker to verify:
 
 **Checkpoint:** Write progress to VERIFICATION-PROGRESS.md after key link verification complete (update stages and cache integration check results).
 
+### Step 5b: Story Acceptance Criteria Check
+
+If phase delivers user stories (has `Delivers: US*` in ROADMAP.md):
+
+1. Load story files from `.gsd/stories/`
+2. Extract acceptance criteria from each story
+3. Verify each criterion is satisfied
+
+```markdown
+## Story Acceptance Verification
+
+### US001: Export to Excel
+| Criterion | Status | Evidence |
+|-----------|--------|----------|
+| Export button visible on dashboard | PASS | Button exists in DashboardHeader |
+| Downloads as .xlsx format | PASS | ExportService uses xlsx library |
+| Includes all visible columns | PASS | columnConfig passed to export |
+
+### US003: Faster search
+| Criterion | Status | Evidence |
+|-----------|--------|----------|
+| Search returns in < 500ms | PASS | Index added, avg 120ms |
+| Results highlight search term | PASS | Highlighter component added |
+```
+
+**Verification methods:**
+- Code inspection (component exists, API called)
+- Test results (if covered by tests)
+- Browser verification (if browser MCP available)
+- Manual check required (flag for human verification)
+
 ### Step 6: Generate Report
 
 Write `.gsd/plans/phase-{N}/VERIFICATION.md`:
@@ -270,6 +301,12 @@ Write `.gsd/plans/phase-{N}/VERIFICATION.md`:
 | Test | PASS | 12.5s | 47 tests, 0 failures |
 | Build | PASS | 8.2s | - |
 | E2E | SKIP | - | Not configured |
+
+## Stories Delivered
+| Story | Title | Acceptance | Status |
+|-------|-------|------------|--------|
+| US001 | Export to Excel | 3/3 criteria | PASS |
+| US003 | Faster search | 2/2 criteria | PASS |
 
 ## Observable Truths
 | Truth | Status | Evidence |
@@ -316,6 +353,10 @@ All checks passed:
 - [x] {observable truth 1}
 - [x] {observable truth 2}
 - [x] All artifacts substantive and wired
+
+**Stories Delivered:**
+- [x] US001: Export to Excel (all acceptance criteria met)
+- [x] US003: Faster search (all acceptance criteria met)
 
 Phase {N} is ready for milestone completion.
 

@@ -98,57 +98,119 @@ Common milestone patterns:
 - **Staged releases**: v0.1 (MVP) → v0.5 (beta) → v1.0 (launch)
 - **Feature-based**: auth-release → dashboard-release → payments-release
 
-### Step 4: Define Phases for v1.0
+### Step 4: Gather Items for Milestone
+
+Read from all input buckets and present available items:
+
+```markdown
+## Planning Milestone: {milestone}
+
+### What should this milestone include?
+
+**User Stories** ({count} in backlog)
+`.gsd/stories/`
+☐ US001: Export to Excel (Client A) — high priority
+☐ US002: Dark mode toggle (User feedback) — medium priority
+☐ US003: Faster search (Multiple users) — high priority
+
+**Issues** ({count} open)
+`.gsd/issues/`
+☐ #001: Login fails on Safari — medium severity
+☐ #002: Memory leak in dashboard — high severity
+
+**Ideas** ({count} pending)
+`.gsd/IDEAS.md`
+☐ I005: Add keyboard shortcuts — medium priority
+☐ I008: Refactor auth module — low priority
+
+**Requirements** (from PROJECT.md/REQUIREMENTS.md)
+☐ AUTH-01: User registration
+☐ AUTH-02: User login
+☐ DASH-01: Dashboard layout
+
+---
+Select items to include, or type "all" for everything.
+You can also add new items now.
+```
+
+**Selection options:**
+- Select by ID: `US001, US003, #002, AUTH-01`
+- Select by category: `all stories`, `all issues`
+- Select all: `all`
+- Add new: `add story: {title}` or `add idea: {title}`
+
+### Step 5: Define Phases for Milestone
 
 Ask:
 
-> "For v1.0, what are the main phases of work? I'll suggest a structure based on requirements."
+> "How should we group these into phases? I'll suggest a structure based on dependencies."
 
 Spawn opti-gsd-roadmapper agent if needed, or create manually:
 
 **Phase Clustering Rules:**
-1. Group requirements that depend on each other
+1. Group related stories/issues that depend on each other
 2. Order by technical dependencies (auth before dashboard)
 3. Each phase should be deliverable/demonstrable
 4. Target 2-5 tasks per phase when planned
-5. Name phases by outcome, not technology
+5. Name phases by user outcome, not technology
 
-### Step 5: Validate Coverage
+**Example grouping:**
+```markdown
+## Suggested Phases
 
-Ensure every v1 requirement maps to exactly one phase:
+### Phase 1: Data Export
+- US001: Export to Excel
+- I005: Add keyboard shortcuts (for export)
+
+### Phase 2: Performance & Stability
+- US003: Faster search
+- #002: Memory leak in dashboard
+
+### Phase 3: User Experience
+- US002: Dark mode toggle
+
+Does this grouping work? Adjust as needed.
+```
+
+### Step 6: Validate Coverage
+
+Ensure every selected item maps to exactly one phase:
 
 ```
-Requirement Coverage Check:
-- AUTH-01: Phase 1 ✓
-- AUTH-02: Phase 1 ✓
-- DASH-01: Phase 2 ✓
-- DASH-02: Phase 2 ✓
-- USER-01: Phase 3 ✓
-- PAY-01: Phase 4 ✓
+Coverage Check:
+- US001: Phase 1 ✓
+- US003: Phase 2 ✓
+- #002: Phase 2 ✓
+- US002: Phase 3 ✓
+- I005: Phase 1 ✓
 
-All 6 requirements covered. No orphans.
+All 5 items covered. No orphans.
 ```
 
-If any requirement is orphaned, add to a phase or create new phase.
+If any item is orphaned, add to a phase or create new phase.
 
-### Step 6: Define Success Criteria
+### Step 7: Define Success Criteria
 
-For each phase, define 2-5 observable success criteria:
+For each phase, success criteria come from:
+1. **Story acceptance criteria** — imported from story files
+2. **Issue resolution** — the bug is fixed
+3. **Idea completion** — the enhancement works
 
 ```markdown
-### Phase 1: Authentication
+### Phase 1: Data Export
 
-**Success Criteria:**
-- [ ] User can create account with email/password
-- [ ] User can log in and sees authenticated state
-- [ ] User can log out
-- [ ] User can reset forgotten password
-- [ ] Invalid credentials show appropriate errors
+**Delivers:** US001, I005
+
+**Success Criteria:** (from US001 acceptance)
+- [ ] Export button visible on dashboard
+- [ ] Downloads as .xlsx format
+- [ ] Includes all visible columns
+- [ ] Keyboard shortcut works (Ctrl+E)
 ```
 
 These MUST be user-observable outcomes, not implementation details.
 
-### Step 7: Write ROADMAP.md
+### Step 8: Write ROADMAP.md
 
 Create `.gsd/ROADMAP.md`:
 
@@ -161,12 +223,12 @@ Create `.gsd/ROADMAP.md`:
 - [ ] Not started
 - {Brief description}
 
+**Delivers:** {US001}, {I005}
+
 **Success Criteria:**
-- [ ] {Observable outcome 1}
+- [ ] {From story acceptance criteria}
 - [ ] {Observable outcome 2}
 - [ ] {Observable outcome 3}
-
-**Requirements:** {REQ-ID-1}, {REQ-ID-2}
 
 ---
 
@@ -174,29 +236,40 @@ Create `.gsd/ROADMAP.md`:
 - [ ] Not started
 - {Brief description}
 
-**Success Criteria:**
-- [ ] {Observable outcome 1}
-- [ ] {Observable outcome 2}
+**Delivers:** {US003}, {#002}
 
-**Requirements:** {REQ-ID-3}, {REQ-ID-4}
+**Success Criteria:**
+- [ ] {From story acceptance criteria}
+- [ ] {Issue is resolved}
 
 ---
 
 {Continue for all phases}
 ```
 
-### Step 8: Update REQUIREMENTS.md
+### Step 9: Update Item Statuses
 
-Update each requirement with its phase assignment:
-
+**Update story files** (`.gsd/stories/US*.md`):
 ```markdown
-### AUTH-01: User Registration
-- **Phase:** 1
-- **Status:** pending
-- **Verification:** User can create account with email/password
+**Status:** planned
+**Milestone:** v1.0
+**Phase:** 1
 ```
 
-### Step 9: Create STATE.md (if needed)
+**Update issues** (`.gsd/issues/*.md`):
+```markdown
+**Status:** planned
+**Milestone:** v1.0
+**Phase:** 2
+```
+
+**Update ideas** (mark as promoted in `.gsd/IDEAS.md`):
+```markdown
+**Status:** promoted
+**Milestone:** v1.0
+```
+
+### Step 10: Create STATE.md (if needed)
 
 If STATE.md doesn't exist or needs updating:
 
@@ -224,7 +297,7 @@ Roadmap created with {N} phases.
 (none yet)
 ```
 
-### Step 10: Create Phase Directories
+### Step 11: Create Phase Directories
 
 ```bash
 mkdir -p .gsd/plans/phase-01
@@ -232,26 +305,30 @@ mkdir -p .gsd/plans/phase-02
 # etc.
 ```
 
-### Step 11: Commit
+### Step 12: Commit
 
 ```bash
-git add .gsd/ROADMAP.md .gsd/REQUIREMENTS.md .gsd/STATE.md
+git add .gsd/ROADMAP.md .gsd/STATE.md .gsd/stories/ .gsd/issues/ .gsd/IDEAS.md
 git commit -m "docs: create roadmap with {N} phases"
 ```
 
-### Step 12: Report
+### Step 13: Report
 
 ```
 Roadmap created!
 
 Milestone: v1.0
 Phases: {count}
-Requirements mapped: {count}
+
+Items Included:
+- Stories: {count} (from users/clients)
+- Issues: {count} (bugs/problems)
+- Ideas: {count} (your enhancements)
 
 Phase Overview:
-1. {Phase 1 title} - {req_count} requirements
-2. {Phase 2 title} - {req_count} requirements
-3. {Phase 3 title} - {req_count} requirements
+1. {Phase 1 title} — delivers US001, I005
+2. {Phase 2 title} — delivers US003, #002
+3. {Phase 3 title} — delivers US002
 
 Next steps:
 → /opti-gsd:plan-phase 1  — Create execution plan for phase 1
