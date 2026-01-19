@@ -12,7 +12,7 @@ phases_complete: [1]
 phases_in_progress: []
 phases_pending: []
 
-open_issues: []
+open_issues: [002-pr-enhancement]
 ---
 
 ## Session Context
