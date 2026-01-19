@@ -140,6 +140,8 @@ mkdir -p .gsd/plans
 mkdir -p .gsd/archive
 mkdir -p .gsd/summaries
 mkdir -p .gsd/codebase
+mkdir -p .gsd/stories
+mkdir -p .gsd/issues
 mkdir -p .gsd/debug
 ```
 

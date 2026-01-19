@@ -27,8 +27,9 @@ Spawn 4 parallel `opti-gsd-project-researcher` agents:
 | 4 | **pitfalls** | Common mistakes, anti-patterns, things to avoid |
 
 Each agent receives:
-- `.gsd/PROJECT.md` — project goals and type
+- `.gsd/PROJECT.md` — project goals and type (if exists)
 - `.gsd/config.md` — detected stack and framework
+- `.gsd/stories/` — user stories to implement
 - `.gsd/codebase/SUMMARY.md` — existing codebase context (if exists)
 
 Then spawn `opti-gsd-research-synthesizer` to consolidate into `.gsd/research/SUMMARY.md`.
@@ -39,7 +40,7 @@ For `/opti-gsd:research phase 2`:
 
 Spawn `opti-gsd-phase-researcher` with:
 - Phase goals from ROADMAP.md
-- Requirements for that phase
+- Stories/issues to deliver in that phase
 - Project research SUMMARY.md (if exists)
 - Codebase conventions
 

@@ -62,9 +62,9 @@ Validate phase exists in ROADMAP.md.
 Read these files (lazy loading):
 - `.gsd/config.md` — app_type, skills, MCPs, budgets
 - `.gsd/STATE.md` — current position
-- `.gsd/ROADMAP.md` — phase goals and requirements
-- `.gsd/REQUIREMENTS.md` — REQ details for this phase
-- `.gsd/ISSUES.md` — known issues to avoid
+- `.gsd/ROADMAP.md` — phase goals and items to deliver
+- `.gsd/stories/` — story details and acceptance criteria (for items in this phase)
+- `.gsd/issues/` — issue details (for items in this phase)
 - `.gsd/codebase/CONVENTIONS.md` — if exists, for consistency
 
 **Do NOT load:**
@@ -94,16 +94,16 @@ If researching, spawn opti-gsd-phase-researcher agent:
 ```markdown
 Research Phase {N}: {Phase Title}
 
-Requirements to cover:
-- {REQ-ID-1}: {description}
-- {REQ-ID-2}: {description}
+Items to deliver:
+- {US001}: {title} — {acceptance criteria summary}
+- {#002}: {issue title}
 
 Project context (from SUMMARY.md if exists):
 - Recommended patterns: {patterns}
 - Pitfalls to avoid: {pitfalls}
 
 Focus on:
-- Best practices for implementing these requirements
+- Best practices for implementing these stories/fixes
 - Libraries/patterns that fit the existing codebase
 - Common mistakes to avoid for this feature type
 - How to integrate with existing code conventions
@@ -117,10 +117,10 @@ Save output to `.gsd/plans/phase-{N}/RESEARCH.md`.
 
 Spawn opti-gsd-planner agent with:
 - Phase goals from ROADMAP.md
-- Requirements from REQUIREMENTS.md
+- Stories with acceptance criteria from `.gsd/stories/`
+- Issues to fix from `.gsd/issues/`
 - Research from RESEARCH.md (if exists)
 - Conventions from codebase analysis (if exists)
-- Known issues from ISSUES.md
 - **Available MCPs from .gsd/config.md** (e.g., postgres, github, browser)
 - **Available skills from .gsd/config.md** (e.g., commit, review-pr)
 

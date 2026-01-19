@@ -87,60 +87,57 @@ Ask user:
 
 Then spawn opti-gsd-research-synthesizer to consolidate findings into `.gsd/research/SUMMARY.md`.
 
-**If no**, proceed directly to requirements.
+**If no**, proceed directly to stories.
 
-### Step 5: Define Requirements
+### Step 5: Capture Initial Stories
 
-Create `.gsd/REQUIREMENTS.md` with REQ-IDs:
+Create initial user stories in `.gsd/stories/` for v1 features:
 
 ```markdown
-# Requirements
+# US001: {Feature Title}
 
-## v1 (Must Ship)
+**From:** Initial planning
+**Requested:** {date}
+**Status:** backlog
 
-### {CATEGORY}-01: {Requirement Title}
-- **Phase:** TBD
-- **Status:** pending
-- **Verification:** {How to verify this works}
+## Request
+{What the user needs to be able to do}
 
-### {CATEGORY}-02: {Requirement Title}
-- **Phase:** TBD
-- **Status:** pending
-- **Verification:** {How to verify this works}
+## Why
+{Why this is important for v1}
 
-{Continue for all v1 requirements}
+## Acceptance Criteria
+- [ ] {Criterion 1}
+- [ ] {Criterion 2}
+- [ ] {Criterion 3}
 
-## v2 (Future)
+## Milestone
+v1.0
 
-### {CATEGORY}-XX: {Requirement Title}
-- **Phase:** TBD
-- **Verification:** {How to verify this works}
-
-## Out of Scope
-
-- {Explicit exclusion 1}
-- {Explicit exclusion 2}
+## Notes
+{Any additional context}
 ```
 
-**REQ-ID Format:**
-- AUTH-01, AUTH-02 (authentication)
-- DASH-01, DASH-02 (dashboard)
-- PAY-01, PAY-02 (payments)
-- USER-01, USER-02 (user management)
+Create one story file per major v1 feature. Keep them user-focused:
+- US001-user-registration.md
+- US002-user-login.md
+- US003-dashboard.md
 - etc.
+
+**v2 ideas** go to `.gsd/IDEAS.md` as low-priority items.
 
 ### Step 6: Generate Roadmap
 
 Spawn opti-gsd-roadmapper agent with:
 - PROJECT.md
-- REQUIREMENTS.md
+- Stories from `.gsd/stories/`
 - SUMMARY.md (if research was done)
 
 The roadmapper will:
-1. Cluster requirements into phases
-2. Order phases by dependencies
-3. Create observable success criteria per phase
-4. Validate 100% requirement coverage
+1. Group stories into phases by dependency
+2. Order phases logically
+3. Import acceptance criteria as success criteria
+4. Validate all stories are assigned to a phase
 
 ### Step 7: Present Roadmap for Approval
 
@@ -150,12 +147,12 @@ Show the generated roadmap to user:
 ## Proposed Roadmap: v1.0
 
 ### Phase 1: {Title}
-- {REQ-IDs covered}
-- Success: {Observable outcomes}
+- Delivers: US001, US002
+- Success: {From acceptance criteria}
 
 ### Phase 2: {Title}
-- {REQ-IDs covered}
-- Success: {Observable outcomes}
+- Delivers: US003, US004
+- Success: {From acceptance criteria}
 
 {etc.}
 
@@ -177,11 +174,11 @@ Create `.gsd/ROADMAP.md`:
 - [ ] Not started
 - {Description}
 
-**Success Criteria:**
-- [ ] {Observable outcome 1}
-- [ ] {Observable outcome 2}
+**Delivers:** US001, US002
 
-**Requirements:** {REQ-ID-1}, {REQ-ID-2}
+**Success Criteria:**
+- [ ] {From US001 acceptance criteria}
+- [ ] {From US002 acceptance criteria}
 
 ---
 
@@ -189,11 +186,11 @@ Create `.gsd/ROADMAP.md`:
 - [ ] Not started
 - {Description}
 
-**Success Criteria:**
-- [ ] {Observable outcome 1}
-- [ ] {Observable outcome 2}
+**Delivers:** US003, US004
 
-**Requirements:** {REQ-ID-3}, {REQ-ID-4}
+**Success Criteria:**
+- [ ] {From US003 acceptance criteria}
+- [ ] {From US004 acceptance criteria}
 
 {Continue for all phases}
 ```
@@ -241,7 +238,7 @@ git add .gsd/
 git commit -m "chore: initialize opti-gsd project
 
 - Created PROJECT.md with goals and constraints
-- Defined REQUIREMENTS.md with REQ-IDs
+- Created {N} user stories in .gsd/stories/
 - Generated ROADMAP.md with {N} phases
 - Research: {yes/no}"
 ```
@@ -253,11 +250,11 @@ Project initialized!
 
 Project: {name}
 Phases: {count}
-Requirements: {v1_count} for v1, {v2_count} for v2
+Stories: {count} for v1
 
 Files created:
   .gsd/PROJECT.md
-  .gsd/REQUIREMENTS.md
+  .gsd/stories/*.md
   .gsd/ROADMAP.md
   .gsd/STATE.md
   {.gsd/research/* if researched}

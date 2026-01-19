@@ -116,7 +116,7 @@ For each task, construct this prompt for opti-gsd-executor:
 You are a focused implementation agent for opti-gsd. Complete ONLY this task.
 
 <context>
-  <project>{.gsd/PROJECT.md#overview - brief}</project>
+  <project>{.gsd/PROJECT.md#overview - if exists, otherwise skip}</project>
   <conventions>{.gsd/codebase/CONVENTIONS.md - if exists}</conventions>
 </context>
 

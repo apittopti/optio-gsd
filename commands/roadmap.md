@@ -78,16 +78,16 @@ If `.gsd/ROADMAP.md` doesn't exist, create one.
 
 ### Step 1: Check Prerequisites
 
-Ensure these exist:
-- `.gsd/PROJECT.md` — If missing, run `/opti-gsd:new-project`
-- `.gsd/REQUIREMENTS.md` — If missing, create during this flow
+Ensure `.gsd/` exists and is initialized.
 
 ### Step 2: Load Context
 
-Read:
-- `.gsd/PROJECT.md` for goals and constraints
-- `.gsd/REQUIREMENTS.md` for v1 requirements
-- `.gsd/research/SUMMARY.md` if exists
+Read (if they exist):
+- `.gsd/PROJECT.md` for goals and constraints (optional)
+- `.gsd/research/SUMMARY.md` for research findings (optional)
+- `.gsd/stories/` for user stories
+- `.gsd/issues/` for open issues
+- `.gsd/IDEAS.md` for ideas
 
 ### Step 3: Ask About Milestones
 
@@ -123,19 +123,14 @@ Read from all input buckets and present available items:
 ☐ I005: Add keyboard shortcuts — medium priority
 ☐ I008: Refactor auth module — low priority
 
-**Requirements** (from PROJECT.md/REQUIREMENTS.md)
-☐ AUTH-01: User registration
-☐ AUTH-02: User login
-☐ DASH-01: Dashboard layout
-
 ---
 Select items to include, or type "all" for everything.
-You can also add new items now.
+You can also add new stories/ideas now.
 ```
 
 **Selection options:**
-- Select by ID: `US001, US003, #002, AUTH-01`
-- Select by category: `all stories`, `all issues`
+- Select by ID: `US001, US003, #002, I005`
+- Select by category: `all stories`, `all issues`, `all ideas`
 - Select all: `all`
 - Add new: `add story: {title}` or `add idea: {title}`
 
