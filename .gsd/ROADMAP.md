@@ -6,7 +6,7 @@ Improve workflow: push before verify (for preview deployments), always create PR
 ---
 
 ## Phase 1: Workflow Refinement
-**Status:** PENDING
+**Status:** COMPLETE
 **Goal:** Update verify and complete-milestone commands
 
 ### Delivers
