@@ -9,6 +9,7 @@ Verify phase completion with goal-backward analysis and integration checking.
 ## Arguments
 
 - `phase` — Phase number to verify (optional, defaults to last completed phase)
+- `--resume` — Resume from last checkpoint if VERIFICATION-PROGRESS.md exists
 
 ## Behavior
 
@@ -52,6 +53,40 @@ Read:
 - `.gsd/ROADMAP.md` — for phase goals
 - `.gsd/plans/phase-{N}/plan.md` — for task details
 - `.gsd/plans/phase-{N}/summary.md` — for execution results
+
+### Step 2.5: Check for Resume
+
+Check if `--resume` flag is provided OR `.gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md` exists:
+
+**If resuming:**
+
+1. Load `.gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md`
+2. Parse completed stages from progress file
+3. Display resume banner:
+
+```
+Resuming Verification: Phase {N}
+──────────────────────────────────────────────────────────────
+Last checkpoint: {timestamp}
+
+Completed stages:
+  [✓] CI Checks
+  [✓] Artifact Verification
+
+Pending stages:
+  [ ] Key Link Verification
+  [ ] E2E Tests
+  [ ] Report Generation
+
+Continuing from: Key Link Verification
+──────────────────────────────────────────────────────────────
+```
+
+4. Skip already-completed stages in subsequent steps
+
+**If not resuming:**
+- Continue to Step 3 normally
+- Create fresh VERIFICATION-PROGRESS.md on first checkpoint
 
 ### Step 3: Run CI Commands
 
@@ -102,6 +137,26 @@ CI Checks Passed!
 
 **Skip missing commands:** If a CI command is `null` in config, skip it.
 
+**Checkpoint:** Write progress to `.gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md` after CI checks complete:
+```markdown
+# Verification Progress: Phase {N}
+
+## Last Updated
+{timestamp}
+
+## Completed Stages
+- [x] CI Checks - {pass/fail} - {timestamp}
+
+## Pending Stages
+- [ ] E2E Tests
+- [ ] Artifact Verification
+- [ ] Key Link Verification
+- [ ] Report Generation
+
+## CI Results (cached)
+{lint: pass, typecheck: pass, test: pass, build: pass}
+```
+
 ### Step 3: Run E2E Tests (if configured)
 
 If `ci.e2e` is configured AND browser MCP is available:
@@ -147,6 +202,8 @@ If browser MCP available, can also run visual verification:
 - Check key pages render correctly
 - Verify critical user flows
 
+**Checkpoint:** Write progress to VERIFICATION-PROGRESS.md after E2E tests complete (update Completed/Pending stages and cache E2E results).
+
 ### Step 4: Spawn Verifier
 
 Spawn opti-gsd-verifier agent with:
@@ -168,6 +225,8 @@ The verifier performs three-level artifact verification:
 - Are they imported and used?
 - Do key links work? (Component → API → Database)
 
+**Checkpoint:** Write progress to VERIFICATION-PROGRESS.md after artifact verification complete (update stages and cache artifact inventory results).
+
 ### Step 5: Integration Check
 
 If gaps found, spawn opti-gsd-integration-checker to verify:
@@ -175,6 +234,8 @@ If gaps found, spawn opti-gsd-integration-checker to verify:
 - API coverage (all routes have callers)
 - Auth protection on sensitive routes
 - E2E flow tracing
+
+**Checkpoint:** Write progress to VERIFICATION-PROGRESS.md after key link verification complete (update stages and cache integration check results).
 
 ### Step 6: Generate Report
 
@@ -226,6 +287,8 @@ Write `.gsd/plans/phase-{N}/VERIFICATION.md`:
 - [ ] Visual: Dashboard layout matches design
 - [ ] Behavior: Auth redirect works correctly
 ```
+
+**Cleanup:** After writing VERIFICATION.md, delete `.gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md` (progress file is no longer needed once final report exists).
 
 ### Step 7: Handle Result
 
