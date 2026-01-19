@@ -1,13 +1,13 @@
 ---
-milestone: v0.8.0
-phase: 1
-task: 3/3
-branch: gsd/v0.8.0
+milestone: null
+phase: null
+task: null
+branch: master
 
 last_active: 2026-01-19
 session_tokens: 0
 
-phases_complete: [1]
+phases_complete: []
 phases_in_progress: []
 phases_pending: []
 
@@ -29,9 +29,7 @@ loop:
 ---
 
 ## Session Context
-Phase 1 complete. Ready for verification.
+Milestone v0.8.0 complete. Ready for next milestone.
 
 ## Recent Decisions
-- Implement I003: Push before verify, PR before merge
-- Verify warns (not blocks) if not pushed
-- Complete-milestone always creates PR
+- v0.8.0: Push before verify, PR before merge workflow

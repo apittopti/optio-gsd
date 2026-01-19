@@ -17,33 +17,22 @@ Quick capture for ideas to explore later.
 
 ## Pending
 
+(No pending ideas)
+
+---
+
+## Completed
+
 ### I003: Push before verify, PR before merge
 
 - **Added:** 2026-01-19
 - **Category:** feature
 - **Priority:** high
-- **Status:** pending
+- **Status:** completed (v0.8.0)
 
-Change workflow to push working branch before verify (not after), and always create PR instead of auto-merging:
-
-1. **execute** → Complete phase tasks
-2. **push** → Push branch to trigger preview deployment (move from after verify to before)
-3. **verify** → Test locally AND on preview deployment
-4. **complete-milestone** → Create PR (remove auto-merge, even for solo workflow)
-
-Benefits:
-- Preview deployments available during verification
-- PR provides checkpoint before merge (even solo)
-- Paper trail of merges
-- Matches how most teams actually work
-
-Files to modify:
-- `commands/verify.md` - Require/suggest push before verify if deploy configured
-- `commands/complete-milestone.md` - Remove auto-merge path, always create PR
+Change workflow to push working branch before verify (not after), and always create PR instead of auto-merging.
 
 ---
-
-## Completed
 
 ### I002: Enforce milestone branching
 
