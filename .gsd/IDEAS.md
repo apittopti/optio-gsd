@@ -17,12 +17,18 @@ Quick capture for ideas to explore later.
 
 ## Pending
 
+(No pending ideas)
+
+---
+
+## Completed
+
 ### I002: Enforce milestone branching
 
 - **Added:** 2026-01-19
 - **Category:** feature
 - **Priority:** medium
-- **Status:** pending
+- **Status:** completed (v0.7.0)
 
 Commands like plan-phase and execute should check if working on base branch when `branching: milestone` is configured, and either warn or auto-create the milestone branch. Prevents accidental commits directly to master/main.
 

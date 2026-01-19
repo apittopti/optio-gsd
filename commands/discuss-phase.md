@@ -16,6 +16,42 @@ Can be run:
 
 ## Behavior
 
+### Step 0: Validate Branch
+
+If `branching: milestone` is configured in `.gsd/config.md`:
+
+1. Get current branch:
+   ```bash
+   git branch --show-current
+   ```
+
+2. Get base branch from config (default: `master`)
+
+3. If current branch == base branch:
+
+   **If no milestone set in STATE.md:**
+   ```
+   ⚠️ No Milestone Active
+   ─────────────────────────────────────
+   You're on {base} with branching: milestone configured,
+   but no milestone is active.
+
+   → Run /opti-gsd:start-milestone [name] to create a milestone branch
+   ```
+   Stop execution here.
+
+   **If milestone is set but on base branch:**
+
+   - **interactive mode**:
+     > "You're on {base} but milestone {milestone} exists. Switch to {prefix}{milestone}? [Y/n]"
+
+     If yes: `git checkout {prefix}{milestone}`
+     If no: "Continuing on {base}. Changes will be on base branch."
+
+   - **yolo mode**:
+     Auto-switch: `git checkout {prefix}{milestone}`
+     If branch doesn't exist: `git checkout -b {prefix}{milestone}`
+
 ### Step 1: Identify Phase
 
 If no phase specified:
