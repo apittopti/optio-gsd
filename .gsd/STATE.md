@@ -1,6 +1,6 @@
 ---
-milestone: null
-phase: null
+milestone: v0.6.0
+phase: 1
 task: null
 branch: master
 
@@ -9,16 +9,18 @@ session_tokens: 0
 
 phases_complete: []
 phases_in_progress: []
-phases_pending: []
+phases_pending: [1]
 
 open_issues: []
 ---
 
 ## Session Context
-v0.5.0 released. Ready for next milestone.
+Phase 1 discussed: Loop mechanism for execute and verify.
+Ready for planning.
 
 ## Recent Decisions
-- Simplified workflow: removed REQUIREMENTS.md
-- Stories replace requirements
-- PROJECT.md now optional
-- Renamed todos to ideas
+- Loop integrated into verify (knows what's broken)
+- Loop integrated into execute (retry failed tasks)
+- Stop hook intercepts exit when loop incomplete
+- Completion = verification passes (not phrase matching)
+- Max retries: 3 per task, Max iterations: 20 for verify
