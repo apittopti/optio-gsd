@@ -1,7 +1,7 @@
 ---
 milestone: v0.7.0
-phase: null
-task: null
+phase: 1
+task: 0/3
 branch: gsd/v0.7.0
 
 last_active: 2026-01-19
