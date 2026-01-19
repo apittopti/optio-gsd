@@ -2,7 +2,7 @@
 description: Display all available opti-gsd commands with descriptions.
 ---
 
-Display the following help information to the user. First, read `.claude-plugin/plugin.json` for version info. If `.gsd/` exists, also read `.gsd/config.md` to show current configuration.
+Display the following help information to the user. First, read `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json` for version info. If `.gsd/` exists in the current working directory, also read `.gsd/config.md` to show current configuration.
 
 ## Output Format
 
@@ -15,7 +15,7 @@ Display the following help information to the user. First, read `.claude-plugin/
 ╚══════════════════════════════════════════════════════════════╝
 ```
 
-**Read version and author from `.claude-plugin/plugin.json` and substitute into the header above.**
+**Read version and author from `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json` and substitute into the header above.**
 
 If `.gsd/` exists, show current configuration:
 

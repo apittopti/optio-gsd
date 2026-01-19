@@ -1,8 +1,8 @@
 ---
-milestone: null
+milestone: v0.8.1
 phase: null
 task: null
-branch: master
+branch: gsd/v0.8.1
 
 last_active: 2026-01-19
 session_tokens: 0
@@ -29,7 +29,7 @@ loop:
 ---
 
 ## Session Context
-Milestone v0.8.0 complete. Ready for next milestone.
+Started milestone v0.8.1. Ready to create roadmap.
 
 ## Recent Decisions
 - v0.8.0: Push before verify, PR before merge workflow

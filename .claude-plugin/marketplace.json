@@ -13,7 +13,7 @@
       "name": "opti-gsd",
       "source": "./",
       "description": "Spec-driven development with fresh context execution",
-      "version": "0.8.0",
+      "version": "0.8.1",
       "author": {
         "name": "apittopti"
       }

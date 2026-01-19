@@ -10,7 +10,7 @@ Check for updates and show recent changes to opti-gsd.
 
 ### Step 1: Show Current Version
 
-Read from plugin.json:
+Read from `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json`:
 
 ```markdown
 ## opti-gsd Status
