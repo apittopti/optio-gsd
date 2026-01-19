@@ -12,11 +12,26 @@ phases_in_progress: [1]
 phases_pending: []
 
 open_issues: []
+
+loop:
+  active: false
+  type: null
+  phase: null
+  iteration: 0
+  max_iterations: 20
+  task_retries: {}
+  gaps_remaining: 0
+  started: null
+  last_iteration: null
+  paused: false
+  pause_reason: null
+  history: []
 ---
 
 ## Session Context
-Phase 1 planned: Loop mechanism with 7 tasks in 3 waves.
-Ready for execution.
+Phase 1 executing: Loop mechanism.
+Loop infrastructure ready: hooks/hooks.json, hooks/stop-hook.sh
+Commands updated: execute.md, verify.md
 
 ## Recent Decisions
 - Loop is DEFAULT behavior (mode controls prompts)
