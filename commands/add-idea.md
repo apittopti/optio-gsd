@@ -1,14 +1,14 @@
 ---
-description: Capture an idea or task for later without interrupting current work.
+description: Capture an idea for later without interrupting current work.
 ---
 
-# add-todo [description]
+# add-idea [description]
 
-Capture an idea or task for later without interrupting current work.
+Capture an idea for later without interrupting current work.
 
 ## Arguments
 
-- `description` — Brief description of the todo item
+- `description` — Brief description of the idea
 
 ## Behavior
 
@@ -16,13 +16,13 @@ Capture an idea or task for later without interrupting current work.
 
 If no description:
 ```markdown
-## Add Todo
+## Add Idea
 
 Please provide a description:
-`/opti-gsd:add-todo Fix the login timeout issue`
+`/opti-gsd:add-idea Add caching layer for API responses`
 ```
 
-### Step 2: Categorize Todo
+### Step 2: Categorize Idea
 
 Analyze description and assign category:
 
@@ -45,57 +45,49 @@ Based on keywords:
 | medium | "should", "important", "needed" |
 | low | (default) |
 
-### Step 4: Add to TODOS.md
+### Step 4: Add to IDEAS.md
 
-Append to `.gsd/TODOS.md`:
+Append to `.gsd/IDEAS.md`:
 
 ```markdown
-### T{NNN}: {description}
+### I{NNN}: {description}
 
 - **Added:** {timestamp}
 - **Category:** {category}
 - **Priority:** {priority}
-- **Phase:** {current_phase or "backlog"}
 - **Status:** pending
 
 ---
 ```
 
-If TODOS.md doesn't exist, create it:
+If IDEAS.md doesn't exist, create it:
 
 ```markdown
-# Project Todos
+# Ideas Backlog
 
-Quick capture for ideas and tasks to address later.
+Quick capture for ideas to explore later.
 
 ---
 
 ## Pending
 
-### T001: {description}
+### I001: {description}
 ...
 ```
 
-### Step 5: Update STATE.md
+### Step 5: Confirm (No Commit)
 
-Add to session context:
-```
-Todo T{NNN} added: {description}
-```
-
-### Step 6: Confirm (No Commit)
-
-Todos are lightweight - no commit needed:
+Ideas are lightweight - no commit needed:
 
 ```markdown
-## Todo Added
+## Idea Captured
 
-**T{NNN}:** {description}
+**I{NNN}:** {description}
 **Category:** {category}
 **Priority:** {priority}
 
-View all: `/opti-gsd:todos`
-Continue working - todos are saved automatically.
+View all: `/opti-gsd:ideas`
+Continue working - ideas are saved automatically.
 ```
 
 ---
@@ -103,11 +95,11 @@ Continue working - todos are saved automatically.
 ## Quick Capture Examples
 
 ```
-/opti-gsd:add-todo Fix the race condition in auth refresh
-/opti-gsd:add-todo Add loading states to dashboard
-/opti-gsd:add-todo Refactor database connection pooling
-/opti-gsd:add-todo Consider Redis for session storage
-/opti-gsd:add-todo urgent: Handle token expiry edge case
+/opti-gsd:add-idea Fix the race condition in auth refresh
+/opti-gsd:add-idea Add loading states to dashboard
+/opti-gsd:add-idea Refactor database connection pooling
+/opti-gsd:add-idea Consider Redis for session storage
+/opti-gsd:add-idea urgent: Handle token expiry edge case
 ```
 
 ---
