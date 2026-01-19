@@ -1,5 +1,5 @@
 ---
-description: Execute the current phase plan with wave-based parallelization and fresh context
+description: Execute the current phase plan with wave-based parallelization, fresh context, and automatic retry on failures
 ---
 
 # execute
@@ -228,9 +228,71 @@ B) {option 2}
 Reply with your choice to continue.
 ```
 
+### Step 7a: Execute Loop - Retry Failed Tasks
+
+When a task reports TASK FAILED, the execute loop automatically attempts recovery.
+
+**Check Loop Settings:**
+- Read `loop.auto_loop` from config (default: true)
+- Read `loop.execute_max_retries` from config (default: 3)
+- Check current retry count for this task in STATE.md `loop.task_retries`
+
+**Mode-Based Behavior:**
+- **interactive mode**: Ask user before retry
+  > "Task {N} failed. Retry? ({retries}/{max_retries} attempts used) [Y/n]"
+- **yolo mode**: Auto-retry without prompting
+
+**Retry Flow:**
+```
+IF task_retries[task_id] < max_retries:
+  1. Analyze failure from task output
+  2. Generate error analysis (parse error, identify root cause)
+  3. Update STATE.md loop state:
+     loop:
+       active: true
+       type: execute
+       phase: {N}
+       iteration: {current + 1}
+       task_retries:
+         T{id}: {count + 1}
+       last_error: {error_summary}
+  4. Re-execute task with error context in prompt
+  5. On success: continue to next task
+  6. On failure: increment retry, loop back
+
+IF task_retries[task_id] >= max_retries:
+  1. Update STATE.md:
+     loop:
+       active: false
+       paused: true
+       pause_reason: "Task {N} failed after {max_retries} retries"
+  2. Report to user with full error context
+  3. Stop execution
+```
+
+**Error Context for Retry:**
+Include in retry subagent prompt:
+```xml
+<previous_attempt>
+  <error>{captured error output}</error>
+  <analysis>{root cause analysis}</analysis>
+  <suggested_fix>{specific fix to try}</suggested_fix>
+  <attempt>{N} of {max_retries}</attempt>
+</previous_attempt>
+```
+
 ### Step 8: Phase Complete
 
 When all tasks in all waves complete:
+
+**Clear Loop State:**
+If loop was active during execution, clear it:
+```yaml
+loop:
+  active: false
+  completed: true
+  final_iteration: {N}
+```
 
 1. Create summary:
 ```bash
@@ -364,3 +426,27 @@ Orchestrator budget: 15%
 - Committing: ~5%
 
 All heavy work delegated to subagents with fresh context.
+
+---
+
+## Loop State Reference
+
+Execute loop tracks state in STATE.md:
+
+```yaml
+loop:
+  active: true              # Loop currently running
+  type: execute             # "execute" or "verify"
+  phase: 1                  # Current phase
+  iteration: 3              # Current loop iteration
+  max_iterations: 15        # Total allowed (tasks * retries)
+  task_retries:             # Per-task retry counts
+    T01: 0
+    T02: 2
+    T03: 1
+  last_error: "Type error in auth.ts"
+  started: 2026-01-19T10:30:00
+  last_iteration: 2026-01-19T10:45:00
+```
+
+The stop hook (`hooks/stop-hook.sh`) reads this state to decide whether to block session exit and re-inject the execute prompt.
