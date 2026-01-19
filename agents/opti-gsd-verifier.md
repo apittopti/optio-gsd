@@ -234,24 +234,43 @@ Write timing: **After EACH stage completes** (not batched at end). This ensures 
 ```markdown
 # Verification Progress: Phase {N}
 
-## Status: {in_progress | completed | failed}
+## Status: in_progress
 
-## Completed Stages
+## Completed Checks
+- [ ] CI-lint
+- [ ] CI-typecheck
+- [ ] CI-test
+- [ ] CI-build
+- [ ] Artifacts
+- [ ] Key-Links
+- [ ] E2E
+
+## Partial Results
 | Stage | Status | Time | Notes |
 |-------|--------|------|-------|
 | CI-lint | PASS | 2.1s | - |
 | CI-typecheck | PASS | 4.3s | - |
 | CI-test | PASS | 12.5s | 47 tests |
 
-## Current Stage
-{stage name or "none"}
+## Resume Point
+{stage name to continue from, e.g., "CI-build" or "Artifacts"}
 
-## Partial Results
-{any results from incomplete stages}
-
-## Timestamp
-{ISO timestamp of last update}
+## Session Info
+| Field | Value |
+|-------|-------|
+| Started | {ISO timestamp} |
+| Last Updated | {ISO timestamp} |
+| Session Count | {number of sessions} |
 ```
+
+### Atomic Write Protocol
+
+To prevent corruption on crash or context reset, always write progress files atomically:
+
+1. Write to temporary file: `.gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md.tmp`
+2. Rename temp file to final: `.gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md`
+
+This ensures the progress file is never in a partially-written state.
 
 ### Resume Protocol
 

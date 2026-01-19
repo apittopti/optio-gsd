@@ -11,6 +11,22 @@ Verify phase completion with goal-backward analysis and integration checking.
 - `phase` — Phase number to verify (optional, defaults to last completed phase)
 - `--resume` — Resume from last checkpoint if VERIFICATION-PROGRESS.md exists
 
+## Checkpoint Stages Reference
+
+Verification progress is tracked through 7 stages. Each stage writes to `.gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md` on completion.
+
+| Stage | Order | Trigger | What Gets Written |
+|-------|-------|---------|-------------------|
+| CI-lint | 1 | After lint completes | Lint result (pass/fail, time) |
+| CI-typecheck | 2 | After typecheck completes | Typecheck result (pass/fail, time) |
+| CI-test | 3 | After tests complete | Test result (pass/fail, time, count) |
+| CI-build | 4 | After build completes | Build result (pass/fail, time) |
+| Artifacts | 5 | After three-level verification | Artifact inventory (L1/L2/L3 status) |
+| Key-Links | 6 | After connection tracing | Link status (OK/BROKEN) |
+| E2E | 7 | After E2E tests complete | E2E result (pass/fail/skip, time) |
+
+**Resume Point:** When resuming, verification continues from the first incomplete stage. Completed stages are not re-run.
+
 ## Behavior
 
 ### Step 1: Validate Prerequisites
