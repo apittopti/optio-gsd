@@ -1,13 +1,13 @@
 ---
 milestone: v0.7.0
 phase: 1
-task: 0/3
+task: 3/3
 branch: gsd/v0.7.0
 
 last_active: 2026-01-19
 session_tokens: 0
 
-phases_complete: []
+phases_complete: [1]
 phases_in_progress: []
 phases_pending: []
 
