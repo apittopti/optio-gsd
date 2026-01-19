@@ -9,13 +9,13 @@ session_tokens: 0
 
 phases_complete: []
 phases_in_progress: []
-phases_pending: []
+phases_pending: [1]
 
 open_issues: [001-verifier-checkpoint]
 ---
 
 ## Session Context
-Started milestone v0.4.0. Ready to create roadmap.
+Milestone v0.4.0 roadmap defined. 1 phase to fix verifier checkpoint issue.
 
 ## Recent Decisions
 - Skip README/docs (user preference)
