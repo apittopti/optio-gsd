@@ -1,10 +1,10 @@
 ---
-milestone: null
+milestone: v0.4.0
 phase: null
 task: null
-branch: master
+branch: gsd/v0.4.0
 
-last_active: 2026-01-18
+last_active: 2026-01-19
 session_tokens: 0
 
 phases_complete: []
@@ -15,7 +15,7 @@ open_issues: [001-verifier-checkpoint]
 ---
 
 ## Session Context
-Milestone v0.3.0 complete. Ready for next milestone.
+Started milestone v0.4.0. Ready to create roadmap.
 
 ## Recent Decisions
 - Skip README/docs (user preference)
