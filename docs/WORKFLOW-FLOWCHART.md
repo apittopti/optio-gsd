@@ -50,19 +50,28 @@
                                        ▼
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃                                                                                   ┃
-┃                         THE MAIN LOOP (repeat per phase)                          ┃
+┃                   THE MAIN LOOP (repeat per phase) - NOT STRICTLY LINEAR          ┃
 ┃                                                                                   ┃
-┃  ┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐┃
-┃  │          │     │          │     │          │     │          │     │          │┃
-┃  │  PLAN    │────►│ EXECUTE  │────►│   PUSH   │────►│  VERIFY  │────►│  NEXT    │┃
-┃  │          │     │          │     │          │     │          │     │  PHASE   │┃
-┃  └──────────┘     └──────────┘     └──────────┘     └──────────┘     └────┬─────┘┃
-┃       │                │                │                │                │      ┃
-┃       │                │                │                │                │      ┃
-┃  /plan-phase      /execute          /push           /verify              │      ┃
-┃                                                                          │      ┃
-┃                                                                          │      ┃
-┃  ◄───────────────────────────────────────────────────────────────────────┘      ┃
+┃  ┌──────────┐     ┌──────────┐     ┌──────────────────────────┐     ┌──────────┐ ┃
+┃  │          │     │          │     │                          │     │          │ ┃
+┃  │  PLAN    │────►│ EXECUTE  │────►│  PUSH (optional)         │────►│  VERIFY  │ ┃
+┃  │          │     │          │     │                          │     │          │ ┃
+┃  └──────────┘     └─────┬────┘     └──────────────────────────┘     └────┬─────┘ ┃
+┃       │                 │                    │                           │       ┃
+┃       │                 │                    │ skip                      │       ┃
+┃       │                 │                    ▼                           │       ┃
+┃       │                 │          ┌──────────────────┐                  │       ┃
+┃       │                 └─────────►│ VERIFY (local)   │◄─────────────────┘       ┃
+┃       │                            └────────┬─────────┘                          ┃
+┃       │                                     │                                    ┃
+┃       │                           ┌─────────┴─────────┐                          ┃
+┃       │                           │ PASS         GAPS │                          ┃
+┃       │                           ▼                   ▼                          ┃
+┃       │                    ┌────────────┐      ┌────────────┐                    ┃
+┃       │                    │ NEXT PHASE │      │ FIX + REDO │──► back to EXECUTE ┃
+┃       │                    └─────┬──────┘      └────────────┘                    ┃
+┃       │                          │                                               ┃
+┃       └──────────────────────────┘                                               ┃
 ┃                                                                                   ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
                                        │
@@ -72,6 +81,56 @@
                          │   /complete-milestone    │
                          │   Creates PR, tags       │
                          └──────────────────────────┘
+```
+
+---
+
+---
+
+## Non-Linear Paths
+
+The workflow is **not strictly sequential**. Here are the branch points:
+
+```
+SKIP PATHS (optional steps):
+────────────────────────────────────────────────────────────────
+
+  • PUSH is optional
+    EXECUTE ──┬──► PUSH ──► VERIFY (with preview)
+              │
+              └──► VERIFY (local, no deploy)
+
+  • DISCUSS/RESEARCH before PLAN is optional
+    ROADMAP ──┬──► DISCUSS ──► PLAN
+              │
+              └──► PLAN (skip discussion)
+
+
+BACKWARD PATHS (rework):
+────────────────────────────────────────────────────────────────
+
+  • VERIFY finds gaps → back to EXECUTE
+    VERIFY ──► gaps found ──► /plan-fix ──► EXECUTE ──► VERIFY
+
+  • EXECUTE fails → choose recovery
+    EXECUTE ──► failure ──┬──► /recover (diagnose + retry)
+                          │
+                          ├──► /rollback (undo to checkpoint)
+                          │
+                          └──► revise PLAN (if fundamentally wrong)
+
+  • VERIFY fundamentally broken → back to PLAN
+    VERIFY ──► major issues ──► /rollback ──► PLAN (rethink approach)
+
+
+REPEAT PATHS (iterate):
+────────────────────────────────────────────────────────────────
+
+  • Phase complete → next phase
+    VERIFY ──► pass ──► PLAN (next phase) ──► EXECUTE ──► ...
+
+  • All phases done → complete milestone
+    VERIFY (last) ──► pass ──► /complete-milestone
 ```
 
 ---
@@ -213,9 +272,9 @@
 
 ---
 
-## Command Categories
+## Complete Command Reference (40 commands)
 
-### CORE WORKFLOW (5 commands - the essentials)
+### CORE WORKFLOW (5) - The essentials
 ```
 ┌────────────────┬─────────────────────────────────────────────────┐
 │ Command        │ Purpose                                         │
@@ -228,34 +287,53 @@
 └────────────────┴─────────────────────────────────────────────────┘
 ```
 
-### ANYTIME COMMANDS (run whenever needed)
+### PROJECT SETUP (5)
 ```
 ┌────────────────┬─────────────────────────────────────────────────┐
 │ Command        │ Purpose                                         │
 ├────────────────┼─────────────────────────────────────────────────┤
-│ /status        │ WHERE AM I? WHAT DO I DO NEXT?                  │
-│ /add-idea      │ Capture idea without interrupting               │
-│ /add-story     │ Capture user request                            │
-│ /debug         │ Systematic bug investigation                    │
-│ /issues        │ Track problems                                  │
-│ /decisions     │ Log architectural decisions                     │
-│ /context       │ Check context usage                             │
-│ /help          │ Show commands                                   │
+│ /init          │ Initialize opti-gsd in existing project         │
+│ /new-project   │ Create new project with guided setup            │
+│ /map-codebase  │ Analyze existing codebase structure             │
+│ /ci            │ View or configure CI/CD toolchain               │
+│ /migrate       │ Migrate from older opti-gsd version             │
 └────────────────┴─────────────────────────────────────────────────┘
 ```
 
-### RECOVERY COMMANDS (when things go wrong)
+### PLANNING - Advanced (5)
 ```
 ┌────────────────┬─────────────────────────────────────────────────┐
-│ Command        │ When to use                                     │
+│ Command        │ Purpose                                         │
 ├────────────────┼─────────────────────────────────────────────────┤
-│ /recover       │ Execution interrupted, need to diagnose         │
-│ /rollback      │ Need to undo to a checkpoint                    │
-│ /plan-fix      │ Verification found gaps, need fix plan          │
+│ /discuss-phase │ Capture decisions before planning               │
+│ /research      │ Research best practices for a topic             │
+│ /add-phase     │ Add new phase to end of roadmap                 │
+│ /insert-phase  │ Insert phase at specific position               │
+│ /remove-phase  │ Remove a pending phase                          │
 └────────────────┴─────────────────────────────────────────────────┘
 ```
 
-### MILESTONE COMMANDS (start/end of major work)
+### EXECUTION - Advanced (1)
+```
+┌────────────────┬─────────────────────────────────────────────────┐
+│ Command        │ Purpose                                         │
+├────────────────┼─────────────────────────────────────────────────┤
+│ /execute-task  │ Execute single task (not whole phase)           │
+└────────────────┴─────────────────────────────────────────────────┘
+```
+
+### RECOVERY (3) - When things go wrong
+```
+┌────────────────┬─────────────────────────────────────────────────┐
+│ Command        │ Purpose                                         │
+├────────────────┼─────────────────────────────────────────────────┤
+│ /recover       │ Diagnose and fix interrupted execution          │
+│ /rollback      │ Undo to a previous checkpoint                   │
+│ /plan-fix      │ Generate fix plan for verification gaps         │
+└────────────────┴─────────────────────────────────────────────────┘
+```
+
+### MILESTONES (2)
 ```
 ┌────────────────────┬─────────────────────────────────────────────┐
 │ Command            │ Purpose                                     │
@@ -263,6 +341,57 @@
 │ /start-milestone   │ Create milestone branch (before work)       │
 │ /complete-milestone│ Create PR, tag release (after all phases)   │
 └────────────────────┴─────────────────────────────────────────────┘
+```
+
+### SESSION MANAGEMENT (4)
+```
+┌────────────────┬─────────────────────────────────────────────────┐
+│ Command        │ Purpose                                         │
+├────────────────┼─────────────────────────────────────────────────┤
+│ /status        │ WHERE AM I? WHAT DO I DO NEXT?                  │
+│ /pause         │ Pause work with context save                    │
+│ /resume        │ Resume from last session                        │
+│ /help          │ Show commands                                   │
+└────────────────┴─────────────────────────────────────────────────┘
+```
+
+### CONTEXT MANAGEMENT (3)
+```
+┌────────────────┬─────────────────────────────────────────────────┐
+│ Command        │ Purpose                                         │
+├────────────────┼─────────────────────────────────────────────────┤
+│ /context       │ Check context usage and budget                  │
+│ /archive       │ Archive completed phase to save context         │
+│ /compact       │ Reduce context footprint                        │
+└────────────────┴─────────────────────────────────────────────────┘
+```
+
+### CAPTURE & TRACKING (7) - Anytime commands
+```
+┌────────────────┬─────────────────────────────────────────────────┐
+│ Command        │ Purpose                                         │
+├────────────────┼─────────────────────────────────────────────────┤
+│ /add-idea      │ Capture idea without interrupting               │
+│ /add-story     │ Capture user request or feature                 │
+│ /ideas         │ View captured ideas                             │
+│ /stories       │ View captured user stories                      │
+│ /issues        │ Track and manage issues                         │
+│ /decisions     │ Log architectural decisions                     │
+│ /debug         │ Systematic bug investigation                    │
+└────────────────┴─────────────────────────────────────────────────┘
+```
+
+### CONFIGURATION (5)
+```
+┌──────────────────┬───────────────────────────────────────────────┐
+│ Command          │ Purpose                                       │
+├──────────────────┼───────────────────────────────────────────────┤
+│ /mode            │ Switch between interactive/yolo modes         │
+│ /skills          │ Discover and configure Claude skills          │
+│ /mcps            │ Discover and configure MCP servers            │
+│ /whats-new       │ Check for updates and changelog               │
+│ /statusline-setup│ Configure terminal status line                │
+└──────────────────┴───────────────────────────────────────────────┘
 ```
 
 ---
@@ -410,6 +539,74 @@ Timeline of a phase execution:
 
 ---
 
+---
+
+## When Can Each Command Be Used?
+
+```
+SETUP (before workflow starts):
+────────────────────────────────────────────────────────────────
+  /init, /new-project, /map-codebase, /ci, /migrate
+
+
+ANYTIME (run at any point):
+────────────────────────────────────────────────────────────────
+  /status         ← WHERE AM I?
+  /help           ← Show commands
+  /add-idea       ← Capture idea
+  /add-story      ← Capture request
+  /ideas          ← View ideas
+  /stories        ← View stories
+  /issues         ← Track issues
+  /decisions      ← Log decisions
+  /debug          ← Bug investigation
+  /context        ← Check context usage
+  /mode           ← Switch modes
+  /pause          ← Save and pause
+  /resume         ← Continue session
+
+
+WORKFLOW-SPECIFIC (at certain stages):
+────────────────────────────────────────────────────────────────
+
+  At START:
+    /start-milestone    ← Create milestone branch
+
+  Before PLAN:
+    /discuss-phase      ← Optional: capture decisions first
+    /research           ← Optional: research best practices
+
+  At PLAN:
+    /plan-phase         ← Generate plan
+    /add-phase          ← Add to roadmap
+    /insert-phase       ← Insert in roadmap
+    /remove-phase       ← Remove from roadmap
+
+  At EXECUTE:
+    /execute            ← Run whole phase
+    /execute-task       ← Run single task
+
+  After EXECUTE:
+    /push               ← Push for preview deploy
+    /verify             ← Verify (with or without push)
+
+  After VERIFY:
+    /archive            ← Archive completed phase
+    /compact            ← Reduce context
+
+  At END:
+    /complete-milestone ← Create PR, finalize
+
+
+RECOVERY (when things break):
+────────────────────────────────────────────────────────────────
+  /recover    ← After execution failure
+  /rollback   ← Undo to checkpoint
+  /plan-fix   ← After verification gaps
+```
+
+---
+
 ## Quick Reference
 
 ```
@@ -427,9 +624,11 @@ Timeline of a phase execution:
 │  THE 5-COMMAND WORKFLOW:                                        │
 │  ───────────────────────                                        │
 │                                                                 │
-│      /roadmap → /plan-phase → /execute → /push → /verify        │
-│                      │                              │           │
-│                      └──────── repeat ◄─────────────┘           │
+│      /roadmap → /plan-phase → /execute ─┬─► /push → /verify     │
+│                      │                  │                       │
+│                      │                  └─► /verify (local)     │
+│                      │                           │              │
+│                      └────── repeat ◄────────────┘              │
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
@@ -439,6 +638,10 @@ Timeline of a phase execution:
 │      /recover   ← Diagnose and fix                              │
 │      /rollback  ← Undo to checkpoint                            │
 │      /plan-fix  ← Fix verification gaps                         │
+│                                                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ANYTIME:  /status /help /add-idea /debug /issues /context      │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```

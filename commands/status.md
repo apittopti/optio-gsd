@@ -49,9 +49,11 @@ Display this format (adapt values from actual state):
 Where You Are:
 ──────────────────────────────────────────────────────────────
 
-  ROADMAP ───► PLAN ───► EXECUTE ───► PUSH ───► VERIFY
-     ✓          ✓         ▶ HERE       ○          ○
-
+  ROADMAP ──► PLAN ──► EXECUTE ──┬──► PUSH ──► VERIFY
+     ✓         ✓       ▶ HERE    │              │
+                                 │   (optional) │
+                                 └──► VERIFY ◄──┘
+                                      (local)
 ──────────────────────────────────────────────────────────────
 
 Phase 2 Progress: [████████████▎░░░░░░░] 62%
@@ -80,45 +82,81 @@ Also relevant:
 
 ### Workflow Position Indicator
 
-Show the user's exact position in the workflow:
+The workflow is NOT strictly linear. Show the user's position with available paths:
 
 ```
-When at ROADMAP stage (no roadmap yet):
-  ▶ ROADMAP ───► PLAN ───► EXECUTE ───► PUSH ───► VERIFY
-    HERE          ○          ○           ○          ○
+STANDARD FORWARD FLOW:
 
-When at PLAN stage (has roadmap, no plan for current phase):
-  ROADMAP ───► ▶ PLAN ───► EXECUTE ───► PUSH ───► VERIFY
-     ✓          HERE          ○           ○          ○
+  At ROADMAP (need to define phases):
+  ──────────────────────────────────────────────────────────
+  ▶ ROADMAP ──► PLAN ──► EXECUTE ──► PUSH ──► VERIFY
+      HERE
 
-When at EXECUTE stage (has plan, executing):
-  ROADMAP ───► PLAN ───► ▶ EXECUTE ───► PUSH ───► VERIFY
-     ✓          ✓          HERE           ○          ○
+  At PLAN (need to plan current phase):
+  ──────────────────────────────────────────────────────────
+    ROADMAP ──► ▶ PLAN ──► EXECUTE ──► PUSH ──► VERIFY
+       ✓          HERE
 
-When at PUSH stage (executed, not pushed):
-  ROADMAP ───► PLAN ───► EXECUTE ───► ▶ PUSH ───► VERIFY
-     ✓          ✓           ✓          HERE          ○
+  At EXECUTE (running tasks):
+  ──────────────────────────────────────────────────────────
+    ROADMAP ──► PLAN ──► ▶ EXECUTE ──┬──► PUSH ──► VERIFY
+       ✓         ✓          HERE     │
+                                     └──► VERIFY (local)
 
-When at VERIFY stage (pushed, not verified):
-  ROADMAP ───► PLAN ───► EXECUTE ───► PUSH ───► ▶ VERIFY
-     ✓          ✓           ✓           ✓         HERE
+  At VERIFY choice (execution done):
+  ──────────────────────────────────────────────────────────
+    ROADMAP ──► PLAN ──► EXECUTE ──┬──► ▶ PUSH ──► VERIFY
+       ✓         ✓          ✓      │      HERE
+                                   └──► ▶ VERIFY (local)
+                                          HERE
+
+BACKWARD FLOWS (rework needed):
+
+  After VERIFY with gaps → back to EXECUTE:
+  ──────────────────────────────────────────────────────────
+    ROADMAP ──► PLAN ──► ▶ EXECUTE ◄── gaps ── VERIFY
+       ✓         ✓          HERE                  ✗
+
+  After EXECUTE failure → options:
+  ──────────────────────────────────────────────────────────
+    ROADMAP ──► PLAN ──► ▶ EXECUTE
+       ✓         ✓          HERE
+                              │
+                 ┌────────────┴────────────┐
+                 ▼                         ▼
+            /recover              /rollback (undo)
+            (diagnose)
 ```
 
 ### DO THIS NOW Detection
 
-Show exactly ONE primary action based on state:
+Show the primary action, with alternatives when choices exist:
 
-| State | DO THIS NOW |
-|-------|-------------|
-| No .gsd/ | `/opti-gsd:init` or `/opti-gsd:new-project` |
-| No roadmap | `/opti-gsd:roadmap` |
-| No plan for current phase | `/opti-gsd:plan-phase {N}` |
-| Plan exists, not executed | `/opti-gsd:execute` |
-| Execution in progress | `/opti-gsd:execute` (continue) |
-| Phase executed, not pushed | `/opti-gsd:push` |
-| Pushed, not verified | `/opti-gsd:verify {N}` |
-| Verified, more phases | `/opti-gsd:plan-phase {N+1}` |
-| All phases done | `/opti-gsd:complete-milestone` |
+| State | DO THIS NOW | Alternatives |
+|-------|-------------|--------------|
+| No .gsd/ | `/opti-gsd:new-project` | or `/opti-gsd:init` (existing code) |
+| No roadmap | `/opti-gsd:roadmap` | — |
+| No plan for phase | `/opti-gsd:plan-phase {N}` | `/opti-gsd:discuss-phase` first |
+| Plan exists, not executed | `/opti-gsd:execute` | — |
+| Execution in progress | `/opti-gsd:execute` (continue) | `/opti-gsd:recover` if stuck |
+| **Phase executed** | `/opti-gsd:push` | or `/opti-gsd:verify` (local) |
+| Pushed, not verified | `/opti-gsd:verify {N}` | — |
+| **Gaps found** | `/opti-gsd:plan-fix` | or `/opti-gsd:rollback` |
+| Verified, more phases | `/opti-gsd:plan-phase {N+1}` | `/opti-gsd:archive {N}` |
+| All phases done | `/opti-gsd:complete-milestone` | — |
+
+**When there are choices, show both:**
+
+```
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                      CHOOSE NEXT STEP                        ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃                                                              ┃
+┃   A) /opti-gsd:push     ← Push for preview deployment        ┃
+┃   B) /opti-gsd:verify   ← Verify locally (no deploy)         ┃
+┃                                                              ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+```
 
 ### Phase Overview (Collapsed by Default)
 
