@@ -34,6 +34,16 @@ npx github:apittopti/opti-gsd update            # Update to latest version
 npx github:apittopti/opti-gsd setup-lsp         # Just detect and install LSP
 ```
 
+### Uninstalling
+
+```bash
+npx github:apittopti/opti-gsd uninstall           # Uninstall from global (~/.claude/)
+npx github:apittopti/opti-gsd uninstall --local   # Uninstall from project (./.claude/)
+npx github:apittopti/opti-gsd uninstall --skip-lsp  # Keep LSP plugins installed
+```
+
+This removes opti-gsd folders, cleans CLAUDE.md, and optionally removes LSP plugins.
+
 ### Updating
 
 ```bash

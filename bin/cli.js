@@ -222,6 +222,63 @@ function checkBinaryExists(binary) {
   }
 }
 
+function removeRecursive(dir) {
+  if (!fs.existsSync(dir)) return false;
+  fs.rmSync(dir, { recursive: true, force: true });
+  return true;
+}
+
+function uninstallLspPlugin(plugin, scope) {
+  try {
+    execSync(`claude plugin uninstall ${plugin} --scope ${scope}`, {
+      stdio: 'pipe',
+      timeout: 60000,
+    });
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function removeOptiGsdFromClaudeMd(claudeMdPath) {
+  if (!fs.existsSync(claudeMdPath)) return false;
+
+  const content = fs.readFileSync(claudeMdPath, 'utf8');
+  if (!content.includes('opti-gsd')) return false;
+
+  // Remove opti-gsd section - look for the header and remove until next major section or end
+  const lines = content.split('\n');
+  const filteredLines = [];
+  let inOptiGsdSection = false;
+
+  for (const line of lines) {
+    // Detect start of opti-gsd section
+    if (line.includes('opti-gsd') && (line.startsWith('#') || line.startsWith('**'))) {
+      inOptiGsdSection = true;
+      continue;
+    }
+
+    // Detect end of opti-gsd section (next major header not about opti-gsd)
+    if (inOptiGsdSection && line.startsWith('# ') && !line.includes('opti-gsd')) {
+      inOptiGsdSection = false;
+    }
+
+    if (!inOptiGsdSection) {
+      filteredLines.push(line);
+    }
+  }
+
+  const newContent = filteredLines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+
+  if (newContent.length === 0) {
+    fs.unlinkSync(claudeMdPath);
+    return true;
+  }
+
+  fs.writeFileSync(claudeMdPath, newContent + '\n');
+  return true;
+}
+
 function printBanner() {
   console.log(`
 ${colors.blue}╔═══════════════════════════════════════╗
@@ -239,22 +296,25 @@ ${colors.yellow}Usage:${colors.reset}
   npx github:apittopti/opti-gsd init [options]
   npx github:apittopti/opti-gsd update
   npx github:apittopti/opti-gsd setup-lsp
+  npx github:apittopti/opti-gsd uninstall [options]
 
 ${colors.yellow}Commands:${colors.reset}
   init        Install opti-gsd and detect project languages
   update      Update opti-gsd to latest version
   setup-lsp   Detect languages and install LSP plugins only
+  uninstall   Remove opti-gsd from global or local installation
 
 ${colors.yellow}Options:${colors.reset}
-  --global    Install to ~/.claude/ (available in all projects)
-  --local     Install to ./.claude/ (this project only)
-  --skip-lsp  Skip LSP plugin installation
+  --global    Install/uninstall from ~/.claude/ (available in all projects)
+  --local     Install/uninstall from ./.claude/ (this project only)
+  --skip-lsp  Skip LSP plugin installation/removal
   --help      Show this help message
 
 ${colors.yellow}Examples:${colors.reset}
   npx github:apittopti/opti-gsd init --global
   npx github:apittopti/opti-gsd init --local --skip-lsp
   npx github:apittopti/opti-gsd setup-lsp
+  npx github:apittopti/opti-gsd uninstall --global
 `);
 }
 
@@ -400,6 +460,58 @@ async function main() {
         }
       }
     }
+  }
+
+  // Handle uninstall command
+  if (command === 'uninstall') {
+    console.log('');
+    log.info('Uninstalling opti-gsd...');
+
+    const dirsToRemove = ['commands', 'agents', 'skills', 'docs'];
+    let removedCount = 0;
+
+    for (const dir of dirsToRemove) {
+      const targetPath = path.join(installDir, dir, 'opti-gsd');
+      if (removeRecursive(targetPath)) {
+        log.success(`Removed ${dir}/opti-gsd`);
+        removedCount++;
+      }
+    }
+
+    // Remove opti-gsd content from CLAUDE.md
+    const claudeMdPath = path.join(installDir, 'CLAUDE.md');
+    if (removeOptiGsdFromClaudeMd(claudeMdPath)) {
+      log.success('Removed opti-gsd content from CLAUDE.md');
+    }
+
+    // Uninstall LSP plugins if requested
+    if (!skipLsp) {
+      console.log('');
+      log.info('Checking for LSP plugins to remove...');
+
+      const lspPlugins = new Set();
+      for (const config of Object.values(languageConfig)) {
+        if (config.lspPlugin) {
+          lspPlugins.add(config.lspPlugin);
+        }
+      }
+
+      for (const plugin of lspPlugins) {
+        if (uninstallLspPlugin(plugin, scope)) {
+          log.success(`Uninstalled ${plugin}`);
+        }
+      }
+    }
+
+    if (removedCount === 0) {
+      log.warn('No opti-gsd installation found');
+    }
+
+    console.log('');
+    console.log(`${colors.green}════════════════════════════════════════${colors.reset}`);
+    log.success('Uninstall complete!');
+    console.log(`${colors.green}════════════════════════════════════════${colors.reset}`);
+    return;
   }
 
   // Final message
