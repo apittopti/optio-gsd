@@ -131,9 +131,17 @@ FOR each wave:
 
   3. FOR each task in wave:
      - Build subagent prompt (see below)
-     - Spawn via Task tool with run_in_background=true (parallel)
-     - Store task_id for each spawned task
+     - Build description from plan: "P{phase} T{id}: {task.action[:30]}"
+     - Spawn via Task tool:
+         Task(
+           description="P{phase} T{id}: {short_title}",
+           prompt="{subagent_prompt}",
+           subagent_type="opti-gsd-executor",
+           run_in_background=true
+         )
+     - Store returned task_id for each spawned task
      - Update STATE.md with background_tasks array
+     - User sees tasks appear in Ctrl+T task list
 
   4. Poll for completion using TaskOutput:
      WHILE any tasks pending:
@@ -525,19 +533,29 @@ Wave 2: [Task 04]
 
 **Task Tool Calls:**
 ```python
-# Spawn background task
+# Spawn background task - description appears in Claude's task list (Ctrl+T)
 Task(
-  description="Execute phase-1 task-01",
+  description="P{phase} T{task_num}: {task_title}",  # e.g., "P1 T02: Create API endpoints"
   prompt="{subagent_prompt}",
   subagent_type="opti-gsd-executor",
   run_in_background=True
 )
+# Returns: task_id (e.g., "abc123") - store this for TaskOutput
 
 # Poll for result
 TaskOutput(
   task_id="{returned_task_id}",
   block=False  # Non-blocking check, or True to wait
 )
+```
+
+**What user sees in Ctrl+T:**
+```
+Claude Code Tasks
+─────────────────────────────────────
+[▸] P1 T01: Setup authentication     (running)
+[▸] P1 T02: Create API endpoints     (running)
+[✓] P1 T03: Add validation          (complete)
 ```
 
 ---
