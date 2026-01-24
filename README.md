@@ -34,6 +34,33 @@ npx github:apittopti/opti-gsd update            # Update to latest version
 npx github:apittopti/opti-gsd setup-lsp         # Just detect and install LSP
 ```
 
+### Updating
+
+```bash
+npx github:apittopti/opti-gsd update
+```
+
+npx always fetches the latest from GitHub - no cache issues. Updates overwrite command files while preserving:
+
+| Updated | Preserved |
+|---------|-----------|
+| commands/, agents/, skills/ | .gsd/ project state |
+| docs/ | Your CLAUDE.md additions |
+| | Project settings |
+| | Installed LSP plugins |
+
+### Private Repo Access
+
+This repo is private. To use it, you need:
+
+1. **GitHub access** - Be added as a collaborator
+2. **Authentication** - Run `gh auth login` once
+
+Then installation works normally:
+```bash
+npx github:apittopti/opti-gsd init
+```
+
 ## Usage
 
 After installation, start Claude Code and run:
