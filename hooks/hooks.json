@@ -1,26 +1,3 @@
 {
-  "hooks": {
-    "SubagentStart": [
-      {
-        "matcher": "opti-gsd-executor",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/track-subagent.sh start $AGENT_ID $AGENT_TYPE"
-          }
-        ]
-      }
-    ],
-    "SubagentStop": [
-      {
-        "matcher": "opti-gsd-executor",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/track-subagent.sh stop $AGENT_ID $AGENT_TYPE"
-          }
-        ]
-      }
-    ]
-  }
+  "hooks": {}
 }
