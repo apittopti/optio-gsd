@@ -211,7 +211,7 @@ async function main() {
   const sourceDir = getSourceDir();
 
   // Interactive mode if no location flag provided and TTY is available
-  if (!isGlobal && !isLocal && (command === 'init' || command === 'uninstall')) {
+  if (!isGlobal && !isLocal && (command === 'init' || command === 'update' || command === 'uninstall')) {
     if (process.stdin.isTTY) {
       const location = await selectOption('Where would you like to install?', [
         { label: `Global ${colors.dim}(~/.claude/ - available in all projects)${colors.reset}`, value: 'global' },
