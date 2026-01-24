@@ -12,9 +12,7 @@ A meta-prompting and context engineering system that makes Claude Code reliable 
 npx github:apittopti/opti-gsd init
 ```
 
-This installs opti-gsd globally (`~/.claude/`) and automatically:
-- Detects your project's languages
-- Installs appropriate LSP plugins for code intelligence
+This installs opti-gsd globally (`~/.claude/`) making it available in all projects.
 
 ### Project-Local Installation
 
@@ -29,9 +27,7 @@ Installs to `./.claude/` for this project only. Useful for team sharing via git.
 ```bash
 npx github:apittopti/opti-gsd init --global     # Install globally (default)
 npx github:apittopti/opti-gsd init --local      # Install to project only
-npx github:apittopti/opti-gsd init --skip-lsp   # Skip LSP plugin detection
 npx github:apittopti/opti-gsd update            # Update to latest version
-npx github:apittopti/opti-gsd setup-lsp         # Just detect and install LSP
 ```
 
 ### Uninstalling
@@ -39,10 +35,9 @@ npx github:apittopti/opti-gsd setup-lsp         # Just detect and install LSP
 ```bash
 npx github:apittopti/opti-gsd uninstall           # Uninstall from global (~/.claude/)
 npx github:apittopti/opti-gsd uninstall --local   # Uninstall from project (./.claude/)
-npx github:apittopti/opti-gsd uninstall --skip-lsp  # Keep LSP plugins installed
 ```
 
-This removes opti-gsd folders, cleans CLAUDE.md, and optionally removes LSP plugins.
+This removes opti-gsd folders and cleans CLAUDE.md.
 
 ### Updating
 
@@ -57,7 +52,6 @@ npx always fetches the latest from GitHub - no cache issues. Updates overwrite c
 | commands/, agents/, skills/ | .gsd/ project state |
 | docs/ | Your CLAUDE.md additions |
 | | Project settings |
-| | Installed LSP plugins |
 
 ### Private Repo Access
 
@@ -76,7 +70,8 @@ npx github:apittopti/opti-gsd init
 After installation, start Claude Code and run:
 
 ```
-/opti-gsd:status
+/opti-gsd:detect-tools   # Discover available MCP servers and plugins
+/opti-gsd:status         # See current state and next action
 ```
 
 ### Core Workflow
@@ -107,24 +102,29 @@ Run `/opti-gsd:help` for full command reference.
 4. **Verify** - Goal-backward verification ensures quality
 5. **Commit** - Atomic commits per task for easy rollback
 
-## LSP Integration (Optional)
+## Tool Detection
 
-opti-gsd auto-detects your project languages and recommends LSP plugins:
+opti-gsd automatically discovers and uses available tools in your environment:
 
-| Language | LSP Plugin |
-|----------|------------|
-| TypeScript/JavaScript | typescript-lsp |
-| Python | pyright-lsp |
-| Go | gopls-lsp |
-| Rust | rust-analyzer-lsp |
-| And more... | |
+```
+/opti-gsd:detect-tools
+```
 
-LSP provides:
-- Real-time type error detection
-- 50ms code navigation (vs 45s text search)
-- Automatic missing import detection
+This detects:
+- **MCP Servers** - cclsp (code intelligence), GitHub, browser automation, etc.
+- **Installed Plugins** - Other Claude Code plugins and their skills/agents
+- **Available Capabilities** - What each tool can do
 
-Run `/opti-gsd:setup-lsp` anytime to reconfigure.
+Detected tools are written to `.gsd/tools.md` so agents can dynamically use them.
+
+### How Agents Use Tools
+
+Agents read `.gsd/tools.md` and match capabilities to their current task:
+- Need code navigation? → Use cclsp if available
+- Need to create a PR? → Use GitHub MCP if available
+- Need browser testing? → Use chrome automation if available
+
+No hardcoded tool references - agents adapt to whatever you have installed.
 
 ## Requirements
 
@@ -134,21 +134,6 @@ Run `/opti-gsd:setup-lsp` anytime to reconfigure.
 
 ## For Teams
 
-### Sharing Configuration
-
-Add to `.claude/settings.json` in your project:
-
-```json
-{
-  "enabledPlugins": {
-    "typescript-lsp@claude-plugins-official": true,
-    "pyright-lsp@claude-plugins-official": true
-  }
-}
-```
-
-Commit this file so teammates get the same LSP setup.
-
 ### New Team Member Onboarding
 
 ```bash
@@ -156,6 +141,7 @@ git clone <your-repo>
 cd <your-repo>
 npx github:apittopti/opti-gsd init --local
 claude
+/opti-gsd:detect-tools
 /opti-gsd:status
 ```
 

@@ -14,6 +14,7 @@ const colors = {
   blue: '\x1b[34m',
   red: '\x1b[31m',
   dim: '\x1b[2m',
+  cyan: '\x1b[36m',
 };
 
 const log = {
@@ -24,149 +25,12 @@ const log = {
   dim: (msg) => console.log(`${colors.dim}  ${msg}${colors.reset}`),
 };
 
-// Language detection configuration
-const languageConfig = {
-  typescript: {
-    configFiles: ['tsconfig.json', 'tsconfig.base.json'],
-    extensions: ['.ts', '.tsx'],
-    lspPlugin: 'typescript-lsp@claude-plugins-official',
-    binary: 'typescript-language-server',
-    installCmd: 'npm install -g typescript-language-server typescript',
-  },
-  javascript: {
-    configFiles: ['package.json', 'jsconfig.json'],
-    extensions: ['.js', '.jsx', '.mjs', '.cjs'],
-    lspPlugin: 'typescript-lsp@claude-plugins-official', // Same LSP handles JS
-    binary: 'typescript-language-server',
-    installCmd: 'npm install -g typescript-language-server typescript',
-  },
-  python: {
-    configFiles: ['pyproject.toml', 'requirements.txt', 'setup.py', 'Pipfile'],
-    extensions: ['.py'],
-    lspPlugin: 'pyright-lsp@claude-plugins-official',
-    binary: 'pyright-langserver',
-    installCmd: 'pip install pyright',
-  },
-  go: {
-    configFiles: ['go.mod', 'go.sum'],
-    extensions: ['.go'],
-    lspPlugin: 'gopls-lsp@claude-plugins-official',
-    binary: 'gopls',
-    installCmd: 'go install golang.org/x/tools/gopls@latest',
-  },
-  rust: {
-    configFiles: ['Cargo.toml', 'Cargo.lock'],
-    extensions: ['.rs'],
-    lspPlugin: 'rust-analyzer-lsp@claude-plugins-official',
-    binary: 'rust-analyzer',
-    installCmd: 'rustup component add rust-analyzer',
-  },
-  java: {
-    configFiles: ['pom.xml', 'build.gradle', 'build.gradle.kts'],
-    extensions: ['.java'],
-    lspPlugin: 'jdtls-lsp@claude-plugins-official',
-    binary: 'jdtls',
-    installCmd: 'See https://github.com/eclipse-jdtls/eclipse.jdt.ls',
-  },
-  php: {
-    configFiles: ['composer.json'],
-    extensions: ['.php'],
-    lspPlugin: 'php-lsp@claude-plugins-official',
-    binary: 'intelephense',
-    installCmd: 'npm install -g intelephense',
-  },
-  csharp: {
-    configFiles: ['*.csproj', '*.sln'],
-    extensions: ['.cs'],
-    lspPlugin: 'csharp-lsp@claude-plugins-official',
-    binary: 'csharp-ls',
-    installCmd: 'dotnet tool install -g csharp-ls',
-  },
-  swift: {
-    configFiles: ['Package.swift'],
-    extensions: ['.swift'],
-    lspPlugin: 'swift-lsp@claude-plugins-official',
-    binary: 'sourcekit-lsp',
-    installCmd: 'Included with Xcode',
-  },
-  kotlin: {
-    configFiles: ['build.gradle.kts'],
-    extensions: ['.kt', '.kts'],
-    lspPlugin: 'kotlin-lsp@claude-plugins-official',
-    binary: 'kotlin-language-server',
-    installCmd: 'See https://github.com/fwcd/kotlin-language-server',
-  },
-};
-
 // Directories to ignore when scanning
 const ignoreDirs = new Set([
   'node_modules', '.git', 'vendor', 'venv', '.venv', 'env', '.env',
   'dist', 'build', 'target', '__pycache__', '.next', '.nuxt',
   'coverage', '.nyc_output', '.cache', '.gsd',
 ]);
-
-function detectLanguages(dir) {
-  const detected = new Map(); // language -> { fromConfig: bool, fileCount: number }
-
-  // First, check config files (most reliable)
-  for (const [lang, config] of Object.entries(languageConfig)) {
-    for (const configFile of config.configFiles) {
-      if (configFile.includes('*')) {
-        // Glob pattern - check if any matching files exist
-        try {
-          const files = fs.readdirSync(dir);
-          const pattern = configFile.replace('*', '');
-          if (files.some(f => f.endsWith(pattern))) {
-            detected.set(lang, { fromConfig: true, fileCount: 0 });
-            break;
-          }
-        } catch (e) { /* ignore */ }
-      } else if (fs.existsSync(path.join(dir, configFile))) {
-        detected.set(lang, { fromConfig: true, fileCount: 0 });
-        break;
-      }
-    }
-  }
-
-  // Then scan for source files (with depth limit)
-  const fileCount = {};
-
-  function scanDir(currentDir, depth = 0) {
-    if (depth > 3) return; // Limit depth to avoid slow scans
-
-    try {
-      const entries = fs.readdirSync(currentDir, { withFileTypes: true });
-
-      for (const entry of entries) {
-        if (entry.isDirectory()) {
-          if (!ignoreDirs.has(entry.name) && !entry.name.startsWith('.')) {
-            scanDir(path.join(currentDir, entry.name), depth + 1);
-          }
-        } else if (entry.isFile()) {
-          const ext = path.extname(entry.name).toLowerCase();
-          for (const [lang, config] of Object.entries(languageConfig)) {
-            if (config.extensions.includes(ext)) {
-              fileCount[lang] = (fileCount[lang] || 0) + 1;
-            }
-          }
-        }
-      }
-    } catch (e) { /* ignore permission errors */ }
-  }
-
-  scanDir(dir);
-
-  // Add file counts and detect languages with significant files
-  for (const [lang, count] of Object.entries(fileCount)) {
-    if (detected.has(lang)) {
-      detected.get(lang).fileCount = count;
-    } else if (count >= 3) { // At least 3 files to consider it significant
-      detected.set(lang, { fromConfig: false, fileCount: count });
-    }
-  }
-
-  return detected;
-}
 
 function getSourceDir() {
   // Get the directory where opti-gsd package is installed
@@ -197,48 +61,10 @@ function copyRecursive(src, dest) {
   }
 }
 
-function installLspPlugin(plugin, scope) {
-  try {
-    log.dim(`Installing ${plugin}...`);
-    execSync(`claude plugin install ${plugin} --scope ${scope}`, {
-      stdio: 'pipe',
-      timeout: 60000,
-    });
-    return true;
-  } catch (e) {
-    // Check if already installed
-    if (e.message && e.message.includes('already installed')) {
-      return true;
-    }
-    return false;
-  }
-}
-
-function checkBinaryExists(binary) {
-  try {
-    execSync(`which ${binary}`, { stdio: 'pipe' });
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
 function removeRecursive(dir) {
   if (!fs.existsSync(dir)) return false;
   fs.rmSync(dir, { recursive: true, force: true });
   return true;
-}
-
-function uninstallLspPlugin(plugin, scope) {
-  try {
-    execSync(`claude plugin uninstall ${plugin} --scope ${scope}`, {
-      stdio: 'pipe',
-      timeout: 60000,
-    });
-    return true;
-  } catch (e) {
-    return false;
-  }
 }
 
 function removeOptiGsdFromClaudeMd(claudeMdPath) {
@@ -341,26 +167,27 @@ ${colors.blue}opti-gsd${colors.reset} - Spec-driven development for Claude Code
 ${colors.yellow}Usage:${colors.reset}
   npx github:apittopti/opti-gsd init [options]
   npx github:apittopti/opti-gsd update
-  npx github:apittopti/opti-gsd setup-lsp
   npx github:apittopti/opti-gsd uninstall [options]
 
 ${colors.yellow}Commands:${colors.reset}
-  init        Install opti-gsd and detect project languages
+  init        Install opti-gsd to your Claude Code environment
   update      Update opti-gsd to latest version
-  setup-lsp   Detect languages and install LSP plugins only
   uninstall   Remove opti-gsd from global or local installation
 
 ${colors.yellow}Options:${colors.reset}
   --global    Install/uninstall from ~/.claude/ (available in all projects)
   --local     Install/uninstall from ./.claude/ (this project only)
-  --skip-lsp  Skip LSP plugin installation/removal
   --help      Show this help message
 
 ${colors.yellow}Examples:${colors.reset}
   npx github:apittopti/opti-gsd init --global
-  npx github:apittopti/opti-gsd init --local --skip-lsp
-  npx github:apittopti/opti-gsd setup-lsp
+  npx github:apittopti/opti-gsd init --local
+  npx github:apittopti/opti-gsd update
   npx github:apittopti/opti-gsd uninstall --global
+
+${colors.yellow}Tool Detection:${colors.reset}
+  After installation, run /opti-gsd:detect-tools in Claude Code
+  to discover available MCP servers, plugins, and capabilities.
 `);
 }
 
@@ -371,7 +198,6 @@ async function main() {
   const command = args.find(a => !a.startsWith('-')) || 'init';
   let isGlobal = args.includes('--global');
   let isLocal = args.includes('--local');
-  const skipLsp = args.includes('--skip-lsp');
   const showHelp = args.includes('--help') || args.includes('-h');
 
   if (showHelp) {
@@ -403,16 +229,13 @@ async function main() {
 
   // Determine install location
   let installDir;
-  let scope;
 
   if (isLocal) {
     installDir = path.join(cwd, '.claude');
-    scope = 'project';
     log.info(`Installing to ${colors.dim}./.claude/${colors.reset} (project-local)`);
   } else {
     // Default to global
     installDir = path.join(os.homedir(), '.claude');
-    scope = 'user';
     log.info(`Installing to ${colors.dim}~/.claude/${colors.reset} (global)`);
   }
 
@@ -459,73 +282,10 @@ async function main() {
     }
 
     log.success('opti-gsd files installed');
-  }
 
-  // Language detection and LSP installation
-  if (!skipLsp && (command === 'init' || command === 'setup-lsp')) {
     console.log('');
-    log.info('Detecting project languages...');
-
-    const detected = detectLanguages(cwd);
-
-    if (detected.size === 0) {
-      log.warn('No project languages detected');
-      log.dim('Run /opti-gsd:setup-lsp in Claude Code after creating files');
-    } else {
-      console.log('');
-      log.info('Detected languages:');
-
-      const lspToInstall = new Set();
-      const missingBinaries = [];
-
-      for (const [lang, info] of detected) {
-        const config = languageConfig[lang];
-        const source = info.fromConfig ? 'config file' : `${info.fileCount} files`;
-        console.log(`  ${colors.green}•${colors.reset} ${lang} ${colors.dim}(${source})${colors.reset}`);
-
-        if (config.lspPlugin) {
-          lspToInstall.add(lang);
-          if (!checkBinaryExists(config.binary)) {
-            missingBinaries.push({ lang, ...config });
-          }
-        }
-      }
-
-      // Install LSP plugins
-      if (lspToInstall.size > 0) {
-        console.log('');
-        log.info('Installing LSP plugins...');
-
-        const installed = [];
-        const failed = [];
-
-        for (const lang of lspToInstall) {
-          const config = languageConfig[lang];
-          // TypeScript and JavaScript share the same LSP
-          if (lang === 'javascript' && lspToInstall.has('typescript')) {
-            continue; // Skip, will be covered by typescript
-          }
-
-          if (installLspPlugin(config.lspPlugin, scope)) {
-            installed.push(lang);
-            log.success(`Installed ${config.lspPlugin}`);
-          } else {
-            failed.push(lang);
-            log.error(`Failed to install ${config.lspPlugin}`);
-          }
-        }
-
-        // Report missing binaries
-        if (missingBinaries.length > 0) {
-          console.log('');
-          log.warn('Language server binaries not found:');
-          for (const { lang, binary, installCmd } of missingBinaries) {
-            console.log(`  ${colors.yellow}•${colors.reset} ${lang}: ${binary}`);
-            log.dim(`  Install: ${installCmd}`);
-          }
-        }
-      }
-    }
+    log.info('Tool detection is now done inside Claude Code');
+    log.dim('Run /opti-gsd:detect-tools to discover MCP servers and plugins');
   }
 
   // Handle uninstall command
@@ -550,25 +310,6 @@ async function main() {
       log.success('Removed opti-gsd content from CLAUDE.md');
     }
 
-    // Uninstall LSP plugins if requested
-    if (!skipLsp) {
-      console.log('');
-      log.info('Checking for LSP plugins to remove...');
-
-      const lspPlugins = new Set();
-      for (const config of Object.values(languageConfig)) {
-        if (config.lspPlugin) {
-          lspPlugins.add(config.lspPlugin);
-        }
-      }
-
-      for (const plugin of lspPlugins) {
-        if (uninstallLspPlugin(plugin, scope)) {
-          log.success(`Uninstalled ${plugin}`);
-        }
-      }
-    }
-
     if (removedCount === 0) {
       log.warn('No opti-gsd installation found');
     }
@@ -587,7 +328,8 @@ async function main() {
   console.log('');
   console.log('Next steps:');
   console.log(`  1. Start Claude Code: ${colors.blue}claude${colors.reset}`);
-  console.log(`  2. Run: ${colors.blue}/opti-gsd:status${colors.reset}`);
+  console.log(`  2. Run: ${colors.blue}/opti-gsd:detect-tools${colors.reset}`);
+  console.log(`  3. Run: ${colors.blue}/opti-gsd:status${colors.reset}`);
   console.log(`${colors.green}════════════════════════════════════════${colors.reset}`);
 }
 

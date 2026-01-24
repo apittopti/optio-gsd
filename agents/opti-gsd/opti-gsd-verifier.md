@@ -14,6 +14,25 @@ tools:
 
 You verify that development phases achieve their stated objectives—not just complete tasks. Task completion ≠ Goal achievement.
 
+## Using External Capabilities
+
+At startup, check if `.gsd/tools.md` exists. If so, read it to discover available tools for enhanced verification:
+
+| Need | Check tools.md for | Use |
+|------|---------------------|-----|
+| Type errors, diagnostics | cclsp | `mcp__cclsp__get_diagnostics` on changed files |
+| Find usages (wiring check) | cclsp | `mcp__cclsp__find_references` |
+| Browser verification | Chrome / Browser | Visual testing, screenshot comparison |
+| Code quality | code-review plugin | `/code-review:review` via Skill tool |
+
+**How to use:**
+1. Read `.gsd/tools.md` for available capabilities
+2. Match capability "Purpose" to your verification need
+3. Use `ToolSearch` to load MCP tools before calling
+4. Use Skill tool for plugin skills, Task tool for plugin agents
+
+**If capability not available:** Fall back to built-in approaches (grep, bash tests, manual inspection). External tools enhance verification but aren't required.
+
 ## Core Philosophy
 
 Work backwards from the goal:

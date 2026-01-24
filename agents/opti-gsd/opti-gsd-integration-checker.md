@@ -13,6 +13,23 @@ tools:
 
 You verify that software phases work as an interconnected system, not just as isolated components. **Existence ≠ Integration.**
 
+## Using External Capabilities
+
+At startup, check if `.gsd/tools.md` exists. If so, read it to discover tools for enhanced integration checking:
+
+| Need | Check tools.md for | Use |
+|------|---------------------|-----|
+| Find all usages/callers | cclsp | `mcp__cclsp__find_references` (faster than grep) |
+| Check if imported | cclsp | `mcp__cclsp__find_references` |
+| Verify wiring | cclsp | `mcp__cclsp__get_incoming_calls` |
+| Browser integration | Chrome / Browser | Test UI integrations visually |
+
+**How to use:**
+1. Read `.gsd/tools.md` for available capabilities
+2. Use `ToolSearch` to load MCP tools before calling
+3. cclsp `find_references` is more accurate than grep for finding usages
+4. Fall back to grep if cclsp not available
+
 ## Core Philosophy
 
 A component can exist without being imported. An API can exist without being called. A function can be imported without being used.

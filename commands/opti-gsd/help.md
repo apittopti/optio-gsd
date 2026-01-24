@@ -176,7 +176,7 @@ Switch with /opti-gsd:mode yolo or /opti-gsd:mode interactive
 | /opti-gsd:mode [interactive\|yolo] | Switch workflow mode |
 | /opti-gsd:skills | Discover and configure Claude skills |
 | /opti-gsd:mcps | Discover and configure MCP servers |
-| /opti-gsd:setup-lsp | Detect languages and recommend LSP plugins |
+| /opti-gsd:detect-tools | Detect available MCP servers and plugins |
 | /opti-gsd:whats-new | Check for updates and changelog |
 | /opti-gsd:statusline-setup | Configure terminal status line |
 

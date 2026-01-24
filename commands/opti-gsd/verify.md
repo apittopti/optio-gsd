@@ -195,24 +195,29 @@ CI Checks Passed!
 
 **Skip missing commands:** If a CI command is `null` in config, skip it.
 
-### Step 3b: LSP Diagnostics (Optional Enhancement)
+### Step 3b: Code Intelligence Diagnostics (Optional Enhancement)
 
-If LSP plugins are installed, check for real-time diagnostics on changed files:
+Check `.gsd/tools.md` for available code intelligence tools. If cclsp is available, check for real-time diagnostics on changed files:
 
 ```
-LSP Diagnostics (optional)
+Code Intelligence (from .gsd/tools.md)
 ──────────────────────────────────────────────────────────────
 Checking files modified in this phase...
 ```
 
+**Check for cclsp availability:**
+1. Read `.gsd/tools.md`
+2. Look for "cclsp" in the MCP Servers section
+3. If available, use ToolSearch to load `mcp__cclsp__get_diagnostics`
+
 **Check changed files:**
 1. Get list of files modified in phase from summary.md
-2. For each file, check LSP diagnostics (Ctrl+O equivalent)
+2. For each file, call `mcp__cclsp__get_diagnostics`
 3. Report any errors or warnings
 
 **If diagnostics found:**
 ```
-LSP Diagnostics: Issues Found
+Code Intelligence: Issues Found
 ──────────────────────────────────────────────────────────────
 src/components/StatsCard.tsx:
   Line 15: Property 'data' does not exist on type 'Props'
@@ -222,22 +227,22 @@ src/api/stats.ts:
   Line 8: 'response' is declared but never used
 
 ──────────────────────────────────────────────────────────────
-These are real-time type/import issues detected by LSP.
+These are real-time type/import issues detected by cclsp.
 Fix before continuing? [Y/n]
 ```
 
 **If no diagnostics:**
 ```
-[✓] LSP Diagnostics: No issues found
+[✓] Code Intelligence: No issues found
 ```
 
-**If LSP not available:**
+**If cclsp not available:**
 ```
-[○] LSP Diagnostics: Skipped (no LSP plugins installed)
-    Run /opti-gsd:setup-lsp to enable real-time code intelligence
+[○] Code Intelligence: Skipped (cclsp not detected)
+    Run /opti-gsd:detect-tools to check available tools
 ```
 
-**Note:** LSP diagnostics are advisory. They often catch issues that CI would find later, but faster. This step never blocks verification - it just reports.
+**Note:** Code intelligence diagnostics are advisory. They often catch issues that CI would find later, but faster. This step never blocks verification - it just reports.
 
 **Checkpoint:** Write progress to `.gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md` after CI checks complete:
 ```markdown

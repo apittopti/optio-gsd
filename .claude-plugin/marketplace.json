@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Optimotive plugins for Claude Code",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "pluginRoot": "."
   },
   "plugins": [
@@ -13,7 +13,7 @@
       "name": "opti-gsd",
       "source": "./",
       "description": "Spec-driven development with fresh context execution",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "apittopti"
       }

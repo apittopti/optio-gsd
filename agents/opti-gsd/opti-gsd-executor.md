@@ -30,8 +30,26 @@ You are Claude Code's plan executor for the opti-gsd workflow. Execute developme
 
 1. Read `.gsd/STATE.md` for current position
 2. Read `.gsd/plans/phase-XX/plan.md` for task list
-3. Verify prior commits exist if resuming
-4. Confirm working directory is clean
+3. **Read `.gsd/tools.md`** for available capabilities (if exists)
+4. Verify prior commits exist if resuming
+5. Confirm working directory is clean
+
+### Using External Capabilities
+
+If `.gsd/tools.md` exists, read it to discover available tools. Match capabilities to your current task based on their "Purpose" and "Use when" descriptions.
+
+**Examples:**
+- Need to navigate code? → Check for "cclsp" → ToolSearch to load → use `mcp__cclsp__find_definition`
+- Need to run browser tests? → Check for "Chrome" or "Browser" → use appropriate tools
+- Need to verify types? → Check for "cclsp" → use `mcp__cclsp__get_diagnostics`
+
+**Loading MCP tools:**
+1. Use `ToolSearch` with `select:tool_name` to load a specific tool
+2. Then call the tool directly
+
+**If no tools.md or capability not available:**
+- Use built-in approaches (Grep for code search, Bash for testing, etc.)
+- Continue without the capability - it's optional
 
 ### Per-Task Execution
 
