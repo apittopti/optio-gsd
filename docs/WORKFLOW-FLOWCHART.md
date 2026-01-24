@@ -381,7 +381,7 @@ REPEAT PATHS (iterate):
 └────────────────┴─────────────────────────────────────────────────┘
 ```
 
-### CONFIGURATION (5)
+### CONFIGURATION (6)
 ```
 ┌──────────────────┬───────────────────────────────────────────────┐
 │ Command          │ Purpose                                       │
@@ -389,6 +389,7 @@ REPEAT PATHS (iterate):
 │ /mode            │ Switch between interactive/yolo modes         │
 │ /skills          │ Discover and configure Claude skills          │
 │ /mcps            │ Discover and configure MCP servers            │
+│ /setup-lsp       │ Detect languages and recommend LSP plugins    │
 │ /whats-new       │ Check for updates and changelog               │
 │ /statusline-setup│ Configure terminal status line                │
 └──────────────────┴───────────────────────────────────────────────┘

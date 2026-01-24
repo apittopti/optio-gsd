@@ -195,6 +195,50 @@ CI Checks Passed!
 
 **Skip missing commands:** If a CI command is `null` in config, skip it.
 
+### Step 3b: LSP Diagnostics (Optional Enhancement)
+
+If LSP plugins are installed, check for real-time diagnostics on changed files:
+
+```
+LSP Diagnostics (optional)
+──────────────────────────────────────────────────────────────
+Checking files modified in this phase...
+```
+
+**Check changed files:**
+1. Get list of files modified in phase from summary.md
+2. For each file, check LSP diagnostics (Ctrl+O equivalent)
+3. Report any errors or warnings
+
+**If diagnostics found:**
+```
+LSP Diagnostics: Issues Found
+──────────────────────────────────────────────────────────────
+src/components/StatsCard.tsx:
+  Line 15: Property 'data' does not exist on type 'Props'
+  Line 23: Missing import: 'formatNumber'
+
+src/api/stats.ts:
+  Line 8: 'response' is declared but never used
+
+──────────────────────────────────────────────────────────────
+These are real-time type/import issues detected by LSP.
+Fix before continuing? [Y/n]
+```
+
+**If no diagnostics:**
+```
+[✓] LSP Diagnostics: No issues found
+```
+
+**If LSP not available:**
+```
+[○] LSP Diagnostics: Skipped (no LSP plugins installed)
+    Run /opti-gsd:setup-lsp to enable real-time code intelligence
+```
+
+**Note:** LSP diagnostics are advisory. They often catch issues that CI would find later, but faster. This step never blocks verification - it just reports.
+
 **Checkpoint:** Write progress to `.gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md` after CI checks complete:
 ```markdown
 # Verification Progress: Phase {N}
