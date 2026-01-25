@@ -25,6 +25,7 @@ Explore a codebase with a specific focus area, then write analysis documents dir
 | `quality` | conventions.md, testing.md |
 | `concerns` | concerns.md |
 | `deploy` | deployment.md |
+| `debt` | debt-baseline.json | Technical debt markers and deferral language |
 
 ## Document Specifications
 
@@ -373,6 +374,50 @@ describe('/api/users', () => {
 3. **Note inconsistencies** — If patterns differ across areas, say so
 4. **Write directly** — Don't return findings, write files
 5. **Minimal response** — Return only confirmation, not content
+
+## Debt Scanning Mode
+
+When focus is `debt`, scan for technical debt markers and generate baseline.
+
+### Debt Marker Patterns
+
+Scan for these patterns (case-insensitive):
+
+| Pattern | Category |
+|---------|----------|
+| TODO: | Planned |
+| FIXME: | Bug |
+| HACK: | Workaround |
+| XXX: | Attention |
+| DEFER: | Deferred |
+| @debt | Tagged |
+| 'later' | Deferral |
+| 'temporary' | Deferral |
+| 'workaround' | Deferral |
+| 'migrate' | Migration |
+| 'tech debt' | Tagged |
+
+### Scanning Protocol
+
+```bash
+# Scan all source files
+grep -rniE '(TODO|FIXME|HACK|XXX|DEFER|@debt)' --include='*.{ts,tsx,js,jsx,py,go,rs,java,md}' .
+grep -rniE '(later|temporary|workaround|migrate|tech debt)' --include='*.{ts,tsx,js,jsx,py,go,rs,java,md}' .
+```
+
+Exclude: node_modules, .git, dist, build, vendor
+
+### Baseline Comparison
+
+If existing baseline provided:
+1. Load `.opti-gsd/debt-baseline.json`
+2. Match current items against baseline by file+line+content hash
+3. Categorize: resolved (baseline only), remaining (both), new (current only)
+4. Calculate net change
+
+### Debt-Free Detection
+
+When current scan returns zero items, report debt-free state.
 
 ## Return Format
 
