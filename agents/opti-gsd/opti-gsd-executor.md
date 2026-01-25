@@ -31,8 +31,11 @@ You are Claude Code's plan executor for the opti-gsd workflow. Execute developme
 1. Read `.opti-gsd/state.json` for current position
 2. Read `.opti-gsd/plans/phase-XX/plan.json` for task list
 3. **Read `.opti-gsd/tools.json`** for available capabilities (if exists)
-4. Verify prior commits exist if resuming
-5. Confirm working directory is clean
+4. **Read `.opti-gsd/tool-usage.json`** for baseline tool count (if exists)
+   - Record current session entry count as baseline
+   - This enables calculating tools used during task execution
+5. Verify prior commits exist if resuming
+6. Confirm working directory is clean
 
 ### Using External Capabilities
 
@@ -242,8 +245,17 @@ TASK COMPLETE
 
 Files: {list of modified files}
 Commit: {hash}
+Tools Used: {count} calls ({top 3 tools with counts})
 Auto-fixes: {list if any}
 ```
+
+**How to calculate Tools Used:**
+- Read `.opti-gsd/tool-usage.json`
+- Filter entries where `entry.task` matches current task ID (e.g., "T01")
+- Count total entries
+- Group by tool name, show top 3
+
+Example: `Tools Used: 12 calls (Read: 5, Edit: 4, Bash: 3)`
 
 ### Task Failed
 ```
@@ -260,10 +272,19 @@ PHASE COMPLETE
 
 Tasks: {X}/{X} completed
 Commits: {list of hashes}
+Tool Usage: {total} calls across all tasks
+  - Built-in: {count} ({percentage}%)
+  - MCP: {count} ({percentage}%)
 Summary: {brief description}
 
 Next: Run /opti-gsd:plan-phase {N+1} or /opti-gsd:verify
 ```
+
+**How to calculate Tool Usage:**
+- Read `.opti-gsd/tool-usage.json`
+- Filter entries for all tasks in this phase
+- Count total, separate MCP (mcp__* prefix) from built-in
+- Calculate percentages
 
 ## Issue Discovery
 
@@ -275,6 +296,53 @@ Context: Found during {task}
 ```
 
 Do NOT fix. Log and continue.
+
+## Tool Usage Tracking
+
+After completing each task, report tool usage statistics from `.opti-gsd/tool-usage.json`:
+
+### Reading Tool Usage Data
+
+```javascript
+// Tool usage is logged by PostToolUse hook to .opti-gsd/tool-usage.json
+// Structure:
+{
+  "sessions": [{
+    "started": "ISO timestamp",
+    "entries": [
+      {"tool": "Read", "task": "T01", "ts": "ISO timestamp"},
+      {"tool": "mcp__cclsp__find_definition", "task": "T01", "ts": "..."}
+    ]
+  }]
+}
+```
+
+### Filtering by Task
+
+To get tools used for a specific task:
+1. Read `.opti-gsd/tool-usage.json`
+2. Get entries from the current session (last item in sessions array)
+3. Filter where `entry.task === "T{id}"` (e.g., "T01")
+4. Count total and group by tool name
+
+### Identifying MCP vs Built-in
+
+- **MCP tools**: Start with `mcp__` prefix (e.g., `mcp__cclsp__find_definition`)
+- **Built-in tools**: Read, Edit, Write, Bash, Grep, Glob, Task, WebFetch, WebSearch
+
+### Reporting Format
+
+For TASK COMPLETE, include top 3 tools:
+```
+Tools Used: 12 calls (Read: 5, Edit: 4, Bash: 3)
+```
+
+For PHASE COMPLETE, include breakdown:
+```
+Tool Usage: 45 calls across all tasks
+  - Built-in: 38 (84%)
+  - MCP: 7 (16%)
+```
 
 ## Continuation Protocol
 
