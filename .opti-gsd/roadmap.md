@@ -1,56 +1,56 @@
-# Roadmap: v2.1.0 - Tool Usage Observability
+# Roadmap: v2.2.0 - Claude Code Task Integration
 
-**Milestone:** v2.1.0
-**Goal:** Add visibility into which tools (especially MCP tools) subagents use during workflow execution
+**Milestone:** v2.2.0
+**Goal:** Integrate opti-gsd's plan.json with Claude Code's built-in task system for real-time visual progress
 
 ## Success Criteria
 
-- [x] Tool calls are logged with timestamps during execution
-- [x] Logs attribute tool calls to specific tasks (T01, T02, etc.)
-- [x] User can view tool usage summary via command
-- [x] Session grouping allows analysis by phase/wave
+- [ ] Tasks from plan.json appear in Claude Code's task UI during execution
+- [ ] Task status updates in real-time (pending → in_progress → completed)
+- [ ] Subagents spawned by executor can read task context
+- [ ] plan.json remains source of truth; Claude tasks are visual layer
 
 ---
 
-## Phase 1: Core Logging Infrastructure [COMPLETE]
+## Phase 1: Task System Integration [PENDING]
 
-**Goal:** Capture tool calls to a structured log file
+**Goal:** Wire opti-gsd executor to Claude Code's TaskCreate/TaskUpdate/TaskList/TaskGet tools
 
-**Deliverables:**
-- F001: PostToolUse hook that logs tool calls
-- F001: Log file structure (.opti-gsd/tool-usage.json)
-- F001: Task context injection for attribution
+**Delivers:** F002
 
 **Success Criteria:**
-- [x] Hook fires on every tool call
-- [x] Log entries include: tool name, timestamp, task ID (if in execution context)
-- [x] Log persists across sessions
+- [ ] Executor creates Claude tasks on phase start
+- [ ] Tasks show activeForm spinner during execution
+- [ ] Task status updates on completion/failure
+- [ ] Existing plan.json workflow unchanged
+
+**Implementation Notes:**
+- TaskCreate called with: subject, description, activeForm
+- TaskUpdate called with: taskId, status (pending/in_progress/completed)
+- TaskList used to show progress overview
+- TaskGet used by subagents to read task details
 
 ---
 
-## Phase 2: Usage Reporting [COMPLETE]
+## Architecture
 
-**Goal:** Let users view and analyze tool usage patterns
-
-**Deliverables:**
-- F001: `/opti-gsd:tools usage` command
-- F001: Summary statistics (tool counts, MCP vs built-in, per-task breakdown)
-
-**Success Criteria:**
-- [x] Command displays readable summary
-- [x] Can filter by phase, task, or tool type
-- [x] Shows MCP tool discovery insights
+```
+plan.json (persistent)          Claude Code Tasks (ephemeral)
+┌─────────────────────┐         ┌─────────────────────┐
+│ T01: Setup schema   │ ──────► │ [✓] Setup schema    │
+│ T02: Create API     │ ──────► │ [▸] Create API      │
+│ T03: Add validation │ ──────► │ [ ] Add validation  │
+└─────────────────────┘         └─────────────────────┘
+     Source of Truth              Real-time Visual UI
+```
 
 ---
 
-## Phase 3: Executor Integration [COMPLETE]
+## Files to Modify
 
-**Goal:** Correlate tool usage with task outcomes
+| File | Change |
+|------|--------|
+| `agents/opti-gsd/opti-gsd-executor.md` | Add TaskCreate/TaskUpdate calls |
+| `commands/opti-gsd/execute.md` | Document task integration |
 
-**Deliverables:**
-- F001: Executor agent reports tools used in completion message
-- F001: Summary includes tools per task in phase summary
-
-**Success Criteria:**
-- [x] Task completion messages include tool count
-- [x] Phase summary shows which tools were used
+---

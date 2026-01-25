@@ -1,11 +1,14 @@
 {
-  "milestone": "v2.1.0",
+  "milestone": "v2.2.0",
   "branch": "master",
+  "phase": 1,
+  "task": null,
+  "status": "roadmap_created",
   "phases": {
-    "complete": ["1", "2", "3"],
-    "in_progress": null,
-    "pending": []
+    "complete": [],
+    "in_progress": [],
+    "pending": [1]
   },
-  "loop": null,
-  "initialized": "2026-01-25T00:00:00Z"
+  "last_active": "2026-01-25T00:00:00Z",
+  "context": "Roadmap created for v2.2.0 - Claude Code Task Integration"
 }
