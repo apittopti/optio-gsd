@@ -161,9 +161,9 @@ For each phase goal, derive observable truths:
 - [ ] Error state shows on failure
 
 ### Must EXIST (artifacts)
-- [ ] src/app/dashboard/page.tsx (L1: exists, L2: substantive, L3: wired)
-- [ ] src/components/StatsCard.tsx (L1: exists, L2: substantive, L3: wired)
-- [ ] src/app/api/stats/route.ts (L1: exists, L2: substantive, L3: wired)
+- [ ] src/app/dashboard/page.tsx (L1: exists, L2: substantive, L3: wired, L4: user value)
+- [ ] src/components/StatsCard.tsx (L1: exists, L2: substantive, L3: wired, L4: user value)
+- [ ] src/app/api/stats/route.ts (L1: exists, L2: substantive, L3: wired, L4: user value)
 
 ### Must Be WIRED (connections)
 - [ ] Dashboard → imports → StatsCard
@@ -403,8 +403,14 @@ ON RESUME:
 | File | L1 | L2 | L3 | L4 | Notes |
 |------|----|----|----|----|-------|
 | dashboard/page.tsx | YES | REAL | WIRED | USER_VALUE | OK |
-| StatsCard.tsx | YES | REAL | WIRED | INDIRECT | Via dashboard |
+| StatsCard.tsx | YES | REAL | WIRED | USER_VALUE | OK |
 | api/stats/route.ts | YES | STUB | - | - | Only returns mock data |
+
+**L4 Status Values:**
+- `USER_VALUE`: User directly observes this artifact's effect
+- `INDIRECT`: User value provided through consumer (note consumer)
+- `NO_VALUE`: No path to user observation (FAIL)
+- `-`: Skipped (earlier level failed)
 
 ## Key Links
 | Link | Status | Break Point |
@@ -421,6 +427,10 @@ ON RESUME:
   </gap>
   <gap type="broken_link" from="StatsCard" to="api/stats">
     Fetch URL is /api/stat (missing 's')
+  </gap>
+  <gap type="no_user_value" file="api/internal/helper.ts">
+    Created but not connected to any user-facing feature.
+    No component, page, or CLI command consumes this.
   </gap>
 </gaps>
 ```
