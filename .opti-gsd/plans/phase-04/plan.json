@@ -1,0 +1,167 @@
+{
+  "phase": 4,
+  "title": "Debt Balance Tracking",
+  "goal": "Fixing debt should not create more debt - track debt items resolved vs created during phase execution",
+  "must_haves": [
+    "Track debt items resolved vs created in modified files",
+    "Warn if fix creates more debt than it resolves",
+    "Require explicit issue creation for any new debt",
+    "Verification report shows debt balance"
+  ],
+  "waves": [
+    {
+      "wave": 1,
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "01",
+          "title": "Add Debt Marker Patterns section to verifier",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md"],
+          "test_required": false,
+          "action": "Add a new major section '## Debt Balance Tracking' after the 'Story Completeness Gate' section (before Output Format). Include:\n\n### Debt Marker Patterns\n\nScan modified files for these patterns:\n\n| Pattern | Category | Description |\n|---------|----------|-------------|\n| `TODO:` | Planned | Work not yet done |\n| `FIXME:` | Bug | Known bug or problem |\n| `HACK:` | Workaround | Should be replaced |\n| `XXX:` | Attention | Needs review |\n| `DEFER:` | Deferred | Explicitly deferred |\n| `@debt` | Tagged | Tagged technical debt |\n\n**Deferral Language in Comments:**\n- 'later'\n- 'temporary'\n- 'workaround'\n- 'migrate'\n- 'tech debt'\n\n**Scan Scope:** Only files modified in the current phase (from summary.md or git diff).",
+          "user_observable": "When user runs /opti-gsd:verify, debt markers are scanned in modified files",
+          "verify": [
+            "Section header '## Debt Balance Tracking' exists in verifier",
+            "Debt Marker Patterns table lists TODO, FIXME, HACK, XXX, DEFER, @debt",
+            "Deferral language patterns listed",
+            "Scan scope specifies modified files only"
+          ],
+          "done": "Verifier contains Debt Marker Patterns section with all pattern categories",
+          "status": "pending"
+        },
+        {
+          "id": "02",
+          "title": "Add Debt Balance Calculation subsection",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md"],
+          "test_required": false,
+          "action": "Within the Debt Balance Tracking section, add '### Debt Balance Calculation' subsection:\n\nCompare debt markers before and after phase execution using git diff analysis.\n\n**Method:**\n```bash\n# Get modified files in phase\ngit diff --name-only HEAD~{commit_count}\n\n# For each file, compare debt markers\ngit diff HEAD~{commit_count} -- {file} | grep -E '^[-+].*(TODO|FIXME|HACK|XXX|DEFER|@debt)'\n```\n\n**Balance Calculation:**\n```\nResolved = count of debt markers in removed lines (lines starting with -)\nCreated = count of debt markers in added lines (lines starting with +)\nNet Change = Created - Resolved\n```\n\n**Results:**\n- `Net < 0`: Debt reduced (good)\n- `Net = 0`: Debt neutral (acceptable)\n- `Net > 0`: Debt increased (warning/block)",
+          "user_observable": "Verification calculates debt balance by comparing before/after markers in git diff",
+          "verify": [
+            "Subsection '### Debt Balance Calculation' exists",
+            "Git diff method for debt comparison documented",
+            "Balance formula (Created - Resolved) specified",
+            "Net change interpretation explained"
+          ],
+          "done": "Debt Balance Calculation subsection defines git-based before/after comparison method",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "wave": 2,
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "03",
+          "title": "Add Debt Warning and Blocking Logic subsection",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md"],
+          "test_required": false,
+          "action": "Add '### Debt Warning and Blocking Logic' subsection:\n\n**Warning Threshold:**\nIf `Net Change > 0`, show warning with details.\n\n**Blocking Condition:**\nNew debt markers without linked issue creation BLOCK verification.\n\n**Justification Mechanism:**\nDebt markers with issue reference (e.g., `TODO(ISS001):`) are allowed - they have explicit tracking.\n\nPattern: `(TODO|FIXME|HACK|XXX|DEFER)\\(ISS\\d{3}\\):`\n\n**To Proceed:**\n- A) Run /opti-gsd:add-issue to create tracking issue\n- B) Fix the debt before completing phase\n- C) Add justification: '// TODO(ISS###): description'",
+          "user_observable": "Verification warns on net debt increase and blocks new debt without issue tracking",
+          "verify": [
+            "Subsection '### Debt Warning and Blocking Logic' exists",
+            "Warning format for net positive debt documented",
+            "Blocking condition for untracked debt specified",
+            "Justification pattern for issue-linked debt documented"
+          ],
+          "done": "Debt Warning and Blocking Logic subsection defines warning, blocking, and justification rules",
+          "status": "pending"
+        },
+        {
+          "id": "04",
+          "title": "Add Debt Balance to Checkpoint Stages",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md"],
+          "test_required": false,
+          "action": "Update the '### Checkpoint Stages' table to add 'Debt-Balance' as new stage after Story-Completeness:\n\n| Debt-Balance | 10 | Debt marker tracking completed |\n\nUpdate the '### Progress Format' template to include:\n- [ ] Debt-Balance\n\nThis allows debt verification to checkpoint and resume after context reset.",
+          "user_observable": "Debt balance verification can be resumed after context reset without re-running",
+          "verify": [
+            "Stage 'Debt-Balance' added to Checkpoint Stages table",
+            "Progress Format template includes Debt-Balance checkbox",
+            "Description mentions debt marker tracking"
+          ],
+          "done": "Checkpoint protocol supports Debt-Balance stage persistence",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "wave": 3,
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "05",
+          "title": "Add Debt Balance section to Output Format",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md"],
+          "test_required": false,
+          "action": "Update the '## Output Format' section to add a '## Debt Balance' section in the report template (after Story Completeness, before Gaps):\n\n```markdown\n## Debt Balance\n\n| Metric | Count | Status |\n|--------|-------|--------|\n| Resolved | 5 | - |\n| Created | 2 | - |\n| Net Change | -3 | GOOD |\n\n### Resolved Debt\n- src/api/auth.ts:45 - TODO: rate limiting (implemented)\n- src/utils/date.ts:12 - FIXME: timezone bug (fixed)\n\n### New Debt\n- src/api/stats.ts:89 - TODO(ISS005): pagination (tracked)\n- src/components/Modal.tsx:15 - HACK: force rerender (UNTRACKED)\n\n### Debt Status: WARNING\nNet debt reduced but 1 untracked item found.\n```\n\n**Status Values:**\n- `GOOD`: Net <= 0 and all new debt tracked\n- `WARNING`: Net <= 0 but untracked debt exists\n- `BLOCKED`: Net > 0 without justification OR untracked debt",
+          "user_observable": "Verification report includes Debt Balance section showing resolved, created, and net change",
+          "verify": [
+            "Debt Balance section added to Output Format",
+            "Metrics table format specified",
+            "Resolved and New Debt list formats shown",
+            "Status values documented"
+          ],
+          "done": "Output format includes comprehensive Debt Balance reporting section",
+          "status": "pending"
+        },
+        {
+          "id": "06",
+          "title": "Add debt gap types to Gaps XML format",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md"],
+          "test_required": false,
+          "action": "Update the Gaps XML format in Output Format section to add debt-related gap types:\n\n```xml\n<gap type=\"debt_increase\" net=\"+3\">\n  Phase creates 5 new debt markers but only resolves 2.\n  Net increase of 3 debt items.\n</gap>\n\n<gap type=\"debt_untracked\" file=\"src/components/Modal.tsx\" line=\"15\">\n  HACK: force rerender - No issue reference (ISS###).\n  Create issue or fix before completing phase.\n</gap>\n```\n\nThese gap types allow planner to generate gap closure plans for debt issues.",
+          "user_observable": "Gaps section includes debt-specific gap types that trigger gap closure planning",
+          "verify": [
+            "Gap type 'debt_increase' example added",
+            "Gap type 'debt_untracked' example added",
+            "Each gap includes actionable description"
+          ],
+          "done": "Gaps format supports debt-related gap types for planner consumption",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "wave": 4,
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "07",
+          "title": "Update Verification Protocol to include debt checking",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md"],
+          "test_required": false,
+          "action": "Modify the existing '## Verification Protocol' section. Add debt balance checking as new steps after story completeness:\n\n```\n13. Scan modified files for debt markers:\n    - Get file list from phase summary or git diff\n    - For each file, extract debt markers\n    - Compare before/after using git diff\n    - Calculate: Resolved, Created, Net Change\n14. Check debt balance:\n    - If Net > 0 without justification → add to gaps\n    - If new debt lacks issue reference → add to gaps\n    - Determine debt status (GOOD/WARNING/BLOCKED)\n```\n\nUpdate the final 'Determine status' step to include debt balance in overall phase status.",
+          "user_observable": "Verification protocol now includes debt balance checking as part of the standard verification flow",
+          "verify": [
+            "New steps added to Verification Protocol for debt scanning",
+            "Debt balance calculation listed",
+            "Final status step references debt balance"
+          ],
+          "done": "Verification Protocol includes debt balance checking as integrated step",
+          "status": "pending"
+        },
+        {
+          "id": "08",
+          "title": "Document debt balance in verify command",
+          "files": ["commands/opti-gsd/verify.md"],
+          "test_required": false,
+          "action": "Update verify.md to document the debt balance feature:\n\n1. **Add Step: Debt Balance Check**\n\nScan modified files for debt marker changes:\n\n```\nDebt Balance Check\n──────────────────────────────────────────────────────────────\nScanning {N} modified files for debt markers...\n\n  Resolved: 5 markers\n  Created:  2 markers\n  Net:      -3 (GOOD)\n\nNew debt items:\n  [✓] src/api/stats.ts:89 - TODO(ISS005): pagination\n  [✗] src/components/Modal.tsx:15 - HACK: force rerender\n\n⚠️ 1 untracked debt item found. Run /opti-gsd:add-issue to track.\n```\n\n2. **Update Handle Result** for debt_blocked scenario with options.",
+          "user_observable": "When user runs /opti-gsd:verify, the output shows debt balance status and any untracked items",
+          "verify": [
+            "Debt Balance Check step added to verify.md",
+            "Output format shows resolved, created, net change",
+            "Untracked items display documented"
+          ],
+          "done": "verify.md documents debt balance check step and output format",
+          "status": "pending"
+        }
+      ]
+    }
+  ],
+  "links": [
+    "Phase execution summary → Debt scan file list",
+    "Git diff analysis → Before/after debt comparison",
+    "Debt markers → Issue tracking (.opti-gsd/issues/)",
+    "Phase 4 per-phase balance → Phase 5 baseline scanning"
+  ]
+}
