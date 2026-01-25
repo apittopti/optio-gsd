@@ -1,14 +1,14 @@
 {
-  "milestone": null,
-  "branch": "master",
-  "phase": null,
+  "milestone": "v2.3.0",
+  "branch": "gsd/v2.3.0",
+  "phase": 1,
   "task": null,
-  "status": "milestone_complete",
+  "status": "roadmap_created",
   "phases": {
     "complete": [],
     "in_progress": [],
-    "pending": []
+    "pending": [1, 2, 3, 4]
   },
   "last_active": "2026-01-25T00:00:00Z",
-  "context": "Milestone v2.2.0 complete. Ready for next milestone."
+  "context": "Roadmap created with 4 phases. Ready to plan phase 1."
 }
