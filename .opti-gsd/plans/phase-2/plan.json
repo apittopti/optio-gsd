@@ -1,0 +1,63 @@
+{
+  "phase": 2,
+  "title": "Usage Reporting",
+  "milestone": "v2.1.0",
+  "feature": "F001",
+  "created": "2026-01-25",
+  "wave_count": 2,
+  "task_count": 3,
+  "tasks": [
+    {
+      "id": "01",
+      "wave": 1,
+      "title": "Create usage analysis utility script",
+      "files": [
+        {"path": "scripts/analyze-tool-usage.js", "action": "create"}
+      ],
+      "test_required": false,
+      "action": "Create a Node.js script that reads .opti-gsd/tool-usage.json and outputs analysis to stdout. The script must: (1) Parse all sessions and entries, (2) Calculate total counts by tool name, (3) Separate MCP tools (prefix 'mcp__') from built-in tools (Read, Edit, Bash, Grep, Glob, etc.), (4) Group by task ID when available, (5) Calculate session duration from first to last entry timestamp, (6) Support --format=json|text flag for output format, (7) Support --filter-task=T01 and --filter-type=mcp|builtin flags. Output text format should match the visual summary format with bar charts using Unicode characters.",
+      "verify": [
+        {"type": "file", "check": "scripts/analyze-tool-usage.js exists"},
+        {"type": "manual", "check": "node scripts/analyze-tool-usage.js executes without error"},
+        {"type": "manual", "check": "node scripts/analyze-tool-usage.js --format=json outputs valid JSON"}
+      ],
+      "done": "Script reads tool-usage.json and outputs formatted analysis with tool counts, type breakdown, and task grouping"
+    },
+    {
+      "id": "02",
+      "wave": 2,
+      "depends_on": ["01"],
+      "title": "Extend tools.md with usage subcommand",
+      "files": [
+        {"path": "commands/opti-gsd/tools.md", "action": "modify"}
+      ],
+      "test_required": false,
+      "action": "Add a 'usage' action to tools.md that displays tool usage summary. Add to Actions list: '- `usage` - Show tool usage statistics from current session'. Add new section '### Usage' after existing sections that: (1) Reads .opti-gsd/tool-usage.json, (2) Invokes scripts/analyze-tool-usage.js conceptually, (3) Displays formatted output with: session info (date, duration), tool type breakdown (MCP vs built-in with percentages), top tools table with visual bar chart, per-task breakdown if tasks exist. Include example output showing the visual format with Unicode bar characters.",
+      "verify": [
+        {"type": "file", "check": "commands/opti-gsd/tools.md contains 'usage' in description or actions"},
+        {"type": "file", "check": "commands/opti-gsd/tools.md contains usage section with output format"}
+      ],
+      "done": "tools.md documents /opti-gsd:tools usage command with full behavior and output format"
+    },
+    {
+      "id": "03",
+      "wave": 2,
+      "depends_on": ["01"],
+      "title": "Add filtering documentation and examples",
+      "files": [
+        {"path": "commands/opti-gsd/tools.md", "action": "modify"}
+      ],
+      "test_required": false,
+      "action": "Extend the Usage section in tools.md to document filtering capabilities: (1) Add usage [filter] syntax showing optional filters, (2) Document filter options: --task=T01 (filter to specific task), --type=mcp|builtin (filter by tool type), --session=latest|all (show latest or aggregate all sessions), (3) Add examples: '/opti-gsd:tools usage' (full summary), '/opti-gsd:tools usage --task=T01' (single task), '/opti-gsd:tools usage --type=mcp' (MCP tools only).",
+      "verify": [
+        {"type": "file", "check": "commands/opti-gsd/tools.md contains filter documentation with --task, --type, --session"},
+        {"type": "file", "check": "commands/opti-gsd/tools.md contains usage examples"}
+      ],
+      "done": "tools.md documents all filtering options with examples"
+    }
+  ],
+  "key_links": [
+    "commands/opti-gsd/tools.md (usage action) -> scripts/analyze-tool-usage.js -> .opti-gsd/tool-usage.json",
+    ".opti-gsd/tool-usage.json (created in Phase 1) -> scripts/analyze-tool-usage.js (reads and analyzes)"
+  ]
+}
