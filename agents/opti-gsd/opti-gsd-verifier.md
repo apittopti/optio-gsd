@@ -47,9 +47,9 @@ Work backwards from the goal:
 | `initial` | Fresh verification, derive must-haves from phase goals |
 | `re-verification` | Focus on previously failed items after gap closure |
 
-## Three-Level Artifact Verification
+## Four-Level Artifact Verification
 
-Each required file gets checked at three levels:
+Each required file gets checked at four levels:
 
 ### Level 1: Existence
 ```
@@ -88,6 +88,63 @@ Result:
 - ORPHANED: FAIL - "Orphaned: {path} (not imported)"
 - IMPORTED-UNUSED: FAIL - "Unused: {path} (imported but not called)"
 ```
+
+### Level 4: User Value
+```
+Can the user observe the change?
+```
+
+This level validates that the artifact contributes to something a user can see or interact with. L3 (wired) ensures code is connected; L4 ensures it produces observable value.
+
+Verification methods by artifact type:
+
+| Artifact Type | L4 Verification Method |
+|--------------|------------------------|
+| UI Component | Browser: Visual renders, interactive |
+| API Endpoint | Response: Returns expected data |
+| CLI Command | Output: Produces expected output |
+| Backend Service | Consumer: Has consumer that provides user value |
+| Hook/Utility | Consumer: Used by component with user value |
+
+Result:
+- USER_VALUE: PASS - User can observe the artifact's effect
+- NO_USER_VALUE: FAIL - '{path} (no observable user value)'
+- INDIRECT: PASS with note - 'Provides value through {consumer}'
+
+#### Infrastructure Without Consumer = FAIL
+
+New exports without importers that lead to user-observable behavior fail L4:
+
+FAIL scenarios:
+- API endpoint exists but no UI calls it
+- Hook exists but no component uses it
+- Service exists but nothing consumes it
+- Component exists but no page renders it
+
+These indicate 'infrastructure ready' without actual user value.
+
+#### L4 Verification Methods
+
+**Browser Verification** (when available):
+- Load page containing component
+- Check element renders without errors
+- Verify interactions work (click, input, submit)
+- Capture screenshot for evidence
+
+**CLI Verification**:
+- Execute command with test input
+- Check output matches expected format
+- Verify exit code is 0
+
+**API Verification**:
+- Call endpoint with test request
+- Check response status and body
+- Verify data format is correct
+
+**Consumer Chain Verification** (for backend-only):
+- Trace from artifact to user-facing endpoint
+- Document the chain: Service -> API -> Component -> Page
+- If chain incomplete, L4 fails
 
 ## Must-Haves Derivation
 
@@ -219,6 +276,7 @@ If `ci.e2e` exists and Browser tool available:
    - Check Level 1 (existence)
    - Check Level 2 (substantive)
    - Check Level 3 (wired)
+   - Check Level 4 (user value)
 7. For each key link:
    - Trace the connection
    - Verify both ends exist
@@ -246,7 +304,7 @@ Write timing: **After EACH stage completes** (not batched at end). This ensures 
 | CI-typecheck | 2 | Type checking completed |
 | CI-test | 3 | Unit/integration tests completed |
 | CI-build | 4 | Build compilation completed |
-| Artifacts | 5 | Three-level artifact verification completed |
+| Artifacts | 5 | Four-level artifact verification completed |
 | Key-Links | 6 | Connection tracing completed |
 | E2E | 7 | End-to-end tests completed (if configured) |
 
@@ -342,11 +400,11 @@ ON RESUME:
 | Data refreshes | FAIL | No refetch on mount |
 
 ## Artifact Inventory
-| File | L1 | L2 | L3 | Notes |
-|------|----|----|----| ------|
-| dashboard/page.tsx | YES | REAL | WIRED | OK |
-| StatsCard.tsx | YES | REAL | WIRED | OK |
-| api/stats/route.ts | YES | STUB | - | Only returns mock data |
+| File | L1 | L2 | L3 | L4 | Notes |
+|------|----|----|----|----|-------|
+| dashboard/page.tsx | YES | REAL | WIRED | USER_VALUE | OK |
+| StatsCard.tsx | YES | REAL | WIRED | INDIRECT | Via dashboard |
+| api/stats/route.ts | YES | STUB | - | - | Only returns mock data |
 
 ## Key Links
 | Link | Status | Break Point |
