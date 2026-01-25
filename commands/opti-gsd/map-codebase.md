@@ -6,6 +6,11 @@ description: Analyze an existing codebase to understand its structure before sta
 
 Analyze an existing codebase to understand its structure before starting work.
 
+## Arguments
+
+- `--debt` — Scan for technical debt markers and generate/compare baseline
+- `--refresh` — Force re-scan of codebase (existing)
+
 ## Behavior
 
 ### Step 1: Check Context
@@ -38,9 +43,44 @@ The agent will:
 5. Identify integration points
 6. Note technical debt
 
+### Step 2a: Check for --debt Flag
+
+When `--debt` flag is present:
+- Skip normal codebase mapping
+- Check if `.opti-gsd/debt-baseline.json` exists
+- Spawn `opti-gsd-codebase-mapper` with `focus='debt'`
+- If baseline exists, pass path for comparison mode
+- If no baseline, agent creates initial baseline
+
 ### Step 3: Generate Codebase Map
 
 Write to `.opti-gsd/codebase/` directory (multiple focus files):
+
+### Step 3a: Debt Scan Report
+
+Display formatted debt scan results:
+
+```
+Debt Scan Results
+──────────────────────────────────────────────────────────────
+Baseline: {date} ({count} items)
+Current:  {date} ({count} items)
+
+Resolved: {count} items ✓
+  - {file}:{line} ({type}: {content}) → Resolved
+
+Remaining: {count} items
+  - {file}:{line} ({type}: {content})
+
+New debt: {count} items ⚠️
+  - {file}:{line} ({type}: {content})
+
+Net change: {±count} ({good!/needs attention})
+
+🎉 DEBT-FREE! (when zero items)
+```
+
+This baseline complements per-phase debt tracking in `/opti-gsd:verify`. The baseline shows overall project debt state while verification shows what changed in each phase.
 
 ```markdown
 # Codebase Map
@@ -159,6 +199,7 @@ View full map: `.opti-gsd/codebase/`
 2. **Onboarding** - New developer orientation
 3. **Planning** - Know where to add features
 4. **Refactoring** - Identify improvement areas
+5. **Debt tracking** - Baseline and track technical debt over time
 
 ---
 
