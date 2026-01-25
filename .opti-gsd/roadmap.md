@@ -25,17 +25,17 @@ This creates hidden technical debt and delivers zero user value.
 
 ---
 
-## Phase 1: Planner Completeness Rules
+## Phase 1: Planner Completeness Rules [COMPLETE]
 
 **Goal:** Prevent plans from deferring work or creating orphaned code
 
 **Delivers:** Core enforcement rules in planner agent
 
 **Success Criteria:**
-- [ ] Planner rejects tasks with deferral language in notes/actions
-- [ ] Every task has `<user-observable>` element showing what user sees
-- [ ] Plan-checker validates "consumer required" rule for new abstractions
-- [ ] Forbidden patterns documented and enforced
+- [x] Planner rejects tasks with deferral language in notes/actions
+- [x] Every task has `user_observable` field showing what user sees
+- [x] Plan-checker validates "consumer required" rule for new abstractions
+- [x] Forbidden patterns documented and enforced
 
 **Implementation Notes:**
 - Add FORBIDDEN_PATTERNS list to planner
