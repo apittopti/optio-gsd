@@ -481,3 +481,233 @@ When re-verifying after gap closure:
 2. Focus ONLY on previously failed items
 3. Skip items that passed before
 4. Report delta (what changed)
+
+## Story Completeness Gate
+
+Before a phase can be marked "delivered," all associated user stories must pass the Story Completeness Gate. This ensures that user-facing requirements are fully satisfied, not just technical tasks.
+
+### Story Loading Protocol
+
+Stories are stored in the `.opti-gsd/stories/` directory with filenames matching `US{NNN}.md` pattern.
+
+**Loading sequence:**
+1. Read `.opti-gsd/state.json` to get current phase
+2. Load phase's `plan.json` to find associated story IDs
+3. For each story ID, load `.opti-gsd/stories/US{NNN}.md`
+4. Parse story file for acceptance criteria
+
+**Directory structure:**
+```
+.opti-gsd/
+  stories/
+    US001.md
+    US002.md
+    US003.md
+```
+
+### Story File Format
+
+Stories follow a structured markdown format with clearly marked acceptance criteria:
+
+```markdown
+# US001: User can view dashboard statistics
+
+## Description
+As a logged-in user, I want to see my dashboard statistics so that I can track my progress.
+
+## Acceptance Criteria
+- [ ] AC: Dashboard page loads within 2 seconds
+- [ ] AC: Stats cards display current values
+- [x] AC: Loading spinner shows during data fetch
+- [ ] AC: Error message displays on API failure
+
+## Notes
+Implementation should follow existing design system patterns.
+
+## Status: in_progress
+```
+
+### AC Parsing Rules
+
+Extract acceptance criteria from story markdown using checkbox pattern matching.
+
+**Pattern:** Lines matching `- [ ] AC:` (unchecked) or `- [x] AC:` (checked)
+
+**Extraction process:**
+```
+FOR each line in story file:
+  IF line matches regex /^- \[([ x])\] AC: (.+)$/
+    checked = capture_group(1) == 'x'
+    text = capture_group(2)
+    ADD { checked, text } to criteria list
+```
+
+**Valid AC formats:**
+- `- [ ] AC: Description here` (unchecked)
+- `- [x] AC: Description here` (checked/verified)
+
+**Invalid formats (ignored):**
+- `- [ ] Description` (missing AC prefix)
+- `* [ ] AC: Description` (wrong bullet style)
+- `  - [ ] AC: Description` (indented)
+
+### Delivery Blocking Conditions
+
+A story blocks phase delivery if ANY of these conditions are true:
+
+| Condition | Detection | Resolution |
+|-----------|-----------|------------|
+| Unchecked AC | Any `- [ ] AC:` pattern found | Verify and check the AC |
+| Deferral language | Notes section contains deferral patterns | Remove deferral or move story to future phase |
+| Missing evidence | AC checked but no corresponding verification in report | Add verification evidence |
+
+**Deferral Language Patterns:**
+
+Scan story Notes sections for language indicating incomplete delivery:
+
+*Forbidden Patterns (from planner):*
+- 'can be migrated later'
+- 'ready for future use'
+- 'infrastructure for X'
+- 'consumers can adopt incrementally'
+- 'pages can be migrated'
+- 'will be connected in future phase'
+- 'placeholder for X'
+- 'frontend will call this later'
+- 'available for integration'
+- 'foundation for X'
+
+*Story-Specific Patterns:*
+- 'pending migration'
+- 'deferred to'
+- 'future sprint'
+- 'out of scope for now'
+- 'will be addressed in'
+
+**Status determination logic:**
+```
+FUNCTION determine_story_status(story):
+  criteria = parse_acceptance_criteria(story)
+  notes = extract_notes_section(story)
+
+  IF criteria.length == 0:
+    RETURN 'invalid' -- Story has no ACs
+
+  IF any(criteria, c -> c.checked == false):
+    RETURN 'in_progress' -- Has unchecked ACs
+
+  IF notes contains deferral_patterns (case-insensitive):
+    RETURN 'blocked' -- Deferral language present
+
+  IF all(criteria, c -> c.checked == true):
+    RETURN 'done' -- All ACs verified
+
+  RETURN 'in_progress'
+```
+
+### AC-to-Evidence Mapping
+
+Each acceptance criterion (AC) must map to verifiable evidence. Use these evidence sources:
+
+| Evidence Source | Used For | Example |
+|-----------------|----------|---------|
+| Test results | Behavior verification | 'User can login' -> login.test.ts passes |
+| L4 verification | User value proof | 'User sees dashboard' -> L4: USER_VALUE |
+| Browser screenshot | Visual proof | 'Modal displays correctly' -> screenshot.png |
+| API response | Endpoint behavior | 'API returns user data' -> GET /api/user: 200 |
+| CLI output | Command results | 'CLI shows status' -> output matches expected |
+
+**Mapping Format:**
+
+For each AC in a user story, document the evidence chain:
+
+```
+AC: "User can reset password"
+Evidence:
+- Test: reset-password.test.ts:15 PASS
+- L4: /reset-password page USER_VALUE
+-> AC VERIFIED
+```
+
+**Integration with L4 Verification:**
+
+AC-to-Evidence mapping builds on the existing four-level verification:
+
+1. **L4 USER_VALUE** provides proof that the feature is observable
+2. **Test results** prove the behavior works correctly
+3. **Screenshots/API responses** provide additional proof when needed
+
+When verifying a story:
+```
+FOR each AC in story.acceptance_criteria:
+  1. Find matching test(s) that cover this AC
+  2. Find L4 result for related artifact(s)
+  3. Collect additional evidence if needed (screenshot, API response)
+  4. If all evidence present and passing:
+       AC status = VERIFIED
+     ELSE:
+       AC status = UNVERIFIED
+       Note missing evidence
+```
+
+### Gate Verification Output
+
+Add story completeness to the verification report:
+
+```markdown
+## Story Completeness Gate
+
+| Story | Title | ACs | Checked | Status |
+|-------|-------|-----|---------|--------|
+| US001 | Dashboard stats | 4 | 3/4 | BLOCKED |
+| US002 | User profile | 3 | 3/3 | PASS |
+
+### Blocking Issues
+- US001: AC unchecked - "Error message displays on API failure"
+
+### Gate Status: BLOCKED
+Phase cannot be delivered until all stories pass.
+```
+
+**AC Verification Report Format:**
+
+```markdown
+## AC Verification: US001
+
+| AC | Evidence | Status |
+|----|----------|--------|
+| User can login with email | login.test.ts:12 PASS, L4: /login USER_VALUE | VERIFIED |
+| User sees error on invalid password | login.test.ts:28 PASS | VERIFIED |
+| User is redirected to dashboard | redirect.test.ts:5 PASS, L4: /dashboard USER_VALUE | VERIFIED |
+| Password reset email is sent | - | UNVERIFIED (no test) |
+
+**Story Status:** INCOMPLETE (1 AC unverified)
+```
+
+**Deferral detection example:**
+```
+Story US002 Notes:
+"Password reset is working but pending migration to new auth system"
+
+-> BLOCKED: Contains 'pending migration'
+-> Story cannot be marked 'delivered'
+```
+
+### Integration with Verification Protocol
+
+The Story Completeness Gate runs AFTER artifact verification but BEFORE final status determination:
+
+```
+1. Run CI checks
+2. Verify artifacts (L1-L4)
+3. Verify key links
+4. Run E2E tests
+5. >>> Story Completeness Gate <<<
+6. Compile results
+7. Determine final status
+```
+
+If artifact verification passes but Story Completeness Gate fails:
+- Phase status = `gaps_found`
+- Gaps include unchecked ACs as actionable items
+- Planner receives gap report for remediation tasks
