@@ -108,9 +108,9 @@ function removeOptiGsdFromClaudeMd(claudeMdPath) {
 
 function getVersion() {
   try {
-    const pluginJsonPath = path.join(getSourceDir(), '.claude-plugin', 'plugin.json');
-    const pluginJson = JSON.parse(fs.readFileSync(pluginJsonPath, 'utf8'));
-    return pluginJson.version || 'unknown';
+    const packageJsonPath = path.join(getSourceDir(), 'package.json');
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+    return packageJson.version || 'unknown';
   } catch {
     return 'unknown';
   }
