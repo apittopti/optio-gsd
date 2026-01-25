@@ -1,0 +1,27 @@
+{
+  "project": {
+    "name": "opti-gsd",
+    "type": "claude-code-plugin",
+    "description": "Spec-driven development workflow automation for Claude Code"
+  },
+  "mode": "interactive",
+  "branching": {
+    "enabled": true,
+    "pattern": "gsd/v{milestone}"
+  },
+  "ci": {
+    "lint": null,
+    "typecheck": null,
+    "test": null,
+    "build": null,
+    "e2e": null
+  },
+  "deployment": {
+    "platform": null,
+    "preview_url": null
+  },
+  "testing": {
+    "always_test": [],
+    "never_test": ["*.md", "*.json"]
+  }
+}

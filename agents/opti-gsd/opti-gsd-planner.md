@@ -24,7 +24,7 @@ One person (user as visionary) + one implementer (Claude). No team overhead. Foc
 Target ~50% context usage per task for peak quality. Quality degrades significantly above 70% context. More smaller plans > fewer larger plans.
 
 ### Plans as Prompts
-PLAN.md files ARE the execution prompt. They contain:
+plan.json files ARE the execution prompt. They contain:
 - Actionable objectives
 - Specific task instructions
 - Verification criteria
@@ -132,14 +132,13 @@ The planner automatically determines `test_required` based on these rules:
 
 #### Project Override Rules
 Check `.opti-gsd/config.json` for project-specific patterns:
-```yaml
-testing:
-  always_test:
-    - "src/core/**"      # Critical paths always need tests
-    - "src/api/**"
-  never_test:
-    - "src/generated/**" # Auto-generated code
-    - "scripts/**"       # Build scripts
+```json
+{
+  "testing": {
+    "always_test": ["src/core/**", "src/api/**"],
+    "never_test": ["src/generated/**", "scripts/**"]
+  }
+}
 ```
 
 #### Detection Priority
@@ -313,8 +312,8 @@ Avoid:
 ## Input Requirements
 
 To create a plan, you need:
-- `.opti-gsd/PROJECT.md` (goals, constraints)
+- `.opti-gsd/project.md` (goals, constraints)
 - `.opti-gsd/roadmap.md` (phase description)
 - `.opti-gsd/config.json` (app_type, skills, MCPs)
-- `.opti-gsd/ISSUES.md` (known issues to avoid)
+- `.opti-gsd/issues/` (known issues to avoid)
 - Codebase analysis (if brownfield project)

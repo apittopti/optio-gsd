@@ -107,7 +107,7 @@ Update phase arrays:
 
 Search and update phase references in:
 - roadmap.md (dependency mentions)
-- DECISIONS.md (phase references)
+- decisions.md (phase references)
 - Other plan files
 
 ### Step 8: Commit and Report

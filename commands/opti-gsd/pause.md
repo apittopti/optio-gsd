@@ -18,27 +18,21 @@ Read current position from state.json.
 
 ### Step 3: Update state.json
 
-```yaml
----
-milestone: v1.0
-phase: 2
-task: 3/5
-branch: gsd/v1.0
-
-last_active: {current_timestamp}
-session_tokens: {current_usage}
-
-phases_complete: [1]
-phases_in_progress: [2]
-phases_pending: [3, 4]
-
-open_issues: [ISS-001, ISS-002]
----
-
-## Session Context
-{User's notes about current state}
-{What was in progress}
-{Any blockers or considerations}
+```json
+{
+  "milestone": "v1.0",
+  "phase": 2,
+  "task": 3,
+  "status": "paused",
+  "branch": "gsd/v1.0",
+  "last_active": "{current_timestamp}",
+  "phases": {
+    "complete": [1],
+    "in_progress": [2],
+    "pending": [3, 4]
+  },
+  "context": "{User's notes about current state}. {What was in progress}. {Any blockers or considerations}"
+}
 
 ## Recent Decisions
 - {existing decisions}

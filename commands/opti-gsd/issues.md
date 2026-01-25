@@ -18,7 +18,7 @@ Track and manage project issues.
 
 ### List Issues (no args)
 
-Read `.opti-gsd/ISSUES.md` and show open issues:
+Read `.opti-gsd/issues/` directory and show open issues:
 
 ```markdown
 ## Open Issues
@@ -51,36 +51,35 @@ Please provide:
 5. **Impact:** (what does this block or affect?)
 ```
 
-Append to `.opti-gsd/ISSUES.md`:
+Create `.opti-gsd/issues/ISS{NNN}.md`:
 
 ```markdown
-### I{NNN}: {Title}
+# ISS{NNN}: {Title}
 
-**Status:** Open
+**Status:** open
 **Severity:** {severity}
 **Logged:** {timestamp}
 **Phase:** {current_phase}
 
-**Description:**
+## Description
 {description}
 
-**Reproduction:**
+## Reproduction
 {steps}
 
-**Impact:**
+## Impact
 {impact}
 
-**Resolution:** (pending)
-
----
+## Resolution
+(pending)
 ```
 
 Update state.json `open_issues` array.
 
 Commit:
 ```bash
-git add .opti-gsd/ISSUES.md .opti-gsd/state.json
-git commit -m "issue: log I{NNN} - {title}"
+git add .opti-gsd/issues/ISS{NNN}.md .opti-gsd/state.json
+git commit -m "issue: log ISS{NNN} - {title}"
 ```
 
 ### View Issue
@@ -126,32 +125,32 @@ Please provide:
 3. **Verified:** (yes/no - has fix been verified?)
 ```
 
-Update issue in `.opti-gsd/ISSUES.md`:
+Update `.opti-gsd/issues/ISS{NNN}.md`:
 
 ```markdown
-### I{NNN}: {Title}
+# ISS{NNN}: {Title}
 
-**Status:** Resolved ✓
+**Status:** resolved
 **Severity:** {severity}
 **Logged:** {date}
 **Resolved:** {timestamp}
 **Phase:** {phase}
 
-...
+## Description
+{description}
 
-**Resolution:**
+## Resolution
 {resolution}
-**Resolved by:** {commit}
 
----
+**Resolved by:** {commit}
 ```
 
 Remove from state.json `open_issues`.
 
 Commit:
 ```bash
-git add .opti-gsd/ISSUES.md .opti-gsd/state.json
-git commit -m "fix: resolve I{NNN} - {title}"
+git add .opti-gsd/issues/ISS{NNN}.md .opti-gsd/state.json
+git commit -m "fix: resolve ISS{NNN} - {title}"
 ```
 
 ### Show All Issues
@@ -179,30 +178,32 @@ Total: 5 issues (3 open, 2 resolved)
 
 ---
 
-## ISSUES.md Format
+## Issue File Format
+
+Each issue is stored in `.opti-gsd/issues/ISS{NNN}.md`:
 
 ```markdown
-# Issues Log
+# ISS{NNN}: {Title}
 
-## Summary
+**Status:** {open|resolved}
+**Severity:** {critical|high|medium|low}
+**Logged:** {date}
+**Phase:** {phase number}
 
-| Status | Count |
-|--------|-------|
-| Open | 3 |
-| Resolved | 2 |
-| Total | 5 |
+## Description
+{what's happening}
 
----
+## Reproduction
+{steps to reproduce}
 
-## Open Issues
+## Impact
+{what does this block or affect}
 
-### I003: Auth tokens not refreshing
-...
+## Resolution
+{how it was fixed, if resolved}
 
-## Resolved Issues
-
-### I001: Build failing on CI
-...
+**Resolved:** {date, if resolved}
+**Resolved by:** {commit hash, if resolved}
 ```
 
 ---
@@ -220,11 +221,11 @@ Total: 5 issues (3 open, 2 resolved)
 
 ## The Three Tracking Systems
 
-| Tracking | Purpose | Command | File |
-|----------|---------|---------|------|
-| **Issues** | Bugs, problems, things broken | /opti-gsd:issues | ISSUES.md |
-| **Features** | Ideas for improvements (internal) | /opti-gsd:features | FEATURES.md |
-| **Stories** | User/client requests (external) | /opti-gsd:stories | stories/ |
+| Tracking | Purpose | Command | Directory |
+|----------|---------|---------|-----------|
+| **Issues** | Bugs, problems, things broken | /opti-gsd:issues | `.opti-gsd/issues/` |
+| **Features** | Ideas for improvements (internal) | /opti-gsd:features | `.opti-gsd/features/` |
+| **Stories** | User/client requests (external) | /opti-gsd:stories | `.opti-gsd/stories/` |
 
 **Note:** For feature ideas, use /opti-gsd:add-feature instead.
 

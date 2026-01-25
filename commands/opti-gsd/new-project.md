@@ -34,11 +34,15 @@ Gather project understanding through conversation. Ask these in natural flow, no
 9. What integrations are needed? (payments, auth, email, etc.)
 10. Any existing code or systems to integrate with?
 
+**Deployment Questions (optional):**
+11. Do you know where this will be deployed? (Vercel, Netlify, Railway, VPS, Docker, or "not decided yet")
+12. If known: Do you have a production domain in mind?
+
 Keep asking clarifying questions until you fully understand the project. Don't proceed with ambiguity.
 
-### Step 3: Write PROJECT.md
+### Step 3: Write project.md
 
-Create `.opti-gsd/PROJECT.md`:
+Create `.opti-gsd/project.md`:
 
 ```markdown
 # {Project Name}
@@ -63,7 +67,11 @@ Create `.opti-gsd/PROJECT.md`:
 - Database: {database}
 - Auth: {auth_solution}
 - Payments: {if applicable}
-- Hosting: {if known}
+
+## Deployment
+- Platform: {vercel | netlify | railway | vps | docker | not decided}
+- Domain: {if known, or "TBD"}
+- Notes: {any deployment constraints}
 
 ## Constraints
 - {Hard constraint 1}
@@ -85,7 +93,7 @@ Ask user:
 - Focus: architecture (patterns and structure)
 - Focus: pitfalls (common mistakes to avoid)
 
-Then spawn opti-gsd-research-synthesizer to consolidate findings into `.opti-gsd/research/SUMMARY.md`.
+Then spawn opti-gsd-research-synthesizer to consolidate findings into `.opti-gsd/research/summary.md`.
 
 **If no**, proceed directly to stories.
 
@@ -124,14 +132,14 @@ Create one story file per major v1 feature. Keep them user-focused:
 - US003-dashboard.md
 - etc.
 
-**v2 feature ideas** go to `.opti-gsd/FEATURES.md` as low-priority items.
+**v2 feature ideas** go to `.opti-gsd/features/` as low-priority items.
 
 ### Step 6: Generate Roadmap
 
 Spawn opti-gsd-roadmapper agent with:
-- PROJECT.md
+- project.md
 - Stories from `.opti-gsd/stories/`
-- SUMMARY.md (if research was done)
+- summary.md (if research was done)
 
 The roadmapper will:
 1. Group stories into phases by dependency
@@ -199,28 +207,21 @@ Create `.opti-gsd/roadmap.md`:
 
 Update `.opti-gsd/state.json`:
 
-```yaml
----
-milestone: v1.0
-phase: 1
-task: null
-branch: null
-
-last_active: {current_timestamp}
-session_tokens: {estimated}
-
-phases_complete: []
-phases_in_progress: []
-phases_pending: [1, 2, 3, ...]
-
-open_issues: []
----
-
-## Session Context
-Project defined. Ready to plan Phase 1.
-
-## Recent Decisions
-- {Any decisions made during setup}
+```json
+{
+  "milestone": "v1.0",
+  "phase": 1,
+  "task": null,
+  "status": "initialized",
+  "branch": null,
+  "last_active": "{current_timestamp}",
+  "phases": {
+    "complete": [],
+    "in_progress": [],
+    "pending": [1, 2, 3]
+  },
+  "context": "Project defined. Ready to plan Phase 1."
+}
 ```
 
 ### Step 10: Create Phase Directories
@@ -237,7 +238,7 @@ mkdir -p .opti-gsd/plans/phase-02
 git add .opti-gsd/
 git commit -m "chore: initialize opti-gsd project
 
-- Created PROJECT.md with goals and constraints
+- Created project.md with goals and constraints
 - Created {N} user stories in .opti-gsd/stories/
 - Generated roadmap.md with {N} phases
 - Research: {yes/no}"
@@ -253,7 +254,7 @@ Phases: {count}
 Stories: {count} for v1
 
 Files created:
-  .opti-gsd/PROJECT.md
+  .opti-gsd/project.md
   .opti-gsd/stories/*.md
   .opti-gsd/roadmap.md
   .opti-gsd/state.json

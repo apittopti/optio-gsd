@@ -47,36 +47,26 @@ Based on keywords:
 | medium | "should", "needed", "would be nice" |
 | low | (default) |
 
-### Step 4: Add to FEATURES.md
+### Step 4: Create Feature File
 
-Append to `.opti-gsd/FEATURES.md`:
-
-```markdown
-### F{NNN}: {description}
-
-- **Added:** {timestamp}
-- **Category:** {category}
-- **Priority:** {priority}
-- **Status:** pending
-
----
-```
-
-If FEATURES.md doesn't exist, create it:
+Create `.opti-gsd/features/F{NNN}.md`:
 
 ```markdown
-# Feature Backlog
+# F{NNN}: {description}
 
-Quick capture for feature ideas to explore later.
-For bugs/problems, see ISSUES.md instead.
+**Added:** {timestamp}
+**Category:** {category}
+**Priority:** {priority}
+**Status:** pending
 
----
+## Description
+{description}
 
-## Pending
-
-### F001: {description}
-...
+## Notes
+(none yet)
 ```
+
+If `.opti-gsd/features/` doesn't exist, create the directory first.
 
 ### Step 5: Confirm (No Commit)
 
@@ -110,9 +100,9 @@ Continue working - features are saved automatically.
 
 | What You Have | Command | Stored In |
 |---------------|---------|-----------|
-| Bug or problem | /opti-gsd:issues add | ISSUES.md |
-| Feature idea (internal) | /opti-gsd:add-feature | FEATURES.md |
-| User/client request | /opti-gsd:add-story | stories/ |
+| Bug or problem | /opti-gsd:issues add | `.opti-gsd/issues/ISS{NNN}.md` |
+| Feature idea (internal) | /opti-gsd:add-feature | `.opti-gsd/features/F{NNN}.md` |
+| User/client request | /opti-gsd:add-story | `.opti-gsd/stories/US{NNN}.md` |
 
 ---
 

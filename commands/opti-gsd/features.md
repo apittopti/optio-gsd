@@ -21,7 +21,7 @@ Manage captured feature ideas.
 
 ### List Pending Features (no args)
 
-Read `.opti-gsd/FEATURES.md` and display pending items:
+Read `.opti-gsd/features/` directory and display pending items:
 
 ```markdown
 ## Pending Features
@@ -77,7 +77,7 @@ Marked as complete.
 Remaining: {count} pending features
 ```
 
-Update FEATURES.md - move to Completed section.
+Update feature file - change status to `completed`.
 
 ### Promote Feature to Story
 
@@ -94,9 +94,9 @@ Confirm? (yes/no)
 ```
 
 On confirm:
-- Create story in `.opti-gsd/stories/`
+- Create story in `.opti-gsd/stories/US{NNN}.md`
 - Prompt for acceptance criteria
-- Mark feature as "promoted"
+- Update feature file status to `promoted`
 
 ```markdown
 ## Feature Promoted
@@ -121,7 +121,7 @@ Remove a feature entirely:
 This cannot be undone. Confirm? (yes/no)
 ```
 
-On confirm, remove from FEATURES.md.
+On confirm, delete `.opti-gsd/features/F{id}.md`.
 
 ### Clear Completed
 
@@ -140,8 +140,8 @@ Confirm? (yes/no)
 ```
 
 On confirm:
-- Archive to `.opti-gsd/archive/features-{date}.md`
-- Remove from FEATURES.md
+- Move completed feature files to `.opti-gsd/archive/features/`
+- Keep reference in archive index
 
 ```markdown
 ## Completed Features Cleared
@@ -152,58 +152,38 @@ Remaining: {pending_count} pending features
 
 ---
 
-## FEATURES.md Format
+## Feature File Format
+
+Each feature is stored in `.opti-gsd/features/F{NNN}.md`:
 
 ```markdown
-# Feature Backlog
+# F{NNN}: {title}
 
-Quick capture for feature ideas to explore later.
-For bugs/problems, see ISSUES.md instead.
+**Added:** {date}
+**Category:** {enhancement|improvement|refactor|docs|test|exploration}
+**Priority:** {high|medium|low}
+**Status:** {pending|completed|promoted}
 
-## Summary
-- Pending: 3
-- Completed: 4
+## Description
+{what the feature is}
 
----
+## Notes
+{additional context}
 
-## Pending
-
-### F003: Add loading states to dashboard
-
-- **Added:** 2026-01-14
-- **Category:** enhancement
-- **Priority:** high
-- **Status:** pending
-
----
-
-### F005: Optimize API calls
-...
-
----
-
-## Completed
-
-### F001: Setup ESLint config
-
-- **Added:** 2026-01-12
-- **Category:** refactor
-- **Priority:** medium
-- **Status:** completed
-- **Completed:** 2026-01-14
-
----
+## Completion
+**Completed:** {date, if applicable}
+**Promoted to:** {US{NNN}, if promoted}
 ```
 
 ---
 
 ## The Three Tracking Systems
 
-| Tracking | Purpose | Command | File |
-|----------|---------|---------|------|
-| **Issues** | Bugs, problems, things broken | /opti-gsd:issues | ISSUES.md |
-| **Features** | Ideas for improvements (internal) | /opti-gsd:features | FEATURES.md |
-| **Stories** | User/client requests (external) | /opti-gsd:stories | stories/ |
+| Tracking | Purpose | Command | Directory |
+|----------|---------|---------|-----------|
+| **Issues** | Bugs, problems, things broken | /opti-gsd:issues | `.opti-gsd/issues/` |
+| **Features** | Ideas for improvements (internal) | /opti-gsd:features | `.opti-gsd/features/` |
+| **Stories** | User/client requests (external) | /opti-gsd:stories | `.opti-gsd/stories/` |
 
 **Flow:**
 - Features can be promoted to Stories (for formal acceptance criteria)

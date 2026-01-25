@@ -211,7 +211,7 @@ ${colors.yellow}Examples:${colors.reset}
   npx github:apittopti/opti-gsd uninstall      # Remove installation
 
 ${colors.yellow}Tool Detection:${colors.reset}
-  After installation, run /opti-gsd:detect-tools in Claude Code
+  After installation, run /opti-gsd:tools detect in Claude Code
   to discover available MCP servers, plugins, and capabilities.
 `);
 }
@@ -325,7 +325,7 @@ async function main() {
 
     console.log('');
     log.info('Tool detection is now done inside Claude Code');
-    log.dim('Run /opti-gsd:detect-tools to discover MCP servers and plugins');
+    log.dim('Run /opti-gsd:tools detect to discover MCP servers and plugins');
   }
 
   // Handle uninstall command
@@ -368,7 +368,7 @@ async function main() {
   console.log('');
   console.log('Next steps:');
   console.log(`  1. Start Claude Code: ${colors.blue}claude${colors.reset}`);
-  console.log(`  2. Run: ${colors.blue}/opti-gsd:detect-tools${colors.reset}`);
+  console.log(`  2. Run: ${colors.blue}/opti-gsd:init${colors.reset} (auto-detects tools)`);
   console.log(`  3. Run: ${colors.blue}/opti-gsd:status${colors.reset}`);
   console.log(`${colors.green}════════════════════════════════════════${colors.reset}`);
 }

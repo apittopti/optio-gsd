@@ -48,7 +48,7 @@ You investigate domain ecosystems before roadmap creation. Answer: "What does th
 
 Write to `.opti-gsd/research/`:
 
-### SUMMARY.md
+### summary.md
 Executive synthesis with roadmap implications
 
 ```markdown
@@ -70,7 +70,7 @@ Executive synthesis with roadmap implications
 {HIGH | MEDIUM | LOW with reasoning}
 ```
 
-### STACK.md
+### stack.md
 Technology recommendations with rationale
 
 ```markdown
@@ -99,7 +99,7 @@ Technology recommendations with rationale
 {How these technologies work together}
 ```
 
-### FEATURES.md
+### features.md
 Feature categorization
 
 ```markdown
@@ -129,7 +129,7 @@ Features that seem good but aren't:
 | {feature} | LOW | LOW | P2 |
 ```
 
-### ARCHITECTURE.md
+### architecture.md
 System patterns and component boundaries
 
 ```markdown
@@ -170,7 +170,7 @@ System patterns and component boundaries
 - {anti-pattern 2}
 ```
 
-### PITFALLS.md
+### pitfalls.md
 Domain-specific warnings
 
 ```markdown

@@ -75,11 +75,4 @@ Even for small ad-hoc changes:
 
 **IMPORTANT: When completing a milestone (/opti-gsd:complete-milestone):**
 
-Before creating the PR, update version files to match the milestone:
-
-1. `package.json` — Update `version` field (e.g., `"2.1.0"`)
-2. `.claude-plugin/plugin.json` — Update `version` field to match
-
-Both files **must have matching versions** for npm publish to work correctly.
-
-Example: For milestone `v2.1.0`, set version to `"2.1.0"` (strip the `v` prefix).
+Update `package.json` version field to match the milestone (e.g., `"2.1.0"` for milestone `v2.1.0`).

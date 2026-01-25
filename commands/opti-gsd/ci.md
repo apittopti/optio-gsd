@@ -57,36 +57,44 @@ Read `package.json` scripts and map:
 | `test:integration` | integration |
 
 **Rust (Cargo.toml):**
-```yaml
-package_manager: cargo
-build: cargo build --release
-test: cargo test
-lint: cargo clippy -- -D warnings
+```json
+{
+  "package_manager": "cargo",
+  "build": "cargo build --release",
+  "test": "cargo test",
+  "lint": "cargo clippy -- -D warnings"
+}
 ```
 
 **Python (pyproject.toml or requirements.txt):**
-```yaml
-package_manager: pip  # or poetry, uv
-build: python -m build  # if pyproject.toml has build-system
-test: pytest
-lint: ruff check .  # or flake8, pylint
-typecheck: mypy .
+```json
+{
+  "package_manager": "pip",
+  "build": "python -m build",
+  "test": "pytest",
+  "lint": "ruff check .",
+  "typecheck": "mypy ."
+}
 ```
 
 **Go (go.mod):**
-```yaml
-package_manager: go
-build: go build ./...
-test: go test ./...
-lint: golangci-lint run
+```json
+{
+  "package_manager": "go",
+  "build": "go build ./...",
+  "test": "go test ./...",
+  "lint": "golangci-lint run"
+}
 ```
 
 **C# (.csproj or .sln):**
-```yaml
-package_manager: dotnet
-build: dotnet build
-test: dotnet test
-lint: dotnet format --verify-no-changes
+```json
+{
+  "package_manager": "dotnet",
+  "build": "dotnet build",
+  "test": "dotnet test",
+  "lint": "dotnet format --verify-no-changes"
+}
 ```
 
 ### Step 2b: Detect Deployment Platform CLIs
@@ -102,13 +110,16 @@ vercel ls --json       # List deployments with URLs
 ```
 
 If Vercel project detected:
-```yaml
-deploy:
-  target: vercel
-  cli: vercel
-  build_local: vercel build
-  preview_url: {from vercel inspect}
-  production_url: {from vercel inspect --prod}
+```json
+{
+  "deploy": {
+    "target": "vercel",
+    "detected_from": "cli",
+    "build_local": "vercel build",
+    "preview_url": "{from vercel inspect}",
+    "production_url": "{from vercel inspect --prod}"
+  }
+}
 ```
 
 **Netlify:**
@@ -213,39 +224,38 @@ If user runs /opti-gsd:ci configure, ask:
 
 ### Step 6: Update config.json
 
-Update the `ci:` and `deploy:` sections in `.opti-gsd/config.json`:
+Update the `ci`, `urls`, and `deploy` sections in `.opti-gsd/config.json`:
 
-```yaml
-# CI/CD & Toolchain
-ci:
-  package_manager: npm
-  build: npm run build
-  test: npm test
-  lint: npm run lint
-  typecheck: tsc --noEmit
-  e2e: npm run test:e2e
-
-# URLs
-urls:
-  local: http://localhost:3000
-  api: http://localhost:3000/api
-  preview: null  # Auto-populated by /push when branch deploys
-  staging: https://staging.example.com
-  production: https://example.com
-
-# Preview URL Pattern (for auto-detection)
-preview_pattern: https://{project}-{branch}-{team}.vercel.app
-
-# Verification MCPs
-verification_mcps:
-  browser: claude-in-chrome
-  github: MCP_DOCKER
-
-# Deployment
-deploy:
-  target: vercel
-  ci_system: github-actions
-  production_branch: main
+```json
+{
+  "ci": {
+    "package_manager": "npm",
+    "build": "npm run build",
+    "test": "npm test",
+    "lint": "npm run lint",
+    "typecheck": "tsc --noEmit",
+    "e2e": "npm run test:e2e"
+  },
+  "urls": {
+    "local": "http://localhost:3000",
+    "api": "http://localhost:3000/api",
+    "preview": null,
+    "staging": "https://staging.example.com",
+    "production": "https://example.com"
+  },
+  "deploy": {
+    "target": "vercel",
+    "detected_from": "cli",
+    "ci_system": "github-actions",
+    "production_branch": "main",
+    "preview_pattern": "https://{project}-{branch}-{team}.vercel.app"
+  },
+  "verification": {
+    "type": "browser",
+    "browser_mcp": "claude-in-chrome",
+    "github_mcp": "MCP_DOCKER"
+  }
+}
 ```
 
 ### Step 7: Commit Changes

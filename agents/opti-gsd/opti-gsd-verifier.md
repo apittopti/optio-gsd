@@ -156,19 +156,21 @@ grep -r "select\|insert\|update\|delete" src/app/api/
 Before artifact verification, run CI checks using config from `.opti-gsd/config.json`:
 
 ### Read CI Config
-```yaml
-# From .opti-gsd/config.json
-ci:
-  package_manager: npm
-  build: npm run build
-  test: npm test
-  lint: npm run lint
-  typecheck: tsc --noEmit
-  e2e: npm run test:e2e
-
-urls:
-  local: http://localhost:3000
-  api: http://localhost:3000/api
+```json
+{
+  "ci": {
+    "package_manager": "npm",
+    "build": "npm run build",
+    "test": "npm test",
+    "lint": "npm run lint",
+    "typecheck": "tsc --noEmit",
+    "e2e": "npm run test:e2e"
+  },
+  "urls": {
+    "local": "http://localhost:3000",
+    "api": "http://localhost:3000/api"
+  }
+}
 ```
 
 ### CI Execution Order (fail-fast)
@@ -232,7 +234,7 @@ Verification can be interrupted by context resets. Use checkpoint files to persi
 
 ### Progress File
 
-Location: `.opti-gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md`
+Location: `.opti-gsd/plans/phase-{N}/verification-progress.md`
 
 Write timing: **After EACH stage completes** (not batched at end). This ensures no work is lost on context reset.
 
@@ -286,8 +288,8 @@ Write timing: **After EACH stage completes** (not batched at end). This ensures 
 
 To prevent corruption on crash or context reset, always write progress files atomically:
 
-1. Write to temporary file: `.opti-gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md.tmp`
-2. Rename temp file to final: `.opti-gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md`
+1. Write to temporary file: `.opti-gsd/plans/phase-{N}/verification-progress.md.tmp`
+2. Rename temp file to final: `.opti-gsd/plans/phase-{N}/verification-progress.md`
 
 This ensures the progress file is never in a partially-written state.
 
@@ -295,7 +297,7 @@ This ensures the progress file is never in a partially-written state.
 
 If context resets mid-verification (mirrors debugger's Context Survival pattern):
 
-1. Read `.opti-gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md`
+1. Read `.opti-gsd/plans/phase-{N}/verification-progress.md`
 2. Review completed stages (don't re-run passed checks)
 3. Continue from current stage or next pending stage
 4. Append new results to progress file

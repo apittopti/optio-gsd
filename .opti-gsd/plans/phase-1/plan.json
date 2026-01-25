@@ -1,0 +1,75 @@
+{
+  "phase": 1,
+  "title": "Core Logging Infrastructure",
+  "milestone": "v2.1.0",
+  "feature": "F001",
+  "created": "2026-01-25",
+  "wave_count": 2,
+  "task_count": 4,
+  "tasks": [
+    {
+      "id": "01",
+      "wave": 1,
+      "title": "Create tool usage logging script",
+      "files": [
+        {"path": "scripts/log-tool-usage.js", "action": "create"}
+      ],
+      "test_required": false,
+      "action": "Create a Node.js script that receives tool call data via stdin (JSON) and appends entries to .opti-gsd/tool-usage.json. The script must: (1) Read stdin for tool_name from hook context, (2) Read .opti-gsd/state.json to get current task from loop.current_task if available, (3) Create/append to .opti-gsd/tool-usage.json with structure {sessions: [{started, entries: [{tool, task, ts}]}]}, (4) Handle file creation if not exists, (5) Gracefully fail without breaking workflow on errors. Use atomic write pattern (write to temp, rename) to avoid corruption.",
+      "verify": [
+        {"type": "file", "check": "scripts/log-tool-usage.js exists"},
+        {"type": "manual", "check": "echo '{\"tool_name\":\"Read\"}' | node scripts/log-tool-usage.js && cat .opti-gsd/tool-usage.json shows entry"}
+      ],
+      "done": "Script accepts tool_name via stdin, reads task context from state.json, appends structured log entry to tool-usage.json"
+    },
+    {
+      "id": "02",
+      "wave": 1,
+      "title": "Initialize tool-usage.json structure",
+      "files": [
+        {"path": ".opti-gsd/tool-usage.json", "action": "create"}
+      ],
+      "test_required": false,
+      "action": "Create the initial tool-usage.json file with the expected schema. Structure: {\"version\": \"1.0\", \"sessions\": []}. The logging script will append sessions as they occur.",
+      "verify": [
+        {"type": "file", "check": ".opti-gsd/tool-usage.json exists with valid JSON structure"}
+      ],
+      "done": "File exists with {version: \"1.0\", sessions: []} structure"
+    },
+    {
+      "id": "03",
+      "wave": 2,
+      "depends_on": ["01"],
+      "title": "Configure PostToolUse hook",
+      "files": [
+        {"path": "hooks/hooks.json", "action": "modify"}
+      ],
+      "test_required": false,
+      "action": "Update hooks/hooks.json to register a PostToolUse hook that pipes tool context to the logging script. The hook should run: 'node scripts/log-tool-usage.js' with stdin containing the hook context (tool_name). Use bash to pipe the hook context. Hook must be configured to not fail the tool call on logging errors (use || true pattern).",
+      "verify": [
+        {"type": "file", "check": "hooks/hooks.json contains PostToolUse configuration"},
+        {"type": "manual", "check": "JSON.parse() succeeds on hooks/hooks.json"}
+      ],
+      "done": "hooks/hooks.json has PostToolUse hook that invokes scripts/log-tool-usage.js"
+    },
+    {
+      "id": "04",
+      "wave": 2,
+      "depends_on": ["02"],
+      "title": "Add .gitignore entry for tool-usage.json",
+      "files": [
+        {"path": ".gitignore", "action": "modify"}
+      ],
+      "test_required": false,
+      "action": "Add .opti-gsd/tool-usage.json to .gitignore to prevent committing usage logs. This file contains session-specific data that should not be version controlled.",
+      "verify": [
+        {"type": "file", "check": ".gitignore contains .opti-gsd/tool-usage.json"}
+      ],
+      "done": ".gitignore excludes .opti-gsd/tool-usage.json"
+    }
+  ],
+  "key_links": [
+    "hooks/hooks.json -> scripts/log-tool-usage.js -> .opti-gsd/tool-usage.json",
+    "scripts/log-tool-usage.js -> .opti-gsd/state.json (reads loop.current_task)"
+  ]
+}

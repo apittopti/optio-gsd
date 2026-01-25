@@ -95,7 +95,7 @@ Agent modes:
 {how to prevent similar issues}
 ```
 
-Update ISSUES.md if this was a tracked issue.
+Update `.opti-gsd/issues/ISS{NNN}.md` if this was a tracked issue.
 
 **INVESTIGATION BLOCKED:**
 ```markdown
@@ -111,7 +111,7 @@ Update ISSUES.md if this was a tracked issue.
 
 ### Step 6: Update Issue Tracking
 
-If issue was from ISSUES.md:
+If issue was from `.opti-gsd/issues/`:
 
 ```markdown
 ### ISS-{id}
@@ -127,7 +127,7 @@ If issue was from ISSUES.md:
 
 ```bash
 git add .opti-gsd/debug/{issue-id}.md
-git add .opti-gsd/ISSUES.md  # if updated
+git add .opti-gsd/issues/  # if updated
 git commit -m "fix: resolve {issue-id}
 
 Root cause: {brief cause}

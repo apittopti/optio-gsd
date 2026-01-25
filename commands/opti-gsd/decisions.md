@@ -17,7 +17,7 @@ Manage architectural decisions.
 
 ### List Decisions (no args)
 
-Read `.opti-gsd/DECISIONS.md` and display summary:
+Read `.opti-gsd/decisions.md` and display summary:
 
 ```markdown
 ## Decisions
@@ -51,7 +51,7 @@ Please provide:
 6. **Consequences:** (What are the implications?)
 ```
 
-After input, append to `.opti-gsd/DECISIONS.md`:
+After input, append to `.opti-gsd/decisions.md`:
 
 ```markdown
 ### D{NNN}: {Title}
@@ -79,7 +79,7 @@ After input, append to `.opti-gsd/DECISIONS.md`:
 
 Commit:
 ```bash
-git add .opti-gsd/DECISIONS.md
+git add .opti-gsd/decisions.md
 git commit -m "doc: decision D{NNN} - {title}"
 ```
 
@@ -129,7 +129,7 @@ View details: /opti-gsd:decisions view D001
 
 ---
 
-## DECISIONS.md Format
+## decisions.md Format
 
 ```markdown
 # Decisions Log

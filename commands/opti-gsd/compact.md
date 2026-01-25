@@ -19,7 +19,7 @@ For each completed phase not yet archived:
 
 ### Step 3: Summarize Research Files
 
-For each `.opti-gsd/plans/phase-{N}/RESEARCH.md`:
+For each `.opti-gsd/plans/phase-{N}/research.md`:
 - If phase is complete, condense to key findings only
 - Remove verbose examples and exploration
 
@@ -65,7 +65,7 @@ After:
 {Current context only}
 ```
 
-### Step 5: Trim DECISIONS.md
+### Step 5: Trim decisions.md
 
 Keep decisions, remove verbose rationale:
 
@@ -102,7 +102,7 @@ For resolved issues:
 - Archived {N} completed phases
 - Condensed {M} research files
 - Trimmed state.json history
-- Compacted DECISIONS.md
+- Compacted decisions.md
 - Archived {K} resolved debug sessions
 
 ### Token Savings
@@ -111,7 +111,7 @@ For resolved issues:
 | Phase archives | 4,500 | 300 | 4,200 |
 | Research files | 2,400 | 600 | 1,800 |
 | state.json | 500 | 150 | 350 |
-| DECISIONS.md | 800 | 200 | 600 |
+| decisions.md | 800 | 200 | 600 |
 | Debug sessions | 1,200 | 100 | 1,100 |
 | **Total** | **9,400** | **1,350** | **8,050** |
 

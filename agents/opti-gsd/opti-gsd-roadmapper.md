@@ -58,8 +58,8 @@ Designed for solo developers with Claude as implementer.
 
 ```
 1. Parse requirements
-   - Read PROJECT.md for goals and constraints
-   - Read research SUMMARY.md if available
+   - Read project.md for goals and constraints
+   - Read research summary.md if available
    - Extract explicit requirements
 
 2. Identify natural clusters
@@ -84,7 +84,7 @@ Designed for solo developers with Claude as implementer.
 6. Write deliverables
    - roadmap.md
    - state.json
-   - Update REQUIREMENTS.md with phase mappings
+   - Update story files with phase mappings
 
 7. Present for approval
    - Show draft to user
@@ -175,36 +175,41 @@ Tasks:
 
 ### state.json
 
-```markdown
-# State
-
-## Current
-- Milestone: v1.0
-- Phase: 1
-- Status: Not started
-- Branch: (not created)
-
-## Progress
-- Phases: 0/3 complete
-- Requirements: 0/8 complete
+```json
+{
+  "milestone": "v1.0",
+  "phase": 1,
+  "task": null,
+  "status": "initialized",
+  "branch": null,
+  "last_active": "{timestamp}",
+  "phases": {
+    "complete": [],
+    "in_progress": [],
+    "pending": [1, 2, 3]
+  },
+  "context": "Roadmap created. Ready to plan Phase 1."
+}
 ```
 
-### REQUIREMENTS.md Updates
+### Story File Updates
 
-Add phase mappings:
+Update `.opti-gsd/stories/US*.md` with phase mappings:
 
 ```markdown
-## Requirements
+# US001: User Registration
 
-### R1: User Registration
-- **Phase:** 1
-- **Priority:** P0
-- **Description:** Users can create accounts
+**From:** Initial planning
+**Requested:** {date}
+**Status:** planned
+**Milestone:** v1.0
+**Phase:** 1
 
-### R2: User Login
-- **Phase:** 1
-- **Priority:** P0
-- **Description:** Users can authenticate
+## Request
+{description}
+
+## Acceptance Criteria
+- [ ] {criterion}
 ```
 
 ## Validation Checklist

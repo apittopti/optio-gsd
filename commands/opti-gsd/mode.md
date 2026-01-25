@@ -32,8 +32,10 @@ To switch: /opti-gsd:mode interactive or /opti-gsd:mode yolo
 
 Edit `.opti-gsd/config.json`:
 
-```yaml
-mode: {new_mode}
+```json
+{
+  "mode": "{new_mode}"
+}
 ```
 
 ### Step 3: Commit

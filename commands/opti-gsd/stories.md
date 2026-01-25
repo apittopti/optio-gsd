@@ -212,11 +212,11 @@ On confirm:
 
 ## The Three Tracking Systems
 
-| Tracking | Purpose | Command | File |
-|----------|---------|---------|------|
-| **Issues** | Bugs, problems, things broken | /opti-gsd:issues | ISSUES.md |
-| **Features** | Ideas for improvements (internal) | /opti-gsd:features | FEATURES.md |
-| **Stories** | User/client requests (external) | /opti-gsd:stories | stories/ |
+| Tracking | Purpose | Command | Directory |
+|----------|---------|---------|-----------|
+| **Issues** | Bugs, problems, things broken | /opti-gsd:issues | `.opti-gsd/issues/` |
+| **Features** | Ideas for improvements (internal) | /opti-gsd:features | `.opti-gsd/features/` |
+| **Stories** | User/client requests (external) | /opti-gsd:stories | `.opti-gsd/stories/` |
 
 **Flow:**
 - Features can be promoted to Stories (via /opti-gsd:features promote)

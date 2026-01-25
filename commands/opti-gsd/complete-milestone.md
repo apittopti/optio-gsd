@@ -144,22 +144,21 @@ mv .opti-gsd/research/* .opti-gsd/milestones/{milestone}/ 2>/dev/null || true
 ### Step 9: Reset for Next Milestone
 
 Update state.json:
-```yaml
----
-milestone: null
-phase: null
-task: null
-branch: {base_branch}
-
-last_active: {timestamp}
-session_tokens: 0
-
-phases_complete: []
-phases_in_progress: []
-phases_pending: []
-
-open_issues: []
----
+```json
+{
+  "milestone": null,
+  "phase": null,
+  "task": null,
+  "status": "milestone_complete",
+  "branch": "{base_branch}",
+  "last_active": "{timestamp}",
+  "phases": {
+    "complete": [],
+    "in_progress": [],
+    "pending": []
+  },
+  "context": "Milestone complete. Ready for next milestone."
+}
 
 ## Session Context
 Milestone {name} complete. Ready for next milestone.

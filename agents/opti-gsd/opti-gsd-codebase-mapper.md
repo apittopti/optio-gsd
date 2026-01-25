@@ -20,14 +20,15 @@ Explore a codebase with a specific focus area, then write analysis documents dir
 
 | Mode | Documents Generated |
 |------|---------------------|
-| `tech` | STACK.md, INTEGRATIONS.md |
-| `arch` | ARCHITECTURE.md, STRUCTURE.md |
-| `quality` | CONVENTIONS.md, TESTING.md |
-| `concerns` | CONCERNS.md |
+| `tech` | stack.md, integrations.md |
+| `arch` | architecture.md, structure.md |
+| `quality` | conventions.md, testing.md |
+| `concerns` | concerns.md |
+| `deploy` | deployment.md |
 
 ## Document Specifications
 
-### STACK.md (tech focus)
+### stack.md (tech focus)
 
 ```markdown
 # Technology Stack
@@ -62,7 +63,7 @@ Explore a codebase with a specific focus area, then write analysis documents dir
 - Deployed on Vercel
 ```
 
-### INTEGRATIONS.md (tech focus)
+### integrations.md (tech focus)
 
 ```markdown
 # External Integrations
@@ -85,7 +86,7 @@ Explore a codebase with a specific focus area, then write analysis documents dir
 | Sentry | Error tracking | `sentry.config.ts` |
 ```
 
-### ARCHITECTURE.md (arch focus)
+### architecture.md (arch focus)
 
 ```markdown
 # Architecture
@@ -128,7 +129,7 @@ Modular monolith with feature-based organization
 - No global state library
 ```
 
-### STRUCTURE.md (arch focus)
+### structure.md (arch focus)
 
 ```markdown
 # Directory Structure
@@ -161,7 +162,7 @@ src/
 - `src/middleware.ts` — Auth middleware
 ```
 
-### CONVENTIONS.md (quality focus)
+### conventions.md (quality focus)
 
 ```markdown
 # Code Conventions
@@ -203,7 +204,7 @@ export function Component({ title, onAction }: Props) {
 - Forms: Zod validation with error display
 ```
 
-### TESTING.md (quality focus)
+### testing.md (quality focus)
 
 ```markdown
 # Testing Patterns
@@ -251,7 +252,7 @@ describe('/api/users', () => {
 - Gaps: Settings module, webhooks
 ```
 
-### CONCERNS.md (concerns focus)
+### concerns.md (concerns focus)
 
 ```markdown
 # Codebase Concerns
@@ -294,6 +295,76 @@ describe('/api/users', () => {
 - Webhook handlers
 - Auth edge cases
 ```
+
+### deployment.md (deploy focus)
+
+```markdown
+# Deployment Configuration
+
+## Platform
+{Detected platform or "Unknown"}
+
+## Detection Method
+{How deployment was detected: config files, CLI, documentation parsing}
+
+## Environments
+
+### Production
+- **URL:** {production URL if known}
+- **Branch:** {deployment branch}
+- **Config:** {config file location}
+
+### Preview/Staging
+- **URL Pattern:** {e.g., {branch}.vercel.app}
+- **Auto-deploy:** {yes/no}
+
+### Local
+- **URL:** {localhost URL}
+- **Command:** {dev server command}
+
+## Configuration Files
+| File | Purpose |
+|------|---------|
+| vercel.json | Vercel configuration |
+| .vercel/ | Vercel project link |
+
+## Environment Variables
+| Variable | Purpose | Required |
+|----------|---------|----------|
+| {VAR_NAME} | {purpose} | {yes/no} |
+
+## CLI Available
+- {cli_name}: {version or "not installed"}
+
+## Deployment Commands
+- Preview: {command}
+- Production: {command}
+
+## Notes
+{Any additional deployment context from README or docs}
+```
+
+**Detection Strategy (layered):**
+
+1. **Config files first:**
+   - `.vercel/` + `vercel.json` → Vercel
+   - `.netlify/` + `netlify.toml` → Netlify
+   - `fly.toml` → Fly.io
+   - `railway.json` → Railway
+   - `render.yaml` → Render
+   - `Dockerfile` / `docker-compose.yml` → Container
+   - `ecosystem.config.js` → PM2/VPS
+
+2. **CLI queries (if config found):**
+   - `vercel ls`, `vercel env ls`
+   - `netlify status`
+   - `fly status`
+   - `railway status`
+
+3. **Documentation fallback:**
+   - Parse README.md for "deploy", "production", "hosting" sections
+   - Extract URLs matching patterns: `https?://[^\s]+\.(com|io|dev|app|vercel\.app|netlify\.app)`
+   - Look for domain names and environment references
 
 ## Execution Rules
 

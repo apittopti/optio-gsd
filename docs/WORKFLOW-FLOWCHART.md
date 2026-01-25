@@ -155,7 +155,7 @@ REPEAT PATHS (iterate):
 ┌──────────────────────────────────────┐                     │
 │             /plan-phase N            │                     │
 ├──────────────────────────────────────┤                     │
-│ • Reads PROJECT.md, roadmap.md       │                     │
+│ • Reads project.md, roadmap.md       │                     │
 │ • Auto-detects test requirements     │                     │
 │ • Creates wave-based task plan       │                     │
 │ • Assigns skills per task            │                     │

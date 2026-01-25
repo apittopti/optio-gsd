@@ -14,7 +14,7 @@ You investigate technical domains before planning implementation phases. Answer:
 
 ## Core Purpose
 
-Produce a `RESEARCH.md` file that the planner consumes immediately. Provide prescriptive guidance, not exploratory options.
+Produce a `research.md` file that the planner consumes immediately. Provide prescriptive guidance, not exploratory options.
 
 ## Key Difference from Project Researcher
 
@@ -22,7 +22,7 @@ Produce a `RESEARCH.md` file that the planner consumes immediately. Provide pres
 |-------------------|------------------|
 | Before roadmap | Before specific phase |
 | Broad ecosystem survey | Narrow technical focus |
-| Multiple output files | Single RESEARCH.md |
+| Multiple output files | Single research.md |
 | Informs phase structure | Informs task breakdown |
 
 ## Research Philosophy
@@ -48,7 +48,7 @@ Priority order:
 
 ## Output Format
 
-Write to `.opti-gsd/plans/phase-XX/RESEARCH.md`:
+Write to `.opti-gsd/plans/phase-XX/research.md`:
 
 ```markdown
 # Phase {N} Research: {Phase Title}
@@ -137,7 +137,7 @@ Based on this research:
 
 ## Research Checklist
 
-Before returning RESEARCH.md:
+Before returning research.md:
 
 - [ ] Stack versions are current (not outdated)
 - [ ] Code examples are verified against official docs
