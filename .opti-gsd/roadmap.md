@@ -5,10 +5,10 @@
 
 ## Success Criteria
 
-- [ ] Tasks from plan.json appear in Claude Code's task UI during execution
-- [ ] Task status updates in real-time (pending → in_progress → completed)
-- [ ] Subagents spawned by executor can read task context
-- [ ] plan.json remains source of truth; Claude tasks are visual layer
+- [x] Tasks from plan.json appear in Claude Code's task UI during execution
+- [x] Task status updates in real-time (pending → in_progress → completed)
+- [x] Subagents spawned by executor can read task context
+- [x] plan.json remains source of truth; Claude tasks are visual layer
 
 ---
 
@@ -19,10 +19,10 @@
 **Delivers:** F002
 
 **Success Criteria:**
-- [ ] Executor creates Claude tasks on phase start
-- [ ] Tasks show activeForm spinner during execution
-- [ ] Task status updates on completion/failure
-- [ ] Existing plan.json workflow unchanged
+- [x] Executor creates Claude tasks on phase start
+- [x] Tasks show activeForm spinner during execution
+- [x] Task status updates on completion/failure
+- [x] Existing plan.json workflow unchanged
 
 **Implementation Notes:**
 - TaskCreate called with: subject, description, activeForm
