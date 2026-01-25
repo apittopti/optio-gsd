@@ -41,13 +41,13 @@ Check name format:
 
 ```bash
 # Get prefix from config
-prefix=$(grep 'prefix:' .gsd/config.md | awk '{print $2}')
+prefix=$(grep 'prefix:' .opti-gsd/config.json | awk '{print $2}')
 
 # Create and checkout branch
 git checkout -b "${prefix}${name}"
 ```
 
-### Step 4: Update STATE.md
+### Step 4: Update state.json
 
 ```yaml
 ---
@@ -70,9 +70,9 @@ open_issues: []
 Started milestone {name}. Ready to create roadmap.
 ```
 
-### Step 5: Update ROADMAP.md
+### Step 5: Update roadmap.md
 
-If ROADMAP.md exists, add new milestone section:
+If roadmap.md exists, add new milestone section:
 
 ```markdown
 ## Milestone: {name}
@@ -83,7 +83,7 @@ If ROADMAP.md exists, add new milestone section:
 ### Step 6: Commit
 
 ```bash
-git add .gsd/STATE.md .gsd/ROADMAP.md
+git add .opti-gsd/state.json .opti-gsd/roadmap.md
 git commit -m "chore: start milestone {name}"
 ```
 

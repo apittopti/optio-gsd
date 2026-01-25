@@ -18,7 +18,7 @@ Can be run:
 
 ### Step 0: Validate Branch
 
-If `branching: milestone` is configured in `.gsd/config.md`:
+If `branching: milestone` is configured in `.opti-gsd/config.json`:
 
 1. Get current branch:
    ```bash
@@ -29,7 +29,7 @@ If `branching: milestone` is configured in `.gsd/config.md`:
 
 3. If current branch == base branch:
 
-   **If no milestone set in STATE.md:**
+   **If no milestone set in state.json:**
    ```
    ⚠️ No Milestone Active
    ─────────────────────────────────────
@@ -68,7 +68,7 @@ Add a new phase: /opti-gsd:add-phase {title}
 
 ### Step 2: Load Phase Context
 
-Read from ROADMAP.md:
+Read from roadmap.md:
 - Phase title and goal
 - Requirements (REQ-IDs)
 - Dependencies
@@ -139,7 +139,7 @@ As user provides input, organize into structured notes:
 
 ### Step 5: Save to Phase Directory
 
-Write to `.gsd/plans/phase-{N}/DISCUSSION.md`:
+Write to `.opti-gsd/plans/phase-{N}/discussion.md`:
 
 ```markdown
 # Phase {N} Discussion
@@ -167,7 +167,7 @@ Write to `.gsd/plans/phase-{N}/DISCUSSION.md`:
 *This informs the planning phase. Run /opti-gsd:plan-phase {N} when ready.*
 ```
 
-### Step 6: Update STATE.md
+### Step 6: Update state.json
 
 ```yaml
 phase: {N}
@@ -182,7 +182,7 @@ Phase {N} discussed. Key decisions captured.
 ### Step 7: Commit and Report
 
 ```bash
-git add .gsd/plans/phase-{N}/DISCUSSION.md .gsd/STATE.md
+git add .opti-gsd/plans/phase-{N}/discussion.md .opti-gsd/state.json
 git commit -m "doc: capture phase {N} discussion"
 ```
 
@@ -193,7 +193,7 @@ git commit -m "doc: capture phase {N} discussion"
 **Decisions:** {count}
 **Open Questions:** {count}
 
-Saved to: `.gsd/plans/phase-{N}/DISCUSSION.md`
+Saved to: `.opti-gsd/plans/phase-{N}/discussion.md`
 
 Next steps:
 → /opti-gsd:plan-phase {N}    — Generate/regenerate plan with these decisions
@@ -206,7 +206,7 @@ Next steps:
 ## Integration with Planning
 
 When /opti-gsd:plan-phase runs, it:
-1. Loads DISCUSSION.md if exists
+1. Loads discussion.md if exists
 2. Incorporates decisions into plan
 3. References constraints in task definitions
 4. Flags open questions for research

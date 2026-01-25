@@ -10,18 +10,18 @@ Analyze an existing codebase to understand its structure before starting work.
 
 ### Step 1: Check Context
 
-If `.gsd/` already exists:
+If `.opti-gsd/` already exists:
 ```markdown
 ## Project Already Initialized
 
-This project has opti-gsd state at `.gsd/`.
+This project has opti-gsd state at `.opti-gsd/`.
 
 To re-analyze the codebase:
-- View existing map: `.gsd/CODEBASE.md`
+- View existing map: `.opti-gsd/codebase.md`
 - Force re-scan: /opti-gsd:map-codebase --refresh
 
 To start fresh:
-- Remove `.gsd/` and run again
+- Remove `.opti-gsd/` and run again
 ```
 
 ### Step 2: Spawn Codebase Mapper
@@ -40,7 +40,7 @@ The agent will:
 
 ### Step 3: Generate Codebase Map
 
-Write to `.gsd/CODEBASE.md`:
+Write to `.opti-gsd/codebase.md`:
 
 ```markdown
 # Codebase Map
@@ -143,7 +143,7 @@ src/
 
 **Technical Debt:** {count} items noted
 
-View full map: `.gsd/CODEBASE.md`
+View full map: `.opti-gsd/codebase.md`
 
 Next steps:
 - Initialize project: /opti-gsd:init

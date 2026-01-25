@@ -41,7 +41,7 @@ Then gather details via prompts:
 
 ### Step 2: Create Story File
 
-Write to `.gsd/stories/US{NNN}-{slug}.md`:
+Write to `.opti-gsd/stories/US{NNN}-{slug}.md`:
 
 ```markdown
 # US{NNN}: {title}
@@ -112,7 +112,7 @@ Will prompt only for acceptance criteria.
 ## STORIES Directory Structure
 
 ```
-.gsd/stories/
+.opti-gsd/stories/
   US001-export-to-excel.md
   US002-dark-mode.md
   US003-faster-search.md

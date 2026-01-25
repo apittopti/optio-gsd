@@ -8,7 +8,7 @@ Generate an executable plan for phase N with XML-structured tasks.
 
 ## Arguments
 
-- `N` — Phase number (optional, defaults to current phase from STATE.md)
+- `N` — Phase number (optional, defaults to current phase from state.json)
 - `--research` — Force phase research even if RESEARCH.md exists
 - `--skip-research` — Skip research, use existing knowledge
 - `--gaps` — Plan gap closure for failed verification
@@ -17,7 +17,7 @@ Generate an executable plan for phase N with XML-structured tasks.
 
 ### Step 0: Validate Branch
 
-If `branching: milestone` is configured in `.gsd/config.md`:
+If `branching: milestone` is configured in `.opti-gsd/config.json`:
 
 1. Get current branch:
    ```bash
@@ -28,7 +28,7 @@ If `branching: milestone` is configured in `.gsd/config.md`:
 
 3. If current branch == base branch:
 
-   **If no milestone set in STATE.md:**
+   **If no milestone set in state.json:**
    ```
    ⚠️ No Milestone Active
    ─────────────────────────────────────
@@ -55,53 +55,53 @@ If `branching: milestone` is configured in `.gsd/config.md`:
 
 Check for required files and report standardized errors:
 
-If `.gsd/` doesn't exist:
+If `.opti-gsd/` doesn't exist:
 ```
 ⚠️ opti-gsd Not Initialized
 ─────────────────────────────────────
-No .gsd/ directory found in this project.
+No .opti-gsd/ directory found in this project.
 
 → Run /opti-gsd:init to initialize an existing project
 → Run /opti-gsd:new-project to start a new project
 ```
 
-If `.gsd/STATE.md` missing:
+If `.opti-gsd/state.json` missing:
 ```
 ⚠️ Project State Missing
 ─────────────────────────────────────
-.gsd/STATE.md not found.
+.opti-gsd/state.json not found.
 
 → Run /opti-gsd:init to reinitialize
 ```
 
-If `.gsd/ROADMAP.md` missing:
+If `.opti-gsd/roadmap.md` missing:
 ```
 ⚠️ No Roadmap Found
 ─────────────────────────────────────
-.gsd/ROADMAP.md not found. Create a roadmap before planning phases.
+.opti-gsd/roadmap.md not found. Create a roadmap before planning phases.
 
 → Run /opti-gsd:roadmap to create a roadmap
 ```
 
 ### Step 2: Determine Phase
 
-If N provided, use it. Otherwise read from `.gsd/STATE.md`.
+If N provided, use it. Otherwise read from `.opti-gsd/state.json`.
 
 Normalize phase number:
 - `1` → `01`
 - `2.1` → `02.1` (for inserted phases)
 
-Validate phase exists in ROADMAP.md.
+Validate phase exists in roadmap.md.
 
 ### Step 3: Load Context
 
 Read these files (lazy loading):
-- `.gsd/config.md` — app_type, skills, MCPs, budgets
-- `.gsd/STATE.md` — current position
-- `.gsd/ROADMAP.md` — phase goals and items to deliver
-- `.gsd/stories/` — story details and acceptance criteria (for items in this phase)
-- `.gsd/issues/` — issue details (for items in this phase)
-- `.gsd/codebase/CONVENTIONS.md` — if exists, for consistency
+- `.opti-gsd/config.json` — app_type, skills, MCPs, budgets
+- `.opti-gsd/state.json` — current position
+- `.opti-gsd/roadmap.md` — phase goals and items to deliver
+- `.opti-gsd/stories/` — story details and acceptance criteria (for items in this phase)
+- `.opti-gsd/issues/` — issue details (for items in this phase)
+- `.opti-gsd/codebase/CONVENTIONS.md` — if exists, for consistency
 
 **Do NOT load:**
 - Other phase plans
@@ -111,12 +111,12 @@ Read these files (lazy loading):
 ### Step 4: Research (Conditional)
 
 **Check for project-level research first:**
-- If `.gsd/research/SUMMARY.md` exists, load it for context
+- If `.opti-gsd/research/SUMMARY.md` exists, load it for context
 - If missing and this is phase 1, suggest: "Run /opti-gsd:research first for domain best practices?"
 
 **Skip phase research if:**
 - `--skip-research` flag
-- `.gsd/plans/phase-{N}/RESEARCH.md` already exists
+- `.opti-gsd/plans/phase-{N}/RESEARCH.md` already exists
 - Discovery level 0 in config
 
 **Do phase research if:**
@@ -147,18 +147,18 @@ Focus on:
 - Performance considerations if applicable
 ```
 
-Save output to `.gsd/plans/phase-{N}/RESEARCH.md`.
+Save output to `.opti-gsd/plans/phase-{N}/RESEARCH.md`.
 
 ### Step 5: Generate Plan
 
 Spawn opti-gsd-planner agent with:
-- Phase goals from ROADMAP.md
-- Stories with acceptance criteria from `.gsd/stories/`
-- Issues to fix from `.gsd/issues/`
+- Phase goals from roadmap.md
+- Stories with acceptance criteria from `.opti-gsd/stories/`
+- Issues to fix from `.opti-gsd/issues/`
 - Research from RESEARCH.md (if exists)
 - Conventions from codebase analysis (if exists)
-- **Available MCPs from .gsd/config.md** (e.g., postgres, github, browser)
-- **Available skills from .gsd/config.md** (e.g., commit, review-pr)
+- **Available MCPs from .opti-gsd/config.json** (e.g., postgres, github, browser)
+- **Available skills from .opti-gsd/config.json** (e.g., commit, review-pr)
 
 The planner will:
 1. Derive must-haves using goal-backward methodology
@@ -185,9 +185,9 @@ Spawn opti-gsd-plan-checker agent to verify:
 
 Iterate up to 3 times if blocker issues.
 
-### Step 7: Write plan.md
+### Step 7: Write plan.json
 
-Create `.gsd/plans/phase-{N}/plan.md`:
+Create `.opti-gsd/plans/phase-{N}/plan.json`:
 
 ```markdown
 ---
@@ -241,7 +241,7 @@ estimated_tokens: {estimate}
 </task>
 ```
 
-### Step 8: Update STATE.md
+### Step 8: Update state.json
 
 ```yaml
 ---
@@ -266,8 +266,8 @@ Ready for execution.
 ### Step 9: Commit
 
 ```bash
-git add .gsd/plans/phase-{N}/
-git add .gsd/STATE.md
+git add .opti-gsd/plans/phase-{N}/
+git add .opti-gsd/state.json
 git commit -m "docs: plan phase {N}
 
 - {task_count} tasks in {wave_count} waves
@@ -312,7 +312,7 @@ Next steps:
 
 When `--gaps` flag is used:
 
-1. Read `.gsd/plans/phase-{N}/VERIFICATION.md` for failed items
+1. Read `.opti-gsd/plans/phase-{N}/verification.md` for failed items
 2. Create targeted tasks to close specific gaps
 3. Mark plan as `gap_closure: true` in frontmatter
 4. Only address failed verification items

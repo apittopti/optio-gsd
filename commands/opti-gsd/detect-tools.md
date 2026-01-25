@@ -4,7 +4,7 @@ description: Detect available MCP servers, plugins, and capabilities for dynamic
 
 # detect-tools
 
-Discovers all available tools, MCP servers, and plugins in the user's Claude Code environment. Writes a capability manifest to `.gsd/tools.md` that agents read to dynamically use available tools.
+Discovers all available tools, MCP servers, and plugins in the user's Claude Code environment. Writes a capability manifest to `.opti-gsd/tools.json` that agents read to dynamically use available tools.
 
 ## Why This Exists
 
@@ -15,9 +15,9 @@ opti-gsd agents need to know what tools are available without hardcoding tool na
 
 ## Behavior
 
-### Step 1: Create .gsd/ if needed
+### Step 1: Create .opti-gsd/ if needed
 
-If `.gsd/` doesn't exist, create it.
+If `.opti-gsd/` doesn't exist, create it.
 
 ### Step 2: Probe MCP Servers
 
@@ -58,106 +58,74 @@ Extract from each plugin:
 - Available agents
 - Brief description if available
 
-### Step 4: Write .gsd/tools.md
+### Step 4: Write .opti-gsd/tools.json
 
-Write the capability manifest in this format:
+Write the capability manifest in JSON format:
 
-```markdown
-# Available Tools & Capabilities
-
-Last detected: {ISO timestamp}
-
-Run `/opti-gsd:detect-tools` to refresh this file.
-
----
-
-## How to Use This File
-
-Agents should:
-1. Read this file at the start of complex tasks
-2. Match capabilities to their current need based on "Purpose" and "Use when"
-3. Use ToolSearch to load MCP tools before calling them
-4. Use Skill tool to invoke plugin skills
-5. Use Task tool to spawn plugin agents
-6. Fall back to built-in approaches if no matching capability exists
-
----
-
-## MCP Servers
-
-### cclsp (Code Intelligence)
-Status: ✓ available
-Purpose: Code intelligence - find definitions, references, diagnostics, refactoring
-Use when: Navigating code, finding errors, renaming symbols, understanding call hierarchies
-
-Tools:
-- mcp__cclsp__find_definition
-- mcp__cclsp__find_references
-- mcp__cclsp__get_diagnostics
-- mcp__cclsp__get_hover
-- mcp__cclsp__rename_symbol
-- mcp__cclsp__find_implementation
-- mcp__cclsp__get_incoming_calls
-- mcp__cclsp__get_outgoing_calls
-
-### GitHub (Repository Operations)
-Status: ✓ available
-Purpose: GitHub operations - PRs, issues, code search, repository management
-Use when: Creating PRs, managing issues, searching code across repos
-
-Tools:
-- mcp__MCP_DOCKER__create_pull_request
-- mcp__MCP_DOCKER__list_issues
-- mcp__MCP_DOCKER__search_code
-...
-
-### Chrome (Browser Automation)
-Status: ✗ not detected
-
----
-
-## Installed Plugins
-
-### plugin-dev
-Source: ~/.claude/
-Purpose: Tools for developing Claude Code plugins
-
-Skills:
-- /plugin-dev:create-plugin — Guided plugin creation workflow
-- /plugin-dev:agent-development — Agent creation guidance
-- /plugin-dev:skill-development — Skill creation guidance
-
-Agents:
-- plugin-dev:agent-creator — Creates new agents
-- plugin-dev:plugin-validator — Validates plugin structure
-
-### opti-gsd
-Source: ~/.claude/
-Purpose: Spec-driven development workflow
-
-Skills: (this plugin - see /opti-gsd:help)
-
----
-
-## Capability Quick Reference
-
-| Need | Capability | How to Invoke |
-|------|------------|---------------|
-| Find where function is defined | cclsp | ToolSearch → mcp__cclsp__find_definition |
-| Get type errors before build | cclsp | ToolSearch → mcp__cclsp__get_diagnostics |
-| Create a pull request | GitHub MCP | ToolSearch → mcp__MCP_DOCKER__create_pull_request |
-| Take screenshot of page | Chrome/Browser | ToolSearch → mcp__claude-in-chrome__* |
-| Review code quality | code-review plugin | Skill tool → /code-review:review |
-
----
-
-## Notes
-
-- MCP tools must be loaded via ToolSearch before first use
-- Plugin skills are invoked via the Skill tool
-- Plugin agents are spawned via the Task tool with matching subagent_type
-- If a capability is not available, use built-in alternatives (grep, manual testing, etc.)
+```json
+{
+  "detected": "2026-01-25T10:30:00Z",
+  "mcp": {
+    "cclsp": {
+      "available": true,
+      "purpose": "Code intelligence - find definitions, references, diagnostics, refactoring",
+      "use_when": "Navigating code, finding errors, renaming symbols, understanding call hierarchies",
+      "tools": [
+        "mcp__cclsp__find_definition",
+        "mcp__cclsp__find_references",
+        "mcp__cclsp__get_diagnostics",
+        "mcp__cclsp__get_hover",
+        "mcp__cclsp__rename_symbol",
+        "mcp__cclsp__find_implementation",
+        "mcp__cclsp__get_incoming_calls",
+        "mcp__cclsp__get_outgoing_calls"
+      ]
+    },
+    "github": {
+      "available": true,
+      "purpose": "GitHub operations - PRs, issues, code search",
+      "use_when": "Creating PRs, managing issues, searching code across repos",
+      "tools": [
+        "mcp__MCP_DOCKER__create_pull_request",
+        "mcp__MCP_DOCKER__list_issues",
+        "mcp__MCP_DOCKER__search_code"
+      ]
+    },
+    "chrome": {
+      "available": false,
+      "purpose": "Chrome browser automation",
+      "use_when": "Testing web UIs, capturing screenshots"
+    }
+  },
+  "plugins": {
+    "plugin-dev": {
+      "source": "~/.claude/",
+      "purpose": "Tools for developing Claude Code plugins",
+      "skills": [
+        "/plugin-dev:create-plugin",
+        "/plugin-dev:agent-development",
+        "/plugin-dev:skill-development"
+      ],
+      "agents": [
+        "plugin-dev:agent-creator",
+        "plugin-dev:plugin-validator"
+      ]
+    },
+    "opti-gsd": {
+      "source": "~/.claude/",
+      "purpose": "Spec-driven development workflow",
+      "skills": ["See /opti-gsd:help"]
+    }
+  }
+}
 ```
+
+**How agents use this file:**
+1. Read `.opti-gsd/tools.json`
+2. Check if needed capability is available (`mcp.cclsp.available`)
+3. Use `ToolSearch` to load MCP tools before calling
+4. Use Skill tool for plugin skills, Task tool for plugin agents
+5. Fall back to built-in approaches if capability unavailable
 
 ### Step 5: Report Results
 
@@ -179,7 +147,7 @@ Installed Plugins:
   • plugin-dev (3 skills, 2 agents)
   • opti-gsd (this plugin)
 
-Capabilities written to: .gsd/tools.md
+Capabilities written to: .opti-gsd/tools.json
 
 Agents will now use these tools dynamically based on task needs.
 ```
@@ -188,7 +156,7 @@ Agents will now use these tools dynamically based on task needs.
 
 ## Arguments
 
-- `refresh` — Force re-detection even if tools.md exists
+- `refresh` — Force re-detection even if tools.json exists
 - `list` — Just show what's available without writing file
 
 ---
@@ -196,7 +164,7 @@ Agents will now use these tools dynamically based on task needs.
 ## Examples
 
 ```
-/opti-gsd:detect-tools           # Detect and write .gsd/tools.md
+/opti-gsd:detect-tools           # Detect and write .opti-gsd/tools.json
 /opti-gsd:detect-tools refresh   # Force refresh
 /opti-gsd:detect-tools list      # Show available tools without writing
 ```

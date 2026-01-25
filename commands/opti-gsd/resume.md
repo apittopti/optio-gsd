@@ -12,28 +12,28 @@ Resume work from last session.
 
 Check for required files and report standardized errors:
 
-If `.gsd/` doesn't exist:
+If `.opti-gsd/` doesn't exist:
 ```
 ⚠️ opti-gsd Not Initialized
 ─────────────────────────────────────
-No .gsd/ directory found in this project.
+No .opti-gsd/ directory found in this project.
 
 → Run /opti-gsd:init to initialize an existing project
 → Run /opti-gsd:new-project to start a new project
 ```
 
-If `.gsd/STATE.md` missing:
+If `.opti-gsd/state.json` missing:
 ```
 ⚠️ Project State Missing
 ─────────────────────────────────────
-.gsd/STATE.md not found. No session to resume.
+.opti-gsd/state.json not found. No session to resume.
 
 → Run /opti-gsd:init to start fresh
 ```
 
 ### Step 2: Load State
 
-Read `.gsd/STATE.md` for:
+Read `.opti-gsd/state.json` for:
 - Current milestone, phase, task
 - Last active timestamp
 - Session context notes
@@ -46,13 +46,13 @@ Read `.gsd/STATE.md` for:
 ## Last Session
 - **Date:** {last_active}
 - **Position:** Phase {N}, Task {M}
-- **Notes:** {session context from STATE.md}
+- **Notes:** {session context from state.json}
 
 ## What Was Happening
 {Extracted from session context}
 
 ## Pending Work
-- Task {M}: {task title from plan.md}
+- Task {M}: {task title from plan.json}
 - {Remaining tasks in phase}
 
 ## Continue?

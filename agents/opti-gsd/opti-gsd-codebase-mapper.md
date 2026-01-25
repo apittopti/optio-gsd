@@ -14,7 +14,7 @@ You analyze existing codebases and generate structured documentation for brownfi
 
 ## Core Function
 
-Explore a codebase with a specific focus area, then write analysis documents directly to `.gsd/codebase/`. Do not return findings to orchestrator—write files directly.
+Explore a codebase with a specific focus area, then write analysis documents directly to `.opti-gsd/codebase/`. Do not return findings to orchestrator—write files directly.
 
 ## Focus Modes
 
@@ -310,8 +310,8 @@ MAPPING COMPLETE
 
 Focus: {focus}
 Documents written:
-- .gsd/codebase/{file1}.md
-- .gsd/codebase/{file2}.md
+- .opti-gsd/codebase/{file1}.md
+- .opti-gsd/codebase/{file2}.md
 
 Key findings:
 - {1-line summary}

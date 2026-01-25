@@ -104,8 +104,8 @@ Bad:
 
 ```
 1. Load phase context
-   - Read ROADMAP.md for phase goals
-   - Read plan.md for tasks
+   - Read roadmap.md for phase goals
+   - Read plan.json for tasks
 
 2. Parse plan structure
    - Extract all tasks

@@ -10,20 +10,20 @@ Diagnose and fix interrupted or failed execution states.
 
 1. **Check background tasks** — Use TaskOutput to poll any running tasks
 2. **Scan Git state** — Check for uncommitted work, last checkpoint
-3. **Compare to STATE.md** — Find inconsistencies
-4. **Auto-fix what's safe** — Update STATE.md to match reality
+3. **Compare to state.json** — Find inconsistencies
+4. **Auto-fix what's safe** — Update state.json to match reality
 5. **Report and suggest** — Show status and next action
 
 ## Step 1: Check Background Tasks
 
-If STATE.md has `loop.background_tasks`:
+If state.json has `loop.background_tasks`:
 
 ```python
 FOR each task in loop.background_tasks:
   result = TaskOutput(task_id=task.task_id, block=false)
   IF result.complete:
     - Parse result (COMPLETE | FAILED | CHECKPOINT)
-    - Update STATE.md with result
+    - Update state.json with result
     - Remove from background_tasks
   ELSE:
     - Task still running, report to user
@@ -55,25 +55,25 @@ User can also press Ctrl+T to view task progress.
 - Last checkpoint: gsd/checkpoint/phase-2/T02
 - Uncommitted changes: {yes/no}
 
-**STATE.md:**
+**state.json:**
 - Says: Phase 2, Task 3
 - Reality: Tasks 1-2 committed, Task 3 incomplete
 
 **Action taken:**
-- Updated STATE.md to Phase 2, Task 3 (ready to continue)
+- Updated state.json to Phase 2, Task 3 (ready to continue)
 
 **Next:**
 → /opti-gsd:execute — Continue from Task 3
 ```
 
-## When STATE.md Ahead of Reality
+## When state.json Ahead of Reality
 
-If STATE.md claims more progress than commits show:
+If state.json claims more progress than commits show:
 
 ```markdown
-**Warning:** STATE.md ahead of commits
+**Warning:** state.json ahead of commits
 
-STATE.md says Task 4 complete, but no commit found.
+state.json says Task 4 complete, but no commit found.
 
 **Options:**
 → /opti-gsd:rollback 2-03 — Rollback to last known good

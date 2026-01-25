@@ -110,7 +110,7 @@ If no network:
 **Status:** Offline - cannot check for updates
 
 ### Local Changelog
-{Show from local CHANGELOG.md if exists}
+{Show from local changelog.md if exists}
 
 Check manually: {github_url}/releases
 ```

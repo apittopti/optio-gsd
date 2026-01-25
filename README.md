@@ -47,7 +47,7 @@ Just run `init` again - npx always fetches the latest from GitHub:
 npx github:apittopti/opti-gsd init
 ```
 
-Updates overwrite command files while preserving your `.gsd/` project state.
+Updates overwrite command files while preserving your `.opti-gsd/` project state.
 
 ### Private Repo Access
 
@@ -111,11 +111,11 @@ This detects:
 - **Installed Plugins** - Other Claude Code plugins and their skills/agents
 - **Available Capabilities** - What each tool can do
 
-Detected tools are written to `.gsd/tools.md` so agents can dynamically use them.
+Detected tools are written to `.opti-gsd/tools.md` so agents can dynamically use them.
 
 ### How Agents Use Tools
 
-Agents read `.gsd/tools.md` and match capabilities to their current task:
+Agents read `.opti-gsd/tools.md` and match capabilities to their current task:
 - Need code navigation? → Use cclsp if available
 - Need to create a PR? → Use GitHub MCP if available
 - Need browser testing? → Use chrome automation if available

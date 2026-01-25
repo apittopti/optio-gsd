@@ -99,7 +99,7 @@ The planner automatically determines `test_required` based on these rules:
 - "*.md" → test_required: false
 - "docs/**" → test_required: false
 - "*.config.*" → test_required: false
-- ".gsd/**" → test_required: false
+- ".opti-gsd/**" → test_required: false
 - "*.json" → test_required: false (unless schema validation needed)
 - "*.css" → test_required: false
 - "*.scss" → test_required: false
@@ -131,7 +131,7 @@ The planner automatically determines `test_required` based on these rules:
 ```
 
 #### Project Override Rules
-Check `.gsd/config.md` for project-specific patterns:
+Check `.opti-gsd/config.json` for project-specific patterns:
 ```yaml
 testing:
   always_test:
@@ -229,38 +229,77 @@ Tasks depending on Wave 1:
 
 ## Output Format
 
-```markdown
-# Phase {N}: {Title}
+Write to `.opti-gsd/milestones/{version}/phases/{N}/plan.json`:
 
-## Overview
-{Brief description of phase goals}
-
-## Must-Haves (Goal-Backward)
-- [ ] {Observable truth 1}
-- [ ] {Observable truth 2}
-- [ ] {Observable truth 3}
-
-## Wave 1 (Parallel)
-
-### Task 1: {title}
-- **Files:** {paths}
-- **Action:** {instructions}
-- **Skills:** {skills}
-- **Verify:** {steps}
-- **Done:** {criteria}
-
-### Task 2: {title}
-...
-
-## Wave 2 (After Wave 1)
-
-### Task 3: {title}
-...
-
-## Key Links
-- {Component} → {API} → {Database}
-- {Form} → {Handler} → {State}
+```json
+{
+  "phase": 1,
+  "title": "Phase Title",
+  "goal": "Brief description of phase goals",
+  "must_haves": [
+    "Observable truth 1",
+    "Observable truth 2",
+    "Observable truth 3"
+  ],
+  "waves": [
+    {
+      "wave": 1,
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "01",
+          "title": "Task title",
+          "files": ["src/path/file.ts"],
+          "test_files": ["src/path/file.test.ts"],
+          "test_required": true,
+          "action": "Specific implementation instructions",
+          "skills": ["verification-before-completion"],
+          "verify": ["Concrete verification step 1", "Step 2"],
+          "done": "Measurable acceptance criteria",
+          "status": "pending"
+        },
+        {
+          "id": "02",
+          "title": "Another parallel task",
+          "files": ["src/other/file.ts"],
+          "test_required": false,
+          "action": "Instructions",
+          "verify": ["Check X"],
+          "done": "Criteria",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "wave": 2,
+      "parallel": false,
+      "depends_on": [1],
+      "tasks": [
+        {
+          "id": "03",
+          "title": "Task depending on wave 1",
+          "files": ["src/composite/file.ts"],
+          "test_required": true,
+          "action": "Instructions referencing outputs of wave 1",
+          "verify": ["Integration check"],
+          "done": "Criteria",
+          "status": "pending"
+        }
+      ]
+    }
+  ],
+  "links": [
+    "Component → API → Database",
+    "Form → Handler → State"
+  ]
+}
 ```
+
+**JSON Benefits:**
+- Precise task status tracking
+- Easy parsing by executor
+- Reduced token usage (~50% vs markdown)
+- Clear dependency structure
 
 ## Anti-Patterns
 
@@ -274,8 +313,8 @@ Avoid:
 ## Input Requirements
 
 To create a plan, you need:
-- `.gsd/PROJECT.md` (goals, constraints)
-- `.gsd/ROADMAP.md` (phase description)
-- `.gsd/config.md` (app_type, skills, MCPs)
-- `.gsd/ISSUES.md` (known issues to avoid)
+- `.opti-gsd/PROJECT.md` (goals, constraints)
+- `.opti-gsd/roadmap.md` (phase description)
+- `.opti-gsd/config.json` (app_type, skills, MCPs)
+- `.opti-gsd/ISSUES.md` (known issues to avoid)
 - Codebase analysis (if brownfield project)

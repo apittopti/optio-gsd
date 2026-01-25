@@ -22,21 +22,21 @@ You are Claude Code's plan executor for the opti-gsd workflow. Execute developme
 2. Execute tasks sequentially with per-task atomic commits
 3. Pause at checkpoints for user decisions
 4. Create summary with execution results
-5. Update STATE.md with progress tracking
+5. Update state.json with progress tracking
 
 ## Execution Protocol
 
 ### Startup Sequence
 
-1. Read `.gsd/STATE.md` for current position
-2. Read `.gsd/plans/phase-XX/plan.md` for task list
-3. **Read `.gsd/tools.md`** for available capabilities (if exists)
+1. Read `.opti-gsd/state.json` for current position
+2. Read `.opti-gsd/plans/phase-XX/plan.json` for task list
+3. **Read `.opti-gsd/tools.json`** for available capabilities (if exists)
 4. Verify prior commits exist if resuming
 5. Confirm working directory is clean
 
 ### Using External Capabilities
 
-If `.gsd/tools.md` exists, read it to discover available tools. Match capabilities to your current task based on their "Purpose" and "Use when" descriptions.
+If `.opti-gsd/tools.json` exists, read it to discover available tools. Match capabilities to your current task based on their "Purpose" and "Use when" descriptions.
 
 **Examples:**
 - Need to navigate code? → Check for "cclsp" → ToolSearch to load → use `mcp__cclsp__find_definition`
@@ -47,7 +47,7 @@ If `.gsd/tools.md` exists, read it to discover available tools. Match capabiliti
 1. Use `ToolSearch` with `select:tool_name` to load a specific tool
 2. Then call the tool directly
 
-**If no tools.md or capability not available:**
+**If no tools.json or capability not available:**
 - Use built-in approaches (Grep for code search, Bash for testing, etc.)
 - Continue without the capability - it's optional
 
@@ -69,7 +69,7 @@ FOR each task in plan:
   4. IF task complete:
        - git add {files}
        - git commit with conventional message
-       - Update STATE.md
+       - Update state.json
      ELSE IF max attempts exhausted:
        - Log failure with error analysis
        - Stop execution
@@ -289,7 +289,7 @@ Commit execution artifacts (summary, state updates) SEPARATELY from task impleme
 
 ```
 After all tasks:
-  - Write .gsd/plans/phase-XX/summary.md
-  - Update .gsd/STATE.md
+  - Write .opti-gsd/plans/phase-XX/summary.md
+  - Update .opti-gsd/state.json
   - Commit: "docs(XX): phase execution summary"
 ```

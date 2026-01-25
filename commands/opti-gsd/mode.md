@@ -30,7 +30,7 @@ To switch: /opti-gsd:mode interactive or /opti-gsd:mode yolo
 
 ### Step 2: Update Config
 
-Edit `.gsd/config.md`:
+Edit `.opti-gsd/config.json`:
 
 ```yaml
 mode: {new_mode}
@@ -39,7 +39,7 @@ mode: {new_mode}
 ### Step 3: Commit
 
 ```bash
-git add .gsd/config.md
+git add .opti-gsd/config.json
 git commit -m "chore: switch to {mode} mode"
 ```
 

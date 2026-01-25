@@ -20,13 +20,13 @@ Same as /opti-gsd:execute but for a single task only. Useful for:
 ### Step 1: Load Context
 
 Read:
-- `.gsd/config.md`
-- `.gsd/STATE.md`
-- `.gsd/plans/phase-{current}/plan.md`
+- `.opti-gsd/config.json`
+- `.opti-gsd/state.json`
+- `.opti-gsd/plans/phase-{current}/plan.json`
 
 ### Step 2: Find Task
 
-Parse plan.md and find `<task id="{N}">`.
+Parse plan.json and find `<task id="{N}">`.
 
 If task not found, report error.
 
@@ -48,7 +48,7 @@ git add {files}
 git commit -m "{type}({phase}-{task}): {description}"
 ```
 
-Update STATE.md if this advances task counter.
+Update state.json if this advances task counter.
 
 **TASK FAILED:**
 Report failure with details. Do not update state.

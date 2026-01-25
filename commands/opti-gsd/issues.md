@@ -18,7 +18,7 @@ Track and manage project issues.
 
 ### List Issues (no args)
 
-Read `.gsd/ISSUES.md` and show open issues:
+Read `.opti-gsd/ISSUES.md` and show open issues:
 
 ```markdown
 ## Open Issues
@@ -51,7 +51,7 @@ Please provide:
 5. **Impact:** (what does this block or affect?)
 ```
 
-Append to `.gsd/ISSUES.md`:
+Append to `.opti-gsd/ISSUES.md`:
 
 ```markdown
 ### I{NNN}: {Title}
@@ -75,11 +75,11 @@ Append to `.gsd/ISSUES.md`:
 ---
 ```
 
-Update STATE.md `open_issues` array.
+Update state.json `open_issues` array.
 
 Commit:
 ```bash
-git add .gsd/ISSUES.md .gsd/STATE.md
+git add .opti-gsd/ISSUES.md .opti-gsd/state.json
 git commit -m "issue: log I{NNN} - {title}"
 ```
 
@@ -126,7 +126,7 @@ Please provide:
 3. **Verified:** (yes/no - has fix been verified?)
 ```
 
-Update issue in `.gsd/ISSUES.md`:
+Update issue in `.opti-gsd/ISSUES.md`:
 
 ```markdown
 ### I{NNN}: {Title}
@@ -146,11 +146,11 @@ Update issue in `.gsd/ISSUES.md`:
 ---
 ```
 
-Remove from STATE.md `open_issues`.
+Remove from state.json `open_issues`.
 
 Commit:
 ```bash
-git add .gsd/ISSUES.md .gsd/STATE.md
+git add .opti-gsd/ISSUES.md .opti-gsd/state.json
 git commit -m "fix: resolve I{NNN} - {title}"
 ```
 

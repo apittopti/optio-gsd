@@ -48,7 +48,7 @@ Priority order:
 
 ## Output Format
 
-Write to `.gsd/plans/phase-XX/RESEARCH.md`:
+Write to `.opti-gsd/plans/phase-XX/RESEARCH.md`:
 
 ```markdown
 # Phase {N} Research: {Phase Title}

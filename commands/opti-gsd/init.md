@@ -136,126 +136,91 @@ If yes, spawn opti-gsd-codebase-mapper agents in parallel:
 ### Step 6: Create Directory Structure
 
 ```bash
-mkdir -p .gsd/plans
-mkdir -p .gsd/archive
-mkdir -p .gsd/summaries
-mkdir -p .gsd/codebase
-mkdir -p .gsd/stories
-mkdir -p .gsd/issues
-mkdir -p .gsd/debug
+mkdir -p .opti-gsd/plans
+mkdir -p .opti-gsd/archive
+mkdir -p .opti-gsd/summaries
+mkdir -p .opti-gsd/codebase
+mkdir -p .opti-gsd/stories
+mkdir -p .opti-gsd/issues
+mkdir -p .opti-gsd/debug
 ```
 
-### Step 7: Create config.md
+### Step 7: Create config.json
 
-Write `.gsd/config.md`:
+Write `.opti-gsd/config.json`:
 
-```yaml
----
-# Project Configuration
-app_type: {detected_app_type}
-framework: {detected_framework}
-
-# Git Workflow
-branching: milestone
-prefix: gsd/
-base: {detected_base_branch}
-commits: conventional
-workflow: solo  # solo = merge directly, team = create PR
-
-# Execution Mode
-mode: interactive
-depth: standard
-
-# Context Management
-budgets:
-  orchestrator: 15
-  executor: 50
-  planner: 60
-  researcher: 70
-
-# CI/CD & Toolchain
-ci:
-  package_manager: {detected_package_manager}
-  build: {detected_build_command}
-  test: {detected_test_command}
-  lint: {detected_lint_command}
-  typecheck: {detected_typecheck_command}
-  e2e: {detected_e2e_command}
-
-# URLs
-urls:
-  local: {detected_local_url}
-  api: {detected_api_url}
-  staging: null
-  production: null
-
-# Deployment
-deploy:
-  target: null
-  ci_system: {github-actions if .github/workflows exists else null}
-  production_branch: {detected_base_branch}
-
-# Discovery Defaults
-discovery:
-  default_level: 1
-  force_research: false
-
-# Testing
-testing:
-  type: {terminal if cli/claude-code-plugin else browser}
-  browser: {true if web/desktop else false}
-  headless: false
-  viewport: [1280, 720]  # only if browser: true
-
-# Skills
-skills:
-  - test-driven-development
-  - systematic-debugging
-  - verification-before-completion
-
-# MCP Integrations
-mcps:
-  {detected_mcps}
-
-# Verification
-verification:
-  type: {terminal if cli/claude-code-plugin else browser}
-  github: {MCP_DOCKER if available else null}
----
+```json
+{
+  "project": {
+    "app_type": "{detected_app_type}",
+    "framework": "{detected_framework}"
+  },
+  "git": {
+    "branching": "milestone",
+    "prefix": "gsd/",
+    "base": "{detected_base_branch}",
+    "commits": "conventional",
+    "workflow": "solo"
+  },
+  "mode": "interactive",
+  "budgets": {
+    "orchestrator": 15,
+    "executor": 50,
+    "planner": 60,
+    "researcher": 70
+  },
+  "ci": {
+    "package_manager": "{detected}",
+    "build": "{detected}",
+    "test": "{detected}",
+    "lint": "{detected}",
+    "typecheck": "{detected}",
+    "e2e": null
+  },
+  "urls": {
+    "local": "{detected}",
+    "api": null,
+    "staging": null,
+    "production": null
+  },
+  "testing": {
+    "type": "browser|terminal",
+    "headless": false,
+    "viewport": [1280, 720]
+  },
+  "mcps": [],
+  "verification": {
+    "type": "browser|terminal",
+    "github": null
+  }
+}
 ```
 
-### Step 8: Create Initial STATE.md
+### Step 8: Create Initial state.json
 
-Write `.gsd/STATE.md`:
+Write `.opti-gsd/state.json`:
 
-```yaml
----
-milestone: null
-phase: null
-task: null
-branch: null
-
-last_active: {current_timestamp}
-session_tokens: 0
-
-phases_complete: []
-phases_in_progress: []
-phases_pending: []
-
-open_issues: []
----
-
-## Session Context
-Project initialized. Ready for /opti-gsd:roadmap to plan work.
-
-## Recent Decisions
-(none yet)
+```json
+{
+  "milestone": null,
+  "phase": null,
+  "task": null,
+  "status": "initialized",
+  "branch": null,
+  "last_active": "{ISO_timestamp}",
+  "phases": {
+    "complete": [],
+    "in_progress": [],
+    "pending": []
+  },
+  "context": "Project initialized. Ready for /opti-gsd:roadmap to plan work."
+}
 ```
 
 ### Step 9: Commit
 
 ```bash
-git add .gsd/
+git add .opti-gsd/
 git commit -m "chore: initialize opti-gsd"
 ```
 
@@ -301,8 +266,8 @@ MCPs:
   Integrations: supabase, stripe
 
 Created:
-  .gsd/config.md
-  .gsd/STATE.md
+  .opti-gsd/config.json
+  .opti-gsd/state.json
 
 Next steps:
 → /opti-gsd:roadmap      — Plan your work (create phases)

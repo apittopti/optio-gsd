@@ -54,14 +54,14 @@ opti-gsd is a Claude Code plugin for spec-driven development with fresh context 
 
 ## Project Files
 
-When initialised, creates `.gsd/` in project root:
+When initialised, creates `.opti-gsd/` in project root:
 
 ```
-.gsd/
+.opti-gsd/
 ├── config.md           # Project configuration (YAML frontmatter)
 ├── PROJECT.md          # Vision, goals, constraints
 ├── REQUIREMENTS.md     # REQ-IDs with phase mapping
-├── ROADMAP.md          # Phase progress tracking
+├── roadmap.md          # Phase progress tracking
 ├── STATE.md            # Compact session state
 ├── ISSUES.md           # Issue tracking
 ├── DECISIONS.md        # Architecture decisions
@@ -96,7 +96,7 @@ When initialised, creates `.gsd/` in project root:
 | STATE.md | Always | ~150 |
 | PROJECT.md | new-project, roadmap | ~300 |
 | REQUIREMENTS.md | plan-phase, verify | ~400 |
-| ROADMAP.md | plan-phase, execute, status | ~300 |
+| roadmap.md | plan-phase, execute, status | ~300 |
 | Current plan.md | execute only | ~500 |
 | summaries/*.md | context reference | ~100 each |
 | RESEARCH.md | planning only | ~800 |
@@ -204,7 +204,7 @@ mcps:
 - Must support IE11
 ```
 
-### ROADMAP.md
+### roadmap.md
 
 ```markdown
 # Roadmap
@@ -338,7 +338,7 @@ estimated_tokens: 45000
   <action>
     Create StatsCard component with:
     - Props: label (string), value (number), trend (up|down|neutral)
-    - Tailwind styling per .gsd/codebase/CONVENTIONS.md
+    - Tailwind styling per .opti-gsd/codebase/CONVENTIONS.md
     - Loading skeleton state
     - Error display state
   </action>
@@ -500,9 +500,9 @@ Each executor gets fresh context, preventing quality degradation from accumulate
 
 After phase completion:
 ```
-1. Move .gsd/plans/phase-XX/ → .gsd/archive/phase-XX/
+1. Move .opti-gsd/plans/phase-XX/ → .opti-gsd/archive/phase-XX/
 2. Generate compact summary:
-   .gsd/summaries/phase-XX.md (~100 tokens)
+   .opti-gsd/summaries/phase-XX.md (~100 tokens)
 3. Update STATE.md
 4. Commit: "chore: archive phase X"
 ```
@@ -539,7 +539,7 @@ Initialise opti-gsd in existing project.
 4. Scan ~/.claude/skills/ and ~/.claude/plugins/ for installed skills
 5. Ask user about MCPs/services
 6. Confirm or ask app_type if ambiguous
-7. Create .gsd/ directory structure
+7. Create .opti-gsd/ directory structure
 8. Create config.md with detected settings
 9. Git commit: "chore: initialise opti-gsd"
 
@@ -557,7 +557,7 @@ Create new project with guided setup.
    - What are the main goals?
    - What are the constraints?
    - What is explicitly out of scope?
-5. Create .gsd/ directory
+5. Create .opti-gsd/ directory
 6. Create config.md
 7. Create PROJECT.md
 8. Git commit: "chore: initialise opti-gsd project"
@@ -571,14 +571,14 @@ Create or view roadmap.
 1. Read PROJECT.md
 2. Ask: What milestones do you see?
 3. For v1.0: What phases needed?
-4. Create ROADMAP.md with phases
-5. Create phase directories in .gsd/plans/
+4. Create roadmap.md with phases
+5. Create phase directories in .opti-gsd/plans/
 6. Create STATE.md
 7. Git commit: "docs: create roadmap"
 
 **Behaviour (view):**
 
-1. Display ROADMAP.md with status indicators
+1. Display roadmap.md with status indicators
 
 ### /opti-gsd:plan-phase [N]
 
@@ -586,7 +586,7 @@ Generate execution plan for phase.
 
 **Behaviour:**
 
-1. Read PROJECT.md, ROADMAP.md, STATE.md
+1. Read PROJECT.md, roadmap.md, STATE.md
 2. Read ISSUES.md (known issues to avoid)
 3. Read config.md (available skills, MCPs, app_type)
 4. Analyse phase requirements
@@ -600,7 +600,7 @@ Generate execution plan for phase.
      - Browser verification (if web/desktop and UI task)
      - MCP verification (if data/payment task)
    - Done condition
-7. Create .gsd/plans/phase-XX/plan.md
+7. Create .opti-gsd/plans/phase-XX/plan.md
 8. Git commit: "docs: plan phase X"
 
 ### /opti-gsd:execute
@@ -611,7 +611,7 @@ Execute current phase plan.
 
 1. Read config.md, STATE.md
 2. Find current phase from STATE.md
-3. Read .gsd/plans/phase-XX/plan.md
+3. Read .opti-gsd/plans/phase-XX/plan.md
 4. For each task:
    a. Build subagent prompt (see Subagent Prompt Template)
    b. Spawn subagent via Task tool
@@ -630,7 +630,7 @@ Execute current phase plan.
 5. After all tasks:
    - Create summary.md
    - Update STATE.md: phase complete
-   - Update ROADMAP.md: mark phase complete
+   - Update roadmap.md: mark phase complete
 
 ### /opti-gsd:execute-task [N]
 
@@ -662,7 +662,7 @@ Complete current milestone.
 4. Create PR (if gh cli available) or instruct user
 5. Tag release
 6. Update STATE.md
-7. Archive milestone to .gsd/milestones/
+7. Archive milestone to .opti-gsd/milestones/
 
 ### /opti-gsd:status
 
@@ -670,7 +670,7 @@ Show current state and next action.
 
 **Behaviour:**
 
-1. Read STATE.md, ROADMAP.md, config.md
+1. Read STATE.md, roadmap.md, config.md
 2. Display:
    - Current milestone, phase, task
    - Current branch
@@ -710,7 +710,7 @@ Add phase to end of current milestone.
 **Behaviour:**
 
 1. Ask: What does this phase accomplish?
-2. Append to ROADMAP.md
+2. Append to roadmap.md
 3. Create phase directory
 4. Git commit: "docs: add phase X"
 
@@ -721,7 +721,7 @@ Insert urgent phase after phase N.
 **Behaviour:**
 
 1. Ask: What urgent work?
-2. Insert as phase N.1 in ROADMAP.md
+2. Insert as phase N.1 in roadmap.md
 3. Create phase directory
 4. Git commit: "docs: insert phase X.1"
 
@@ -778,10 +778,10 @@ Start or resume systematic debugging session.
 
 **Behaviour:**
 
-1. If issue-id provided, load `.gsd/debug/{issue-id}.md`
+1. If issue-id provided, load `.opti-gsd/debug/{issue-id}.md`
 2. If no issue-id, ask for symptoms
 3. Spawn opti-gsd-debugger agent
-4. Agent maintains state in `.gsd/debug/`
+4. Agent maintains state in `.opti-gsd/debug/`
 5. Return ROOT CAUSE IDENTIFIED or INVESTIGATION BLOCKED
 
 ### /opti-gsd:verify [phase]
@@ -790,11 +790,11 @@ Verify phase completion with goal-backward analysis.
 
 **Behaviour:**
 
-1. Read ROADMAP.md for phase goals
+1. Read roadmap.md for phase goals
 2. Spawn opti-gsd-verifier agent
 3. Three-level artifact verification (Existence → Substantive → Wired)
 4. Spawn opti-gsd-integration-checker if gaps found
-5. Generate VERIFICATION.md
+5. Generate verification.md
 6. If passed: mark phase verified
 7. If gaps: return gap analysis for gap-closure planning
 
@@ -823,8 +823,8 @@ Archive completed phase to save context.
 **Behaviour:**
 
 1. Verify phase is complete
-2. Move `.gsd/plans/phase-XX/` → `.gsd/archive/phase-XX/`
-3. Generate compact summary (`.gsd/summaries/phase-XX.md`):
+2. Move `.opti-gsd/plans/phase-XX/` → `.opti-gsd/archive/phase-XX/`
+3. Generate compact summary (`.opti-gsd/summaries/phase-XX.md`):
    - Tasks completed
    - Key outcomes
    - Decisions made
@@ -869,8 +869,8 @@ When /opti-gsd:execute spawns a subagent for a task, inject this prompt:
 You are a focused implementation agent for opti-gsd. Complete ONLY this task.
 
 <context>
-  <project>{.gsd/PROJECT.md#overview}</project>
-  <conventions>{.gsd/codebase/CONVENTIONS.md}</conventions>
+  <project>{.opti-gsd/PROJECT.md#overview}</project>
+  <conventions>{.opti-gsd/codebase/CONVENTIONS.md}</conventions>
 </context>
 
 <task id="{task.id}" reqs="{task.reqs}">
@@ -1242,7 +1242,7 @@ Full agent prompts are in the `agents/` directory. Key capabilities:
 
 #### opti-gsd-debugger
 - Scientific hypothesis-driven investigation
-- Persistent state in `.gsd/debug/` for context survival
+- Persistent state in `.opti-gsd/debug/` for context survival
 - Binary search and minimal reproduction techniques
 - Verification standards: understand WHY fix works
 
@@ -1279,7 +1279,7 @@ Full agent prompts are in the `agents/` directory. Key capabilities:
 
 #### opti-gsd-codebase-mapper
 - Focus modes: tech, arch, quality, concerns
-- Writes directly to `.gsd/codebase/`
+- Writes directly to `.opti-gsd/codebase/`
 - Documents: STACK, ARCHITECTURE, STRUCTURE, CONVENTIONS, TESTING, INTEGRATIONS, CONCERNS
 
 #### opti-gsd-integration-checker
@@ -1318,7 +1318,7 @@ For each task in plan:
 3. Load opti-gsd-planner agent
 4. Inject:
    - PROJECT.md
-   - ROADMAP.md (current phase)
+   - roadmap.md (current phase)
    - config.md
    - ISSUES.md
    - RESEARCH.md (if exists)
@@ -1327,7 +1327,7 @@ For each task in plan:
 6. Receive plan.md
 7. Load opti-gsd-plan-checker agent
 8. Validate plan
-9. If PASS: Save to .gsd/plans/phase-XX/
+9. If PASS: Save to .opti-gsd/plans/phase-XX/
 10. If FAIL: Return to planner with issues
 ```
 
@@ -1343,7 +1343,7 @@ For each task in plan:
 3. Load opti-gsd-research-synthesizer agent
 4. Consolidate into SUMMARY.md
 5. Load opti-gsd-roadmapper agent
-6. Create ROADMAP.md and STATE.md
+6. Create roadmap.md and STATE.md
 7. Present for user approval
 ```
 
@@ -1356,7 +1356,7 @@ For each task in plan:
    - focus: arch → ARCHITECTURE.md, STRUCTURE.md
    - focus: quality → CONVENTIONS.md, TESTING.md
    - focus: concerns → CONCERNS.md
-3. All documents written to .gsd/codebase/
+3. All documents written to .opti-gsd/codebase/
 ```
 
 ### From /opti-gsd:verify
@@ -1364,11 +1364,11 @@ For each task in plan:
 ```markdown
 1. Load opti-gsd-verifier agent
 2. Inject:
-   - ROADMAP.md (phase goals)
+   - roadmap.md (phase goals)
    - Phase summaries
    - Current codebase access
 3. Spawn via Task tool
-4. Receive VERIFICATION.md
+4. Receive verification.md
 5. If gaps_found:
    - Load opti-gsd-integration-checker agent
    - Verify component connections
@@ -1385,7 +1385,7 @@ For each task in plan:
    - Relevant files
    - Previous debug state (if resuming)
 3. Spawn via Task tool
-4. Agent maintains state in .gsd/debug/
+4. Agent maintains state in .opti-gsd/debug/
 5. Returns: ROOT CAUSE IDENTIFIED or INVESTIGATION BLOCKED
 ```
 
@@ -1450,7 +1450,7 @@ Orchestrator:
 | Aspect | Original GSD | Opti-GSD | Improvement |
 |--------|--------------|----------|-------------|
 | Installation | npx command | Native Claude plugin | No external dependencies, instant loading |
-| Directory | `.planning/` | `.gsd/` | Shorter, cleaner |
+| Directory | `.planning/` | `.opti-gsd/` | Shorter, cleaner |
 | Config | `config.json` | `config.md` (YAML) | Unified markdown format, human-readable |
 | Task Format | XML in markdown | XML with explicit schema | Structured verification, REQ traceability |
 

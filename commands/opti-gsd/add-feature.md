@@ -49,7 +49,7 @@ Based on keywords:
 
 ### Step 4: Add to FEATURES.md
 
-Append to `.gsd/FEATURES.md`:
+Append to `.opti-gsd/FEATURES.md`:
 
 ```markdown
 ### F{NNN}: {description}

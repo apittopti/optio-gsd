@@ -11,20 +11,20 @@ Show current context usage and budget status with optimization suggestions.
 ### Step 1: Analyze Usage
 
 Read:
-- `.gsd/STATE.md` for session_tokens
-- `.gsd/config.md` for budgets
-- Count files in `.gsd/plans/` vs `.gsd/archive/`
+- `.opti-gsd/state.json` for session_tokens
+- `.opti-gsd/config.json` for budgets
+- Count files in `.opti-gsd/plans/` vs `.opti-gsd/archive/`
 - Estimate file sizes
 
 ### Step 2: Calculate Metrics
 
 ```
-Total session tokens: {from STATE.md}
+Total session tokens: {from state.json}
 Budget used: {percentage}%
 
 File breakdown:
-- config.md: ~200 tokens
-- STATE.md: ~150 tokens
+- config.json: ~200 tokens
+- state.json: ~150 tokens
 - Current plan: ~{X} tokens
 - Active research: ~{Y} tokens
 - Unarchived phases: ~{Z} tokens

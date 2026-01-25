@@ -10,7 +10,7 @@ Push current branch to remote to enable preview deployments and CI.
 
 ### Step 1: Check State
 
-Read `.gsd/STATE.md` to get current branch.
+Read `.opti-gsd/state.json` to get current branch.
 
 If no milestone active:
 ```
@@ -33,7 +33,7 @@ Branch {branch} is up to date with remote. Nothing to push.
 
 ### Step 3: Generate Push Summary
 
-Read `.gsd/STATE.md` and `.gsd/ROADMAP.md` to compile what's being pushed:
+Read `.opti-gsd/state.json` and `.opti-gsd/roadmap.md` to compile what's being pushed:
 
 ```markdown
 ## Push Summary: {branch}
@@ -67,7 +67,7 @@ Read `.gsd/STATE.md` and `.gsd/ROADMAP.md` to compile what's being pushed:
 If there are uncommitted state changes, commit them first:
 
 ```bash
-git add .gsd/STATE.md .gsd/ROADMAP.md
+git add .opti-gsd/state.json .opti-gsd/roadmap.md
 git commit -m "$(cat <<'EOF'
 chore: push checkpoint - {milestone} phase {N}
 
@@ -93,7 +93,7 @@ git push -u origin {branch}
 
 ### Step 6: Detect Preview URL
 
-Based on deployment platform in `.gsd/config.md`:
+Based on deployment platform in `.opti-gsd/config.json`:
 
 **Vercel:**
 ```bash
@@ -148,7 +148,7 @@ Preview URL saved to config. /verify will use this for E2E tests.
 
 ### Step 8: Update Config
 
-Store preview URL in `.gsd/STATE.md`:
+Store preview URL in `.opti-gsd/state.json`:
 
 ```yaml
 preview_url: https://myproject-gsd-v1-0-team.vercel.app

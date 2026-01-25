@@ -10,13 +10,13 @@ Pause work with context save for later resumption.
 
 ### Step 1: Capture State
 
-Read current position from STATE.md.
+Read current position from state.json.
 
 ### Step 2: Ask for Context
 
 > "Any notes about where you left off? This helps when resuming."
 
-### Step 3: Update STATE.md
+### Step 3: Update state.json
 
 ```yaml
 ---
@@ -47,7 +47,7 @@ open_issues: [ISS-001, ISS-002]
 ### Step 4: Commit
 
 ```bash
-git add .gsd/STATE.md
+git add .opti-gsd/state.json
 git commit -m "wip: pause at phase {N} task {M}
 
 {Brief context note}"

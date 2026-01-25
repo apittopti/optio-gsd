@@ -10,28 +10,28 @@ Read the opti-gsd project state and display a comprehensive status report with v
 
 Check for required files and report standardized errors:
 
-If `.gsd/` doesn't exist:
+If `.opti-gsd/` doesn't exist:
 ```
 ⚠️ opti-gsd Not Initialized
 ─────────────────────────────────────
-No .gsd/ directory found in this project.
+No .opti-gsd/ directory found in this project.
 
 → Run /opti-gsd:init to initialize an existing project
 → Run /opti-gsd:new-project to start a new project
 ```
 
-If `.gsd/STATE.md` missing:
+If `.opti-gsd/state.json` missing:
 ```
 ⚠️ Project State Missing
 ─────────────────────────────────────
-.gsd/STATE.md not found.
+.opti-gsd/state.json not found.
 
 → Run /opti-gsd:init to reinitialize
 ```
 
 ### Step 2: Load State
 
-1. Read STATE.md, ROADMAP.md, and check for phase plans/verification files
+1. Read state.json, roadmap.md, and check for phase plans/verification files
 2. Display status with progress bars and workflow stages as shown below
 
 ## Output Format
@@ -134,7 +134,7 @@ Show the primary action, with alternatives when choices exist:
 
 | State | DO THIS NOW | Alternatives |
 |-------|-------------|--------------|
-| No .gsd/ | /opti-gsd:new-project | or /opti-gsd:init (existing code) |
+| No .opti-gsd/ | /opti-gsd:new-project | or /opti-gsd:init (existing code) |
 | No roadmap | /opti-gsd:roadmap | — |
 | No plan for phase | /opti-gsd:plan-phase {N} | /opti-gsd:discuss-phase first |
 | Plan exists, not executed | /opti-gsd:execute | — |
@@ -202,11 +202,11 @@ Determine which stage the user is at by checking:
 
 | Stage | Check |
 |-------|-------|
-| **ROADMAP** | `.gsd/ROADMAP.md` exists? |
-| **PLAN** | `.gsd/plans/phase-{current}/plan.md` exists? |
+| **ROADMAP** | `.opti-gsd/roadmap.md` exists? |
+| **PLAN** | `.opti-gsd/plans/phase-{current}/plan.json` exists? |
 | **EXECUTE** | All tasks in current phase plan completed? |
 | **PUSH** | Current branch pushed to remote? |
-| **VERIFY** | `.gsd/plans/phase-{current}/VERIFICATION.md` exists? |
+| **VERIFY** | `.opti-gsd/plans/phase-{current}/verification.md` exists? |
 
 **Stage Symbols:**
 - `✓` = completed

@@ -15,9 +15,9 @@ You verify that software phases work as an interconnected system, not just as is
 
 ## Using External Capabilities
 
-At startup, check if `.gsd/tools.md` exists. If so, read it to discover tools for enhanced integration checking:
+At startup, check if `.opti-gsd/tools.json` exists. If so, read it to discover tools for enhanced integration checking:
 
-| Need | Check tools.md for | Use |
+| Need | Check tools.json for | Use |
 |------|---------------------|-----|
 | Find all usages/callers | cclsp | `mcp__cclsp__find_references` (faster than grep) |
 | Check if imported | cclsp | `mcp__cclsp__find_references` |
@@ -25,7 +25,7 @@ At startup, check if `.gsd/tools.md` exists. If so, read it to discover tools fo
 | Browser integration | Chrome / Browser | Test UI integrations visually |
 
 **How to use:**
-1. Read `.gsd/tools.md` for available capabilities
+1. Read `.opti-gsd/tools.json` for available capabilities
 2. Use `ToolSearch` to load MCP tools before calling
 3. cclsp `find_references` is more accurate than grep for finding usages
 4. Fall back to grep if cclsp not available

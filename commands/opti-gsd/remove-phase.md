@@ -46,10 +46,10 @@ Consider archiving instead: /opti-gsd:archive {N}
 **Status:** Pending
 
 This will:
-1. Remove Phase {N} from ROADMAP.md
+1. Remove Phase {N} from roadmap.md
 2. Renumber Phase {N+1} → {N}, Phase {N+2} → {N+1}, etc.
 3. Update all phase references
-4. Delete `.gsd/plans/phase-{N}/` if exists
+4. Delete `.opti-gsd/plans/phase-{N}/` if exists
 
 **Confirm removal?** (yes/no)
 ```
@@ -75,7 +75,7 @@ Options:
 
 ### Step 4: Remove Phase
 
-Delete from ROADMAP.md:
+Delete from roadmap.md:
 ```markdown
 ### Phase {N}: {Title} [PENDING]
 {...content...}
@@ -85,19 +85,19 @@ Delete from ROADMAP.md:
 
 For each phase > N:
 - Decrement phase number by 1
-- Update phase header in ROADMAP.md
+- Update phase header in roadmap.md
 - Rename plan directory if exists
 
 ```bash
 # Rename from lowest to highest to avoid conflicts
 for phase in {N+1..highest}; do
-  if [ -d ".gsd/plans/phase-${phase}" ]; then
-    mv ".gsd/plans/phase-${phase}" ".gsd/plans/phase-$((phase-1))"
+  if [ -d ".opti-gsd/plans/phase-${phase}" ]; then
+    mv ".opti-gsd/plans/phase-${phase}" ".opti-gsd/plans/phase-$((phase-1))"
   fi
 done
 ```
 
-### Step 6: Update STATE.md
+### Step 6: Update state.json
 
 Update phase arrays:
 - Remove from `phases_pending`
@@ -106,14 +106,14 @@ Update phase arrays:
 ### Step 7: Update References
 
 Search and update phase references in:
-- ROADMAP.md (dependency mentions)
+- roadmap.md (dependency mentions)
 - DECISIONS.md (phase references)
 - Other plan files
 
 ### Step 8: Commit and Report
 
 ```bash
-git add .gsd/
+git add .opti-gsd/
 git commit -m "chore: remove phase {N} - {title}
 
 Renumbered phases {N+1}+ to {N}+"

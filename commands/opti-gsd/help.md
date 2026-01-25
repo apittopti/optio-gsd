@@ -2,7 +2,7 @@
 description: Display available opti-gsd commands with descriptions.
 ---
 
-Display help information. First, read `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json` for version info. If `.gsd/` exists, also read `.gsd/config.md` to show current configuration.
+Display help information. First, read `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json` for version info. If `.opti-gsd/` exists, also read `.opti-gsd/config.json` to show current configuration.
 
 ## Arguments
 
@@ -21,7 +21,7 @@ Display help information. First, read `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plug
 
 **Read version and author from `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json` and substitute into the header above.**
 
-If `.gsd/` exists, show current configuration:
+If `.opti-gsd/` exists, show current configuration:
 
 ```
 Current Configuration:
@@ -32,7 +32,7 @@ Current Configuration:
 ──────────────────────────────────────────────────────────────
 ```
 
-If `.gsd/` does not exist:
+If `.opti-gsd/` does not exist:
 
 ```
 Project: Not initialized
@@ -198,8 +198,8 @@ opti-gsd uses standardized error messages with next-step suggestions:
 
 | Error | Meaning | Solution |
 |-------|---------|----------|
-| `opti-gsd Not Initialized` | No `.gsd/` directory | Run /opti-gsd:init or /opti-gsd:new-project |
-| `Project State Missing` | `.gsd/STATE.md` not found | Run /opti-gsd:init to reinitialize |
-| `No Roadmap Found` | `.gsd/ROADMAP.md` not found | Run /opti-gsd:roadmap to create one |
+| `opti-gsd Not Initialized` | No `.opti-gsd/` directory | Run /opti-gsd:init or /opti-gsd:new-project |
+| `Project State Missing` | `.opti-gsd/state.json` not found | Run /opti-gsd:init to reinitialize |
+| `No Roadmap Found` | `.opti-gsd/roadmap.md` not found | Run /opti-gsd:roadmap to create one |
 | `No Plan Found` | Phase plan missing | Run /opti-gsd:plan-phase N |
 | `Phase Not Executed` | Trying to verify unexecuted phase | Run /opti-gsd:execute first |

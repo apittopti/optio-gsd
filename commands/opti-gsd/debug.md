@@ -15,7 +15,7 @@ Start or resume a systematic debugging session.
 ### Step 1: Check for Existing Session
 
 If `issue-id` provided:
-- Load `.gsd/debug/{issue-id}.md`
+- Load `.opti-gsd/debug/{issue-id}.md`
 - Resume from last state
 
 If no `issue-id`:
@@ -34,7 +34,7 @@ Ask user for symptoms:
 
 ### Step 3: Create Debug Session File
 
-Write `.gsd/debug/{issue-id}.md`:
+Write `.opti-gsd/debug/{issue-id}.md`:
 
 ```markdown
 # Debug Session: {issue-id}
@@ -126,8 +126,8 @@ If issue was from ISSUES.md:
 ### Step 7: Commit
 
 ```bash
-git add .gsd/debug/{issue-id}.md
-git add .gsd/ISSUES.md  # if updated
+git add .opti-gsd/debug/{issue-id}.md
+git add .opti-gsd/ISSUES.md  # if updated
 git commit -m "fix: resolve {issue-id}
 
 Root cause: {brief cause}
@@ -138,7 +138,7 @@ Fix: {brief fix}"
 
 ## Context Survival
 
-Debug sessions persist in `.gsd/debug/` so they can survive context resets.
+Debug sessions persist in `.opti-gsd/debug/` so they can survive context resets.
 
 When resuming:
 1. Load session file

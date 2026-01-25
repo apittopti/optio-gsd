@@ -21,12 +21,12 @@ No automatic fix loops - you decide when and how to address issues.
 
 ### Step 1: Load Verification Report
 
-Read `.gsd/plans/phase-{N}/VERIFICATION.md` and extract:
+Read `.opti-gsd/plans/phase-{N}/verification.md` and extract:
 - Gap list with types and affected files
 - CI failures with error messages
 - Integration issues with break points
 
-If no VERIFICATION.md exists:
+If no verification.md exists:
 ```
 ⚠️ No Verification Report
 ─────────────────────────────────────
@@ -37,7 +37,7 @@ Phase {N} has not been verified yet.
 
 ### Step 2: Parse Gaps
 
-Extract gaps from VERIFICATION.md `<gaps>` section:
+Extract gaps from verification.md `<gaps>` section:
 
 ```xml
 <gaps>
@@ -64,13 +64,13 @@ For each gap, create a targeted fix task:
 
 ### Step 4: Create Fix Plan
 
-Write `.gsd/plans/phase-{N}/fix-plan.md`:
+Write `.opti-gsd/plans/phase-{N}/fix-plan.json`:
 
 ```markdown
 # Fix Plan: Phase {N} Gaps
 
 ## Source
-Generated from: VERIFICATION.md
+Generated from: verification.md
 Gaps identified: {count}
 
 ## Fix Tasks
@@ -103,7 +103,7 @@ Gaps identified: {count}
 
 **Next Steps:**
 → /opti-gsd:execute — Execute fix plan
-→ Review fix-plan.md and edit if needed
+→ Review fix-plan.json and edit if needed
 → /opti-gsd:verify {N} — Re-verify after fixes
 
 Execute fixes now? [Y/n]
@@ -114,7 +114,7 @@ If user confirms (or yolo mode), run /opti-gsd:execute on fix plan.
 ### Step 6: Commit Plan
 
 ```bash
-git add .gsd/plans/phase-{N}/fix-plan.md
+git add .opti-gsd/plans/phase-{N}/fix-plan.json
 git commit -m "docs(phase-{N}): create fix plan for {count} gaps"
 ```
 

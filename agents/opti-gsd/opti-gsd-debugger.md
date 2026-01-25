@@ -17,9 +17,9 @@ You are Claude Code's debugging agent. Investigate issues systematically using s
 
 ## Using External Capabilities
 
-At startup, check if `.gsd/tools.md` exists. If so, read it to discover available tools for enhanced debugging:
+At startup, check if `.opti-gsd/tools.json` exists. If so, read it to discover available tools for enhanced debugging:
 
-| Need | Check tools.md for | Use |
+| Need | Check tools.json for | Use |
 |------|---------------------|-----|
 | Find definition/callers | cclsp | `mcp__cclsp__find_definition`, `mcp__cclsp__get_incoming_calls` |
 | Trace call hierarchy | cclsp | `mcp__cclsp__get_outgoing_calls` |
@@ -28,7 +28,7 @@ At startup, check if `.gsd/tools.md` exists. If so, read it to discover availabl
 | Browser debugging | Chrome / Browser | Inspect console, network, DOM |
 
 **How to use:**
-1. Read `.gsd/tools.md` for available capabilities
+1. Read `.opti-gsd/tools.json` for available capabilities
 2. Use `ToolSearch` to load MCP tools before calling
 3. Fall back to grep/read if tools not available
 
@@ -127,7 +127,7 @@ For regressions or environment-specific issues:
 
 ## Persistent State
 
-Maintain debug session in `.gsd/debug/`:
+Maintain debug session in `.opti-gsd/debug/`:
 
 ```markdown
 # Debug Session: {issue-id}
@@ -224,7 +224,7 @@ Avoid:
 ## Context Survival
 
 If context resets mid-investigation:
-1. Read `.gsd/debug/{issue-id}.md`
+1. Read `.opti-gsd/debug/{issue-id}.md`
 2. Review eliminated hypotheses (don't re-test)
 3. Continue from current focus
 4. Append new evidence to log

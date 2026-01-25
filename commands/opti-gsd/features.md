@@ -21,7 +21,7 @@ Manage captured feature ideas.
 
 ### List Pending Features (no args)
 
-Read `.gsd/FEATURES.md` and display pending items:
+Read `.opti-gsd/FEATURES.md` and display pending items:
 
 ```markdown
 ## Pending Features
@@ -88,13 +88,13 @@ Convert a feature into a user story (for formal tracking with acceptance criteri
 
 **F{id}:** {description}
 
-This will create a user story in `.gsd/stories/` with formal acceptance criteria.
+This will create a user story in `.opti-gsd/stories/` with formal acceptance criteria.
 
 Confirm? (yes/no)
 ```
 
 On confirm:
-- Create story in `.gsd/stories/`
+- Create story in `.opti-gsd/stories/`
 - Prompt for acceptance criteria
 - Mark feature as "promoted"
 
@@ -140,13 +140,13 @@ Confirm? (yes/no)
 ```
 
 On confirm:
-- Archive to `.gsd/archive/features-{date}.md`
+- Archive to `.opti-gsd/archive/features-{date}.md`
 - Remove from FEATURES.md
 
 ```markdown
 ## Completed Features Cleared
 
-Archived {count} items to `.gsd/archive/features-{date}.md`
+Archived {count} items to `.opti-gsd/archive/features-{date}.md`
 Remaining: {pending_count} pending features
 ```
 

@@ -23,7 +23,7 @@ Check installed Claude Code skills and project usage:
 ## Available Skills
 
 ### Currently Configured
-Skills referenced in `.gsd/config.md`:
+Skills referenced in `.opti-gsd/config.json`:
 - commit — Conventional commit generation
 - test — Test file generation
 
@@ -112,10 +112,10 @@ This skill will be available during opti-gsd workflows.
 - /opti-gsd:pause — Include in commit workflow
 - /opti-gsd:verify — Reference during verification
 
-Added to `.gsd/config.md`.
+Added to `.opti-gsd/config.json`.
 ```
 
-Update `.gsd/config.md`:
+Update `.opti-gsd/config.json`:
 ```yaml
 skills:
   - commit
@@ -125,7 +125,7 @@ skills:
 
 Commit:
 ```bash
-git add .gsd/config.md
+git add .opti-gsd/config.json
 git commit -m "chore: add {skill} skill to project"
 ```
 

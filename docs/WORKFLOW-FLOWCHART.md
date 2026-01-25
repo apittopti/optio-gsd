@@ -25,14 +25,14 @@
                                        ▼
                     ┌──────────────────────────────────────┐
                     │         Is project initialized?       │
-                    │            (.gsd/ exists?)            │
+                    │            (.opti-gsd/ exists?)            │
                     └──────────────────┬───────────────────┘
                                        │
                      ┌─────────────────┴─────────────────┐
                      │ NO                                │ YES
                      ▼                                   ▼
         ┌────────────────────────┐         ┌────────────────────────┐
-        │   New or Existing?     │         │    Has ROADMAP.md?     │
+        │   New or Existing?     │         │    Has roadmap.md?     │
         └───────────┬────────────┘         └───────────┬────────────┘
                     │                                  │
          ┌──────────┴──────────┐            ┌─────────┴─────────┐
@@ -155,12 +155,12 @@ REPEAT PATHS (iterate):
 ┌──────────────────────────────────────┐                     │
 │             /plan-phase N            │                     │
 ├──────────────────────────────────────┤                     │
-│ • Reads PROJECT.md, ROADMAP.md       │                     │
+│ • Reads PROJECT.md, roadmap.md       │                     │
 │ • Auto-detects test requirements     │                     │
 │ • Creates wave-based task plan       │                     │
 │ • Assigns skills per task            │                     │
 │                                      │                     │
-│ Output: .gsd/plans/phase-N/plan.md   │                     │
+│ Output: .opti-gsd/plans/phase-N/plan.json   │                     │
 └──────────────────┬───────────────────┘                     │
                    │                                         │
                    ▼                                         │
@@ -205,7 +205,7 @@ REPEAT PATHS (iterate):
 ├──────────────────────────────────────┤                     │
 │ • Pushes branch to remote            │                     │
 │ • Triggers preview deployment        │                     │
-│ • Stores preview URL in STATE.md     │                     │
+│ • Stores preview URL in state.json     │                     │
 └──────────────────┬───────────────────┘                     │
                    │                                         │
                    ▼                                         │
@@ -221,7 +221,7 @@ REPEAT PATHS (iterate):
 │ • CI validation                      │                     │
 │ • Browser verification (if web)      │                     │
 │                                      │                     │
-│ Output: VERIFICATION.md              │                     │
+│ Output: verification.md              │                     │
 └──────────────────┬───────────────────┘                     │
                    │                                         │
          ┌─────────┴─────────┐                               │
@@ -463,7 +463,7 @@ REPEAT PATHS (iterate):
         │     /recover      │───────► Diagnose issue
         └─────────┬─────────┘         Shows:
                   │                   • Git state
-                  │                   • STATE.md vs reality
+                  │                   • state.json vs reality
                   │                   • Suggested fix
                   │
                   ▼

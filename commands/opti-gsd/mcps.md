@@ -23,7 +23,7 @@ Show currently configured MCPs:
 ```markdown
 ## Configured MCPs
 
-MCPs referenced in `.gsd/config.md`:
+MCPs referenced in `.opti-gsd/config.json`:
 
 | MCP | Status | Purpose |
 |-----|--------|---------|
@@ -124,13 +124,13 @@ Configure MCP for project:
 - /opti-gsd:debug — Query {service} directly
 - /opti-gsd:verify — Check {service} state
 
-Added to `.gsd/config.md`.
+Added to `.opti-gsd/config.json`.
 
 **Note:** Ensure MCP server is installed and running.
 See: https://modelcontextprotocol.io/servers/{mcp}
 ```
 
-Update `.gsd/config.md`:
+Update `.opti-gsd/config.json`:
 ```yaml
 mcps:
   - filesystem

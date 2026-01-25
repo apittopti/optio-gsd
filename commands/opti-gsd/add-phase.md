@@ -14,9 +14,9 @@ Add a new phase to the end of the roadmap.
 
 ### Step 1: Validate Context
 
-Read `.gsd/STATE.md` to confirm:
+Read `.opti-gsd/state.json` to confirm:
 - Milestone is active
-- ROADMAP.md exists
+- roadmap.md exists
 
 If no milestone:
 ```markdown
@@ -28,7 +28,7 @@ Start a milestone first:
 
 ### Step 2: Determine Phase Number
 
-Read ROADMAP.md, find highest phase number, increment by 1.
+Read roadmap.md, find highest phase number, increment by 1.
 
 ### Step 3: Gather Phase Details
 
@@ -49,7 +49,7 @@ If mode is yolo:
 - Set requirements to TBD
 - Set dependencies to none
 
-### Step 4: Update ROADMAP.md
+### Step 4: Update roadmap.md
 
 Append to roadmap:
 
@@ -63,14 +63,14 @@ Append to roadmap:
 (Tasks to be defined during planning)
 ```
 
-### Step 5: Update STATE.md
+### Step 5: Update state.json
 
 Add phase to `phases_pending` list.
 
 ### Step 6: Commit
 
 ```bash
-git add .gsd/ROADMAP.md .gsd/STATE.md
+git add .opti-gsd/roadmap.md .opti-gsd/state.json
 git commit -m "chore: add phase {N} - {title}"
 ```
 

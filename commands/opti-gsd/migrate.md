@@ -20,17 +20,17 @@ Check for legacy files:
 ## Migration Check
 
 **Legacy files found:**
-- [x] `.gsd/REQUIREMENTS.md` — Convert to stories
-- [ ] `.gsd/TODOS.md` — Rename to FEATURES.md (if exists)
+- [x] `.opti-gsd/REQUIREMENTS.md` — Convert to stories
+- [ ] `.opti-gsd/TODOS.md` — Rename to FEATURES.md (if exists)
 
 **Already current:**
-- [x] `.gsd/stories/` exists
-- [x] `.gsd/FEATURES.md` exists
+- [x] `.opti-gsd/stories/` exists
+- [x] `.opti-gsd/FEATURES.md` exists
 ```
 
 ### Step 2: Migrate Requirements to Stories
 
-If `.gsd/REQUIREMENTS.md` exists:
+If `.opti-gsd/REQUIREMENTS.md` exists:
 
 1. Parse each requirement (REQ-ID format)
 2. Create a story file for each:
@@ -43,7 +43,7 @@ If `.gsd/REQUIREMENTS.md` exists:
 - **Verification:** User can create account with email/password
 ```
 
-**After (.gsd/stories/US001-user-registration.md):**
+**After (.opti-gsd/stories/US001-user-registration.md):**
 ```markdown
 # US001: User Registration
 
@@ -67,7 +67,7 @@ Core authentication functionality
 Migrated from REQUIREMENTS.md (AUTH-01)
 ```
 
-3. Create mapping file `.gsd/migrations/requirements-to-stories.md`:
+3. Create mapping file `.opti-gsd/migrations/requirements-to-stories.md`:
 
 ```markdown
 # Requirements → Stories Migration
@@ -81,16 +81,16 @@ Migrated from REQUIREMENTS.md (AUTH-01)
 | DASH-01 | US003 | Dashboard Layout |
 ```
 
-4. Update ROADMAP.md references:
+4. Update roadmap.md references:
    - Replace `**Requirements:** AUTH-01, AUTH-02`
    - With `**Delivers:** US001, US002`
 
 5. Archive REQUIREMENTS.md:
-   - Move to `.gsd/archive/REQUIREMENTS.md.bak`
+   - Move to `.opti-gsd/archive/REQUIREMENTS.md.bak`
 
 ### Step 3: Migrate TODOS to FEATURES
 
-If `.gsd/TODOS.md` exists but `.gsd/FEATURES.md` doesn't:
+If `.opti-gsd/TODOS.md` exists but `.opti-gsd/FEATURES.md` doesn't:
 
 1. Rename TODOS.md to FEATURES.md
 2. Update ID format (T001 → F001)
@@ -99,15 +99,15 @@ If `.gsd/TODOS.md` exists but `.gsd/FEATURES.md` doesn't:
 ### Step 4: Commit Migration
 
 ```bash
-git add .gsd/stories/
-git add .gsd/migrations/
-git add .gsd/ROADMAP.md
-git add .gsd/archive/
-git rm .gsd/REQUIREMENTS.md 2>/dev/null || true
+git add .opti-gsd/stories/
+git add .opti-gsd/migrations/
+git add .opti-gsd/roadmap.md
+git add .opti-gsd/archive/
+git rm .opti-gsd/REQUIREMENTS.md 2>/dev/null || true
 git commit -m "chore: migrate to stories-based workflow
 
 - Converted {N} requirements to user stories
-- Updated ROADMAP.md references
+- Updated roadmap.md references
 - Archived REQUIREMENTS.md"
 ```
 
@@ -120,16 +120,16 @@ git commit -m "chore: migrate to stories-based workflow
 - {N} requirements → {N} user stories
 
 **Files created:**
-- .gsd/stories/US001-*.md through US{N}-*.md
+- .opti-gsd/stories/US001-*.md through US{N}-*.md
 
 **Files archived:**
-- .gsd/archive/REQUIREMENTS.md.bak
+- .opti-gsd/archive/REQUIREMENTS.md.bak
 
-**ROADMAP.md updated:**
+**roadmap.md updated:**
 - Replaced requirement references with story references
 
 **Mapping preserved:**
-- .gsd/migrations/requirements-to-stories.md
+- .opti-gsd/migrations/requirements-to-stories.md
 
 Your project now uses the simplified workflow:
 - Features (your enhancement ideas)

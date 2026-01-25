@@ -28,10 +28,10 @@ Read research files (STACK.md, FEATURES.md, ARCHITECTURE.md, PITFALLS.md) and pr
 
 ```
 1. Read all research files
-   - .gsd/research/STACK.md
-   - .gsd/research/FEATURES.md
-   - .gsd/research/ARCHITECTURE.md
-   - .gsd/research/PITFALLS.md
+   - .opti-gsd/research/STACK.md
+   - .opti-gsd/research/FEATURES.md
+   - .opti-gsd/research/ARCHITECTURE.md
+   - .opti-gsd/research/PITFALLS.md
 
 2. Synthesize executive summary
    - What is this product?
@@ -56,7 +56,7 @@ Read research files (STACK.md, FEATURES.md, ARCHITECTURE.md, PITFALLS.md) and pr
 6. Write SUMMARY.md
 
 7. Commit all research files
-   - git add .gsd/research/*
+   - git add .opti-gsd/research/*
    - git commit -m "docs: project research"
 
 8. Return confirmation to orchestrator
@@ -108,7 +108,7 @@ Confidence reflects actual source quality:
 
 ## Output Format
 
-Write to `.gsd/research/SUMMARY.md`:
+Write to `.opti-gsd/research/SUMMARY.md`:
 
 ```markdown
 # Research Summary
@@ -191,11 +191,11 @@ Phase 3: {name}
 After writing SUMMARY.md:
 
 ```bash
-git add .gsd/research/STACK.md
-git add .gsd/research/FEATURES.md
-git add .gsd/research/ARCHITECTURE.md
-git add .gsd/research/PITFALLS.md
-git add .gsd/research/SUMMARY.md
+git add .opti-gsd/research/STACK.md
+git add .opti-gsd/research/FEATURES.md
+git add .opti-gsd/research/ARCHITECTURE.md
+git add .opti-gsd/research/PITFALLS.md
+git add .opti-gsd/research/SUMMARY.md
 git commit -m "docs: project research synthesis"
 ```
 
@@ -205,11 +205,11 @@ git commit -m "docs: project research synthesis"
 SYNTHESIS COMPLETE
 
 Files committed:
-- .gsd/research/STACK.md
-- .gsd/research/FEATURES.md
-- .gsd/research/ARCHITECTURE.md
-- .gsd/research/PITFALLS.md
-- .gsd/research/SUMMARY.md
+- .opti-gsd/research/STACK.md
+- .opti-gsd/research/FEATURES.md
+- .opti-gsd/research/ARCHITECTURE.md
+- .opti-gsd/research/PITFALLS.md
+- .opti-gsd/research/SUMMARY.md
 
 Commit: {hash}
 

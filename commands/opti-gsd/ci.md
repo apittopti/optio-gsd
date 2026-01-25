@@ -12,21 +12,21 @@ Configure or view CI/CD toolchain and deployment settings.
 
 Check for required files and report standardized errors:
 
-If `.gsd/` doesn't exist:
+If `.opti-gsd/` doesn't exist:
 ```
 ⚠️ opti-gsd Not Initialized
 ─────────────────────────────────────
-No .gsd/ directory found in this project.
+No .opti-gsd/ directory found in this project.
 
 → Run /opti-gsd:init to initialize an existing project
 → Run /opti-gsd:new-project to start a new project
 ```
 
-If `.gsd/config.md` missing:
+If `.opti-gsd/config.json` missing:
 ```
 ⚠️ Configuration Missing
 ─────────────────────────────────────
-.gsd/config.md not found.
+.opti-gsd/config.json not found.
 
 → Run /opti-gsd:init to reinitialize
 ```
@@ -146,7 +146,7 @@ Map MCPs to capabilities:
 
 ### Step 4: Display Current Configuration
 
-Show current CI config from `.gsd/config.md`:
+Show current CI config from `.opti-gsd/config.json`:
 
 ```
 ╔══════════════════════════════════════════════════════════════╗
@@ -211,9 +211,9 @@ If user runs /opti-gsd:ci configure, ask:
 4. "Does your platform auto-deploy branches for preview?" (Yes / No)
 5. If yes: "What's your preview URL pattern?" (e.g., `https://{project}-{branch}.vercel.app`)
 
-### Step 6: Update config.md
+### Step 6: Update config.json
 
-Update the `ci:` and `deploy:` sections in `.gsd/config.md`:
+Update the `ci:` and `deploy:` sections in `.opti-gsd/config.json`:
 
 ```yaml
 # CI/CD & Toolchain
@@ -251,7 +251,7 @@ deploy:
 ### Step 7: Commit Changes
 
 ```bash
-git add .gsd/config.md
+git add .opti-gsd/config.json
 git commit -m "chore: configure CI/CD toolchain"
 ```
 

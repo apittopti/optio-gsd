@@ -18,7 +18,7 @@ Manage user stories from users and clients.
 
 ### List Stories (no args)
 
-Read `.gsd/stories/` and display by status:
+Read `.opti-gsd/stories/` and display by status:
 
 ```markdown
 ## User Stories
@@ -152,13 +152,13 @@ This will archive 3 delivered stories:
 - US001: Export to Excel (v1.2.0)
 - US002: Dark mode (v1.2.0)
 
-Stories will be moved to `.gsd/archive/stories/`
+Stories will be moved to `.opti-gsd/archive/stories/`
 
 Confirm? (yes/no)
 ```
 
 On confirm:
-- Move to `.gsd/archive/stories/`
+- Move to `.opti-gsd/archive/stories/`
 - Keep reference in archive index
 
 ---

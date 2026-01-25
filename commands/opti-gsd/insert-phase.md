@@ -17,7 +17,7 @@ Insert a new phase at a specific position, renumbering subsequent phases.
 
 Check:
 - Milestone is active
-- ROADMAP.md exists
+- roadmap.md exists
 - Position is valid (1 to N+1 where N is current phase count)
 
 If position out of range:
@@ -48,7 +48,7 @@ Options:
 
 For each phase >= position:
 - Increment phase number by 1
-- Update all references in ROADMAP.md
+- Update all references in roadmap.md
 - Update plan file paths if they exist
 
 ### Step 4: Insert New Phase
@@ -58,7 +58,7 @@ Add new phase at position with:
 - Goal: (to be defined)
 - Requirements: TBD
 
-### Step 5: Update STATE.md
+### Step 5: Update state.json
 
 Update phase arrays to reflect new numbering:
 - `phases_complete`: update numbers
@@ -70,19 +70,19 @@ Update phase arrays to reflect new numbering:
 ```bash
 # Rename from highest to lowest to avoid conflicts
 for phase in {highest..position}; do
-  if [ -d ".gsd/plans/phase-${phase}" ]; then
-    mv ".gsd/plans/phase-${phase}" ".gsd/plans/phase-$((phase+1))"
+  if [ -d ".opti-gsd/plans/phase-${phase}" ]; then
+    mv ".opti-gsd/plans/phase-${phase}" ".opti-gsd/plans/phase-$((phase+1))"
   fi
 done
 
 # Create new phase directory
-mkdir -p ".gsd/plans/phase-{position}"
+mkdir -p ".opti-gsd/plans/phase-{position}"
 ```
 
 ### Step 7: Commit
 
 ```bash
-git add .gsd/
+git add .opti-gsd/
 git commit -m "chore: insert phase {position} - {title}
 
 Renumbered phases {position}+ to {position+1}+"

@@ -24,7 +24,7 @@ If no flag, continue to Step 1 normally.
 
 ### Step 1: Verify All Phases Complete
 
-Check ROADMAP.md:
+Check roadmap.md:
 - All phases marked complete
 - All phases verified
 
@@ -81,9 +81,9 @@ Compile from phase summaries:
 {...all requirements}
 ```
 
-Write to `.gsd/CHANGELOG-{milestone}.md`.
+Write to `.opti-gsd/changelog-{milestone}.md`.
 
-### Step 4: Update ROADMAP.md
+### Step 4: Update roadmap.md
 
 ```markdown
 ## Milestone: {name} [COMPLETE]
@@ -106,7 +106,7 @@ Write to `.gsd/CHANGELOG-{milestone}.md`.
    ```bash
    gh pr create \
      --title "Release: {milestone}" \
-     --body "$(cat .gsd/CHANGELOG-{milestone}.md)"
+     --body "$(cat .opti-gsd/changelog-{milestone}.md)"
    ```
 
 3. If gh not available, provide manual instructions:
@@ -117,7 +117,7 @@ Write to `.gsd/CHANGELOG-{milestone}.md`.
    - **From:** {branch}
    - **To:** {base}
    - **Title:** Release: {milestone}
-   - **Body:** See .gsd/CHANGELOG-{milestone}.md
+   - **Body:** See .opti-gsd/changelog-{milestone}.md
 
    After merging, run /opti-gsd:complete-milestone --finalize to tag and archive.
    ```
@@ -134,16 +134,16 @@ git push origin {milestone}
 ### Step 8: Archive Milestone
 
 ```bash
-mkdir -p .gsd/milestones/{milestone}
-mv .gsd/plans/* .gsd/milestones/{milestone}/
-mv .gsd/archive/* .gsd/milestones/{milestone}/
-mv .gsd/summaries/* .gsd/milestones/{milestone}/
-mv .gsd/research/* .gsd/milestones/{milestone}/ 2>/dev/null || true
+mkdir -p .opti-gsd/milestones/{milestone}
+mv .opti-gsd/plans/* .opti-gsd/milestones/{milestone}/
+mv .opti-gsd/archive/* .opti-gsd/milestones/{milestone}/
+mv .opti-gsd/summaries/* .opti-gsd/milestones/{milestone}/
+mv .opti-gsd/research/* .opti-gsd/milestones/{milestone}/ 2>/dev/null || true
 ```
 
 ### Step 9: Reset for Next Milestone
 
-Update STATE.md:
+Update state.json:
 ```yaml
 ---
 milestone: null
@@ -168,7 +168,7 @@ Milestone {name} complete. Ready for next milestone.
 ### Step 10: Commit and Report
 
 ```bash
-git add .gsd/
+git add .opti-gsd/
 git commit -m "chore: complete milestone {name}"
 ```
 
@@ -192,7 +192,7 @@ Next:
 ## Milestone Finalized!
 
 **Tag:** {milestone}
-**Archive:** .gsd/milestones/{milestone}/
+**Archive:** .opti-gsd/milestones/{milestone}/
 
 Ready for next milestone.
 → /opti-gsd:start-milestone {next}

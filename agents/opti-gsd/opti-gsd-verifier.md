@@ -16,9 +16,9 @@ You verify that development phases achieve their stated objectives—not just co
 
 ## Using External Capabilities
 
-At startup, check if `.gsd/tools.md` exists. If so, read it to discover available tools for enhanced verification:
+At startup, check if `.opti-gsd/tools.json` exists. If so, read it to discover available tools for enhanced verification:
 
-| Need | Check tools.md for | Use |
+| Need | Check tools.json for | Use |
 |------|---------------------|-----|
 | Type errors, diagnostics | cclsp | `mcp__cclsp__get_diagnostics` on changed files |
 | Find usages (wiring check) | cclsp | `mcp__cclsp__find_references` |
@@ -26,7 +26,7 @@ At startup, check if `.gsd/tools.md` exists. If so, read it to discover availabl
 | Code quality | code-review plugin | `/code-review:review` via Skill tool |
 
 **How to use:**
-1. Read `.gsd/tools.md` for available capabilities
+1. Read `.opti-gsd/tools.json` for available capabilities
 2. Match capability "Purpose" to your verification need
 3. Use `ToolSearch` to load MCP tools before calling
 4. Use Skill tool for plugin skills, Task tool for plugin agents
@@ -153,11 +153,11 @@ grep -r "select\|insert\|update\|delete" src/app/api/
 
 ## CI/CD Verification
 
-Before artifact verification, run CI checks using config from `.gsd/config.md`:
+Before artifact verification, run CI checks using config from `.opti-gsd/config.json`:
 
 ### Read CI Config
 ```yaml
-# From .gsd/config.md
+# From .opti-gsd/config.json
 ci:
   package_manager: npm
   build: npm run build
@@ -208,8 +208,8 @@ If `ci.e2e` exists and Browser tool available:
 ## Verification Protocol
 
 ```
-1. Load phase goals from ROADMAP.md
-2. Load CI config from config.md
+1. Load phase goals from roadmap.md
+2. Load CI config from config.json
 3. Run CI checks (lint → typecheck → test → build)
 4. If CI fails, stop and report
 5. Derive must-haves using goal-backward method
@@ -232,7 +232,7 @@ Verification can be interrupted by context resets. Use checkpoint files to persi
 
 ### Progress File
 
-Location: `.gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md`
+Location: `.opti-gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md`
 
 Write timing: **After EACH stage completes** (not batched at end). This ensures no work is lost on context reset.
 
@@ -286,8 +286,8 @@ Write timing: **After EACH stage completes** (not batched at end). This ensures 
 
 To prevent corruption on crash or context reset, always write progress files atomically:
 
-1. Write to temporary file: `.gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md.tmp`
-2. Rename temp file to final: `.gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md`
+1. Write to temporary file: `.opti-gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md.tmp`
+2. Rename temp file to final: `.opti-gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md`
 
 This ensures the progress file is never in a partially-written state.
 
@@ -295,7 +295,7 @@ This ensures the progress file is never in a partially-written state.
 
 If context resets mid-verification (mirrors debugger's Context Survival pattern):
 
-1. Read `.gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md`
+1. Read `.opti-gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md`
 2. Review completed stages (don't re-run passed checks)
 3. Continue from current stage or next pending stage
 4. Append new results to progress file

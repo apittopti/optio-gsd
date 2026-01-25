@@ -101,13 +101,13 @@ This allows recovering from accidental rollback.
 # Hard reset to checkpoint
 git reset --hard {checkpoint_tag}
 
-# Update STATE.md to match rolled-back state
+# Update state.json to match rolled-back state
 # (Parse from checkpoint or reset to pre-phase state)
 ```
 
 ### Step 5: Update State
 
-Reset STATE.md to reflect rolled-back position:
+Reset state.json to reflect rolled-back position:
 
 ```yaml
 phase: {N}

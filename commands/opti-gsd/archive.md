@@ -16,21 +16,21 @@ Archive a completed phase to save context.
 
 Check for required files and report standardized errors:
 
-If `.gsd/` doesn't exist:
+If `.opti-gsd/` doesn't exist:
 ```
 ⚠️ opti-gsd Not Initialized
 ─────────────────────────────────────
-No .gsd/ directory found in this project.
+No .opti-gsd/ directory found in this project.
 
 → Run /opti-gsd:init to initialize an existing project
 → Run /opti-gsd:new-project to start a new project
 ```
 
-If `.gsd/STATE.md` missing:
+If `.opti-gsd/state.json` missing:
 ```
 ⚠️ Project State Missing
 ─────────────────────────────────────
-.gsd/STATE.md not found.
+.opti-gsd/state.json not found.
 
 → Run /opti-gsd:init to reinitialize
 ```
@@ -38,7 +38,7 @@ If `.gsd/STATE.md` missing:
 ### Step 2: Identify Phases to Archive
 
 If phase specified:
-- Verify phase is complete (check ROADMAP.md)
+- Verify phase is complete (check roadmap.md)
 - Archive that phase
 
 If no phase:
@@ -48,8 +48,8 @@ If no phase:
 ### Step 3: Verify Phase Complete
 
 Check:
-- Phase marked complete in ROADMAP.md
-- Summary exists in `.gsd/plans/phase-{N}/summary.md`
+- Phase marked complete in roadmap.md
+- Summary exists in `.opti-gsd/plans/phase-{N}/summary.md`
 - All tasks committed
 
 If not complete:
@@ -99,18 +99,18 @@ Target: ~100 tokens max.
 
 ```bash
 # Create archive directory
-mkdir -p .gsd/archive/phase-{N}
+mkdir -p .opti-gsd/archive/phase-{N}
 
 # Move phase files
-mv .gsd/plans/phase-{N}/* .gsd/archive/phase-{N}/
+mv .opti-gsd/plans/phase-{N}/* .opti-gsd/archive/phase-{N}/
 
 # Remove empty directory
-rmdir .gsd/plans/phase-{N}
+rmdir .opti-gsd/plans/phase-{N}
 ```
 
 ### Step 5: Create Compact Summary
 
-Write `.gsd/summaries/phase-{N}.md`:
+Write `.opti-gsd/summaries/phase-{N}.md`:
 
 ```markdown
 # Phase {N}: {Title}
@@ -126,16 +126,16 @@ Outcomes:
 
 This compact version is loaded for context reference instead of full archive.
 
-### Step 6: Update STATE.md
+### Step 6: Update state.json
 
 Note archived phases in session context.
 
 ### Step 7: Commit
 
 ```bash
-git add .gsd/archive/phase-{N}/
-git add .gsd/summaries/phase-{N}.md
-git rm -r .gsd/plans/phase-{N}/
+git add .opti-gsd/archive/phase-{N}/
+git add .opti-gsd/summaries/phase-{N}.md
+git rm -r .opti-gsd/plans/phase-{N}/
 git commit -m "chore: archive phase {N}
 
 Saved ~{tokens}k tokens"
@@ -146,8 +146,8 @@ Saved ~{tokens}k tokens"
 ```markdown
 ## Phase {N} Archived
 
-**Moved to:** .gsd/archive/phase-{N}/
-**Summary:** .gsd/summaries/phase-{N}.md
+**Moved to:** .opti-gsd/archive/phase-{N}/
+**Summary:** .opti-gsd/summaries/phase-{N}.md
 
 **Tokens saved:** ~{count}k
 **Before:** {before}k active

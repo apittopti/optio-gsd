@@ -27,19 +27,19 @@ Spawn 4 parallel `opti-gsd-project-researcher` agents:
 | 4 | **pitfalls** | Common mistakes, anti-patterns, things to avoid |
 
 Each agent receives:
-- `.gsd/PROJECT.md` — project goals and type (if exists)
-- `.gsd/config.md` — detected stack and framework
-- `.gsd/stories/` — user stories to implement
-- `.gsd/codebase/SUMMARY.md` — existing codebase context (if exists)
+- `.opti-gsd/PROJECT.md` — project goals and type (if exists)
+- `.opti-gsd/config.json` — detected stack and framework
+- `.opti-gsd/stories/` — user stories to implement
+- `.opti-gsd/codebase/SUMMARY.md` — existing codebase context (if exists)
 
-Then spawn `opti-gsd-research-synthesizer` to consolidate into `.gsd/research/SUMMARY.md`.
+Then spawn `opti-gsd-research-synthesizer` to consolidate into `.opti-gsd/research/SUMMARY.md`.
 
 ### Phase Research
 
 For /opti-gsd:research phase 2:
 
 Spawn `opti-gsd-phase-researcher` with:
-- Phase goals from ROADMAP.md
+- Phase goals from roadmap.md
 - Stories/issues to deliver in that phase
 - Project research SUMMARY.md (if exists)
 - Codebase conventions
@@ -50,7 +50,7 @@ Focus areas:
 - Common pitfalls for this type of feature
 - Integration considerations with existing code
 
-Output: `.gsd/plans/phase-{N}/RESEARCH.md`
+Output: `.opti-gsd/plans/phase-{N}/RESEARCH.md`
 
 ### Topic Research
 
@@ -61,7 +61,7 @@ Spawn single `opti-gsd-project-researcher` with:
 - Project context
 - Current stack
 
-Output: Displayed directly + optionally saved to `.gsd/research/{topic-slug}.md`
+Output: Displayed directly + optionally saved to `.opti-gsd/research/{topic-slug}.md`
 
 ---
 
@@ -137,8 +137,8 @@ Next steps:
 ## Integration with Planning
 
 When /opti-gsd:plan-phase runs:
-1. Checks for `.gsd/research/SUMMARY.md`
-2. Checks for `.gsd/plans/phase-{N}/RESEARCH.md`
+1. Checks for `.opti-gsd/research/SUMMARY.md`
+2. Checks for `.opti-gsd/plans/phase-{N}/RESEARCH.md`
 3. Incorporates findings into task planning
 4. References pitfalls in verification steps
 

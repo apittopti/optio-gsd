@@ -82,8 +82,8 @@ Designed for solo developers with Claude as implementer.
    - No requirement is orphaned
 
 6. Write deliverables
-   - ROADMAP.md
-   - STATE.md
+   - roadmap.md
+   - state.json
    - Update REQUIREMENTS.md with phase mappings
 
 7. Present for approval
@@ -127,7 +127,7 @@ Tasks:
 
 ## Output Files
 
-### ROADMAP.md
+### roadmap.md
 
 ```markdown
 # Roadmap
@@ -173,7 +173,7 @@ Tasks:
 **Requirements covered:** R6, R7, R8
 ```
 
-### STATE.md
+### state.json
 
 ```markdown
 # State
@@ -224,6 +224,6 @@ Before presenting roadmap:
 2. Ask: "Does this phasing make sense?"
 3. Incorporate feedback
 4. Commit when approved:
-   - git add .gsd/ROADMAP.md .gsd/STATE.md
+   - git add .opti-gsd/roadmap.md .opti-gsd/state.json
    - git commit -m "docs: create roadmap"
 ```

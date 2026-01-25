@@ -12,7 +12,7 @@ This command guides the user through complete project setup. Stay conversational
 
 ### Step 1: Check Prerequisites
 
-If `.gsd/` doesn't exist, run /opti-gsd:init first.
+If `.opti-gsd/` doesn't exist, run /opti-gsd:init first.
 
 ### Step 2: Deep Questioning
 
@@ -38,7 +38,7 @@ Keep asking clarifying questions until you fully understand the project. Don't p
 
 ### Step 3: Write PROJECT.md
 
-Create `.gsd/PROJECT.md`:
+Create `.opti-gsd/PROJECT.md`:
 
 ```markdown
 # {Project Name}
@@ -85,13 +85,13 @@ Ask user:
 - Focus: architecture (patterns and structure)
 - Focus: pitfalls (common mistakes to avoid)
 
-Then spawn opti-gsd-research-synthesizer to consolidate findings into `.gsd/research/SUMMARY.md`.
+Then spawn opti-gsd-research-synthesizer to consolidate findings into `.opti-gsd/research/SUMMARY.md`.
 
 **If no**, proceed directly to stories.
 
 ### Step 5: Capture Initial Stories
 
-Create initial user stories in `.gsd/stories/` for v1 features:
+Create initial user stories in `.opti-gsd/stories/` for v1 features:
 
 ```markdown
 # US001: {Feature Title}
@@ -124,13 +124,13 @@ Create one story file per major v1 feature. Keep them user-focused:
 - US003-dashboard.md
 - etc.
 
-**v2 feature ideas** go to `.gsd/FEATURES.md` as low-priority items.
+**v2 feature ideas** go to `.opti-gsd/FEATURES.md` as low-priority items.
 
 ### Step 6: Generate Roadmap
 
 Spawn opti-gsd-roadmapper agent with:
 - PROJECT.md
-- Stories from `.gsd/stories/`
+- Stories from `.opti-gsd/stories/`
 - SUMMARY.md (if research was done)
 
 The roadmapper will:
@@ -161,9 +161,9 @@ Does this phasing make sense? Any adjustments?
 
 Iterate until user approves.
 
-### Step 8: Write ROADMAP.md
+### Step 8: Write roadmap.md
 
-Create `.gsd/ROADMAP.md`:
+Create `.opti-gsd/roadmap.md`:
 
 ```markdown
 # Roadmap
@@ -195,9 +195,9 @@ Create `.gsd/ROADMAP.md`:
 {Continue for all phases}
 ```
 
-### Step 9: Update STATE.md
+### Step 9: Update state.json
 
-Update `.gsd/STATE.md`:
+Update `.opti-gsd/state.json`:
 
 ```yaml
 ---
@@ -226,20 +226,20 @@ Project defined. Ready to plan Phase 1.
 ### Step 10: Create Phase Directories
 
 ```bash
-mkdir -p .gsd/plans/phase-01
-mkdir -p .gsd/plans/phase-02
+mkdir -p .opti-gsd/plans/phase-01
+mkdir -p .opti-gsd/plans/phase-02
 # etc. for each phase
 ```
 
 ### Step 11: Commit
 
 ```bash
-git add .gsd/
+git add .opti-gsd/
 git commit -m "chore: initialize opti-gsd project
 
 - Created PROJECT.md with goals and constraints
-- Created {N} user stories in .gsd/stories/
-- Generated ROADMAP.md with {N} phases
+- Created {N} user stories in .opti-gsd/stories/
+- Generated roadmap.md with {N} phases
 - Research: {yes/no}"
 ```
 
@@ -253,11 +253,11 @@ Phases: {count}
 Stories: {count} for v1
 
 Files created:
-  .gsd/PROJECT.md
-  .gsd/stories/*.md
-  .gsd/ROADMAP.md
-  .gsd/STATE.md
-  {.gsd/research/* if researched}
+  .opti-gsd/PROJECT.md
+  .opti-gsd/stories/*.md
+  .opti-gsd/roadmap.md
+  .opti-gsd/state.json
+  {.opti-gsd/research/* if researched}
 
 Next: Run /opti-gsd:plan-phase 1 to plan the first phase
 ```

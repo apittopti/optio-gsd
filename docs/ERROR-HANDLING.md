@@ -17,12 +17,12 @@ Required: {what's missing}
 ## Error Categories
 
 ### 1. NOT_INITIALIZED
-Triggered when `.gsd/` directory doesn't exist.
+Triggered when `.opti-gsd/` directory doesn't exist.
 
 ```
 ⚠️ opti-gsd Not Initialized
 ─────────────────────────────────────
-No .gsd/ directory found in this project.
+No .opti-gsd/ directory found in this project.
 
 → Run /opti-gsd:init to initialize an existing project
 → Run /opti-gsd:new-project to start a new project
@@ -31,20 +31,20 @@ No .gsd/ directory found in this project.
 ### 2. MISSING_PREREQUISITE
 Triggered when a required file is missing.
 
-**STATE.md missing:**
+**state.json missing:**
 ```
 ⚠️ Project State Missing
 ─────────────────────────────────────
-.gsd/STATE.md not found.
+.opti-gsd/state.json not found.
 
 → Run /opti-gsd:init to reinitialize
 ```
 
-**ROADMAP.md missing:**
+**roadmap.md missing:**
 ```
 ⚠️ No Roadmap Found
 ─────────────────────────────────────
-.gsd/ROADMAP.md not found. Create a roadmap before planning phases.
+.opti-gsd/roadmap.md not found. Create a roadmap before planning phases.
 
 → Run /opti-gsd:roadmap to create a roadmap
 ```
@@ -101,9 +101,9 @@ Progress:
 
 | Command Type | Required Files |
 |--------------|----------------|
-| Execution (execute, verify) | .gsd/, STATE.md, ROADMAP.md, plan.md |
-| Planning (plan-phase, roadmap) | .gsd/, STATE.md |
-| Session (status, resume, pause) | .gsd/, STATE.md |
+| Execution (execute, verify) | .opti-gsd/, state.json, roadmap.md, plan.json |
+| Planning (plan-phase, roadmap) | .opti-gsd/, state.json |
+| Session (status, resume, pause) | .opti-gsd/, state.json |
 | Utility (help, context) | None (always work) |
 
 ## Next-Step Patterns

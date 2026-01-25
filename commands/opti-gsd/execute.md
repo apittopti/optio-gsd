@@ -12,7 +12,7 @@ This is the core execution engine. It uses Claude Code's **Task tool** to spawn 
 
 ### Step 0: Validate Branch
 
-If `branching: milestone` is configured in `.gsd/config.md`:
+If `branching: milestone` is configured in `.opti-gsd/config.json`:
 
 1. Get current branch:
    ```bash
@@ -23,7 +23,7 @@ If `branching: milestone` is configured in `.gsd/config.md`:
 
 3. If current branch == base branch:
 
-   **If no milestone set in STATE.md:**
+   **If no milestone set in state.json:**
    ```
    ⚠️ No Milestone Active
    ─────────────────────────────────────
@@ -50,21 +50,21 @@ If `branching: milestone` is configured in `.gsd/config.md`:
 
 Check for required files and report standardized errors:
 
-If `.gsd/` doesn't exist:
+If `.opti-gsd/` doesn't exist:
 ```
 ⚠️ opti-gsd Not Initialized
 ─────────────────────────────────────
-No .gsd/ directory found in this project.
+No .opti-gsd/ directory found in this project.
 
 → Run /opti-gsd:init to initialize an existing project
 → Run /opti-gsd:new-project to start a new project
 ```
 
-If `.gsd/STATE.md` missing:
+If `.opti-gsd/state.json` missing:
 ```
 ⚠️ Project State Missing
 ─────────────────────────────────────
-.gsd/STATE.md not found.
+.opti-gsd/state.json not found.
 
 → Run /opti-gsd:init to reinitialize
 ```
@@ -81,12 +81,12 @@ No plan found for phase {N}.
 ### Step 2: Load State
 
 Read (minimal context):
-- `.gsd/config.md` — mode, budgets, browser config
-- `.gsd/STATE.md` — current phase and task position
+- `.opti-gsd/config.json` — mode, budgets, browser config
+- `.opti-gsd/state.json` — current phase and task position
 
 ### Step 3: Load Current Plan
 
-Read `.gsd/plans/phase-{N}/plan.md`.
+Read `.opti-gsd/plans/phase-{N}/plan.json`.
 
 Parse:
 - YAML frontmatter for metadata
@@ -95,7 +95,7 @@ Parse:
 
 ### Step 3b: Determine Starting Point
 
-If resuming (task > 0 in STATE.md):
+If resuming (task > 0 in state.json):
 - Verify prior commits exist
 - Start from next incomplete task
 
@@ -140,7 +140,7 @@ FOR each wave:
            run_in_background=true
          )
      - Store returned task_id for each spawned task
-     - Update STATE.md with background_tasks array
+     - Update state.json with background_tasks array
      - User sees tasks appear in Ctrl+T task list
 
   4. Poll for completion using TaskOutput:
@@ -172,8 +172,8 @@ For each task, construct this prompt for opti-gsd-executor:
 You are a focused implementation agent for opti-gsd. Complete ONLY this task.
 
 <context>
-  <project>{.gsd/PROJECT.md#overview - if exists, otherwise skip}</project>
-  <conventions>{.gsd/codebase/CONVENTIONS.md - if exists}</conventions>
+  <project>{.opti-gsd/PROJECT.md#overview - if exists, otherwise skip}</project>
+  <conventions>{.opti-gsd/codebase/CONVENTIONS.md - if exists}</conventions>
 </context>
 
 <task id="{id}" reqs="{reqs}">
@@ -242,7 +242,7 @@ You are a focused implementation agent for opti-gsd. Complete ONLY this task.
 </known_issues>
 
 <mcps>
-  {List MCPs from .gsd/config.md that are available}
+  {List MCPs from .opti-gsd/config.json that are available}
   Example: filesystem, postgres, github, browser
   Use these MCP tools when they would help complete the task.
 </mcps>
@@ -285,7 +285,7 @@ git commit -m "{type}({phase}-{task}): {description}
 Co-Authored-By: Claude <noreply@anthropic.com>"
 ```
 
-Update STATE.md task counter.
+Update state.json task counter.
 
 **TASK FAILED:**
 ```markdown
@@ -357,7 +357,7 @@ If a subagent reports TASK FAILED (after exhausting TDD attempts), the orchestra
 ```
 IF task_retries[task_id] < execute_max_retries:
   1. Analyze failure from subagent output
-  2. Update STATE.md:
+  2. Update state.json:
      loop:
        task_retries:
          T{id}: {count + 1}
@@ -373,7 +373,7 @@ IF task_retries[task_id] < execute_max_retries:
   5. On failure: increment retry, loop back
 
 IF task_retries[task_id] >= execute_max_retries:
-  1. Update STATE.md:
+  1. Update state.json:
      loop:
        paused: true
        pause_reason: "Task {N} failed after {max_retries} orchestrator retries"
@@ -400,7 +400,7 @@ This enables precise rollback: `pre` = before phase, `post` = after phase, `T{N}
 
 1. Create summary:
 ```bash
-# Write .gsd/plans/phase-{N}/summary.md
+# Write .opti-gsd/plans/phase-{N}/summary.md
 ```
 
 ```markdown
@@ -422,14 +422,14 @@ This enables precise rollback: `pre` = before phase, `post` = after phase, `T{N}
 - Actual: {actual}k
 ```
 
-2. Update STATE.md:
+2. Update state.json:
 ```yaml
 phases_complete: [..., {N}]
 phases_in_progress: []
 phases_pending: [{N+1}, ...]
 ```
 
-3. Update ROADMAP.md:
+3. Update roadmap.md:
 ```markdown
 ### Phase {N}: {Title}
 - [x] Complete
@@ -437,15 +437,15 @@ phases_pending: [{N+1}, ...]
 
 4. Commit metadata:
 ```bash
-git add .gsd/plans/phase-{N}/summary.md
-git add .gsd/STATE.md
-git add .gsd/ROADMAP.md
+git add .opti-gsd/plans/phase-{N}/summary.md
+git add .opti-gsd/state.json
+git add .opti-gsd/roadmap.md
 git commit -m "docs: complete phase {N}"
 ```
 
 ### Step 9: Offer Push for Preview Deployment
 
-Check if deployment platform is configured in `.gsd/config.md`:
+Check if deployment platform is configured in `.opti-gsd/config.json`:
 
 If `deploy.target` is set (vercel, netlify, etc.):
 
@@ -466,7 +466,7 @@ Pushing now will create a preview deployment you can verify against.
 If user confirms:
 1. Run /opti-gsd:push logic
 2. Wait for preview URL
-3. Store preview URL in STATE.md
+3. Store preview URL in state.json
 
 If no deployment configured, skip this step.
 
@@ -573,7 +573,7 @@ All heavy work delegated to subagents with fresh context.
 
 ## Loop State Reference
 
-Execute tracks state in STATE.md:
+Execute tracks state in state.json:
 
 ```yaml
 loop:

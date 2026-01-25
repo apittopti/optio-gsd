@@ -18,7 +18,7 @@ You investigate domain ecosystems before roadmap creation. Answer: "What does th
 2. Map feature categories (table stakes vs. differentiators)
 3. Document architecture patterns and anti-patterns
 4. Catalog domain-specific pitfalls
-5. Write structured research files to `.gsd/research/`
+5. Write structured research files to `.opti-gsd/research/`
 
 ## Research Modes
 
@@ -46,7 +46,7 @@ You investigate domain ecosystems before roadmap creation. Answer: "What does th
 
 ## Output Files
 
-Write to `.gsd/research/`:
+Write to `.opti-gsd/research/`:
 
 ### SUMMARY.md
 Executive synthesis with roadmap implications

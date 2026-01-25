@@ -12,21 +12,21 @@ Create or view the project roadmap.
 
 Check for required files and report standardized errors:
 
-If `.gsd/` doesn't exist:
+If `.opti-gsd/` doesn't exist:
 ```
 ⚠️ opti-gsd Not Initialized
 ─────────────────────────────────────
-No .gsd/ directory found in this project.
+No .opti-gsd/ directory found in this project.
 
 → Run /opti-gsd:init to initialize an existing project
 → Run /opti-gsd:new-project to start a new project
 ```
 
-If `.gsd/STATE.md` missing:
+If `.opti-gsd/state.json` missing:
 ```
 ⚠️ Project State Missing
 ─────────────────────────────────────
-.gsd/STATE.md not found.
+.opti-gsd/state.json not found.
 
 → Run /opti-gsd:init to reinitialize
 ```
@@ -37,11 +37,11 @@ This command has two modes: **create** (if no roadmap exists) or **view** (if ro
 
 ## View Mode
 
-If `.gsd/ROADMAP.md` exists, display it with live status:
+If `.opti-gsd/roadmap.md` exists, display it with live status:
 
 ### Step 2: Load State
 
-Read `.gsd/STATE.md` and `.gsd/ROADMAP.md`.
+Read `.opti-gsd/state.json` and `.opti-gsd/roadmap.md`.
 
 ### Step 3: Display Roadmap with Status
 
@@ -74,20 +74,20 @@ Next action: /opti-gsd:execute to continue
 
 ## Create Mode
 
-If `.gsd/ROADMAP.md` doesn't exist, create one.
+If `.opti-gsd/roadmap.md` doesn't exist, create one.
 
 ### Step 1: Check Prerequisites
 
-Ensure `.gsd/` exists and is initialized.
+Ensure `.opti-gsd/` exists and is initialized.
 
 ### Step 2: Load Context
 
 Read (if they exist):
-- `.gsd/PROJECT.md` for goals and constraints (optional)
-- `.gsd/research/SUMMARY.md` for research findings (optional)
-- `.gsd/stories/` for user stories
-- `.gsd/issues/` for open issues
-- `.gsd/FEATURES.md` for feature ideas
+- `.opti-gsd/PROJECT.md` for goals and constraints (optional)
+- `.opti-gsd/research/SUMMARY.md` for research findings (optional)
+- `.opti-gsd/stories/` for user stories
+- `.opti-gsd/issues/` for open issues
+- `.opti-gsd/FEATURES.md` for feature ideas
 
 ### Step 3: Ask About Milestones
 
@@ -108,18 +108,18 @@ Read from all input buckets and present available items:
 ### What should this milestone include?
 
 **User Stories** ({count} in backlog)
-`.gsd/stories/`
+`.opti-gsd/stories/`
 ☐ US001: Export to Excel (Client A) — high priority
 ☐ US002: Dark mode toggle (User feedback) — medium priority
 ☐ US003: Faster search (Multiple users) — high priority
 
 **Issues** ({count} open)
-`.gsd/issues/`
+`.opti-gsd/issues/`
 ☐ #001: Login fails on Safari — medium severity
 ☐ #002: Memory leak in dashboard — high severity
 
 **Features** ({count} pending)
-`.gsd/FEATURES.md`
+`.opti-gsd/FEATURES.md`
 ☐ F005: Add keyboard shortcuts — medium priority
 ☐ F008: Refactor auth module — low priority
 
@@ -205,9 +205,9 @@ For each phase, success criteria come from:
 
 These MUST be user-observable outcomes, not implementation details.
 
-### Step 8: Write ROADMAP.md
+### Step 8: Write roadmap.md
 
-Create `.gsd/ROADMAP.md`:
+Create `.opti-gsd/roadmap.md`:
 
 ```markdown
 # Roadmap
@@ -244,29 +244,29 @@ Create `.gsd/ROADMAP.md`:
 
 ### Step 9: Update Item Statuses
 
-**Update story files** (`.gsd/stories/US*.md`):
+**Update story files** (`.opti-gsd/stories/US*.md`):
 ```markdown
 **Status:** planned
 **Milestone:** v1.0
 **Phase:** 1
 ```
 
-**Update issues** (`.gsd/issues/*.md`):
+**Update issues** (`.opti-gsd/issues/*.md`):
 ```markdown
 **Status:** planned
 **Milestone:** v1.0
 **Phase:** 2
 ```
 
-**Update features** (mark as promoted in `.gsd/FEATURES.md`):
+**Update features** (mark as promoted in `.opti-gsd/FEATURES.md`):
 ```markdown
 **Status:** promoted
 **Milestone:** v1.0
 ```
 
-### Step 10: Create STATE.md (if needed)
+### Step 10: Create state.json (if needed)
 
-If STATE.md doesn't exist or needs updating:
+If state.json doesn't exist or needs updating:
 
 ```yaml
 ---
@@ -295,15 +295,15 @@ Roadmap created with {N} phases.
 ### Step 11: Create Phase Directories
 
 ```bash
-mkdir -p .gsd/plans/phase-01
-mkdir -p .gsd/plans/phase-02
+mkdir -p .opti-gsd/plans/phase-01
+mkdir -p .opti-gsd/plans/phase-02
 # etc.
 ```
 
 ### Step 12: Commit
 
 ```bash
-git add .gsd/ROADMAP.md .gsd/STATE.md .gsd/stories/ .gsd/issues/ .gsd/FEATURES.md
+git add .opti-gsd/roadmap.md .opti-gsd/state.json .opti-gsd/stories/ .opti-gsd/issues/ .opti-gsd/FEATURES.md
 git commit -m "docs: create roadmap with {N} phases"
 ```
 

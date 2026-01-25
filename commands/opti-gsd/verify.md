@@ -13,7 +13,7 @@ Verify phase completion with goal-backward analysis and integration checking.
 
 ## Checkpoint Stages Reference
 
-Verification progress is tracked through 7 stages. Each stage writes to `.gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md` on completion.
+Verification progress is tracked through 7 stages. Each stage writes to `.opti-gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md` on completion.
 
 | Stage | Order | Trigger | What Gets Written |
 |-------|-------|---------|-------------------|
@@ -34,7 +34,7 @@ Verification progress is tracked through 7 stages. Each stage writes to `.gsd/pl
 Before validating prerequisites, check if the branch should be pushed for deployment testing.
 
 **1. Check deploy target configuration:**
-Read `.gsd/config.md` and look for `deploy.target` setting.
+Read `.opti-gsd/config.json` and look for `deploy.target` setting.
 
 **2. If deploy is configured, check branch push status:**
 ```bash
@@ -75,21 +75,21 @@ Ask: "Push now? [Y/n]"
 
 Check for required files and report standardized errors:
 
-If `.gsd/` doesn't exist:
+If `.opti-gsd/` doesn't exist:
 ```
 ⚠️ opti-gsd Not Initialized
 ─────────────────────────────────────
-No .gsd/ directory found in this project.
+No .opti-gsd/ directory found in this project.
 
 → Run /opti-gsd:init to initialize an existing project
 → Run /opti-gsd:new-project to start a new project
 ```
 
-If `.gsd/STATE.md` missing:
+If `.opti-gsd/state.json` missing:
 ```
 ⚠️ Project State Missing
 ─────────────────────────────────────
-.gsd/STATE.md not found.
+.opti-gsd/state.json not found.
 
 → Run /opti-gsd:init to reinitialize
 ```
@@ -106,19 +106,19 @@ Phase {N} has not been executed yet.
 ### Step 2: Load Context
 
 Read:
-- `.gsd/config.md` — for CI commands and URLs
-- `.gsd/STATE.md`
-- `.gsd/ROADMAP.md` — for phase goals
-- `.gsd/plans/phase-{N}/plan.md` — for task details
-- `.gsd/plans/phase-{N}/summary.md` — for execution results
+- `.opti-gsd/config.json` — for CI commands and URLs
+- `.opti-gsd/state.json`
+- `.opti-gsd/roadmap.md` — for phase goals
+- `.opti-gsd/plans/phase-{N}/plan.json` — for task details
+- `.opti-gsd/plans/phase-{N}/summary.md` — for execution results
 
 ### Step 2.5: Check for Resume
 
-Check if `--resume` flag is provided OR `.gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md` exists:
+Check if `--resume` flag is provided OR `.opti-gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md` exists:
 
 **If resuming:**
 
-1. Load `.gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md`
+1. Load `.opti-gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md`
 2. Parse completed stages from progress file
 3. Display resume banner:
 
@@ -148,7 +148,7 @@ Continuing from: Key Link Verification
 
 ### Step 3: Run CI Commands
 
-Read CI configuration from `.gsd/config.md` and run in order:
+Read CI configuration from `.opti-gsd/config.json` and run in order:
 
 ```
 Running CI checks...
@@ -197,16 +197,16 @@ CI Checks Passed!
 
 ### Step 3b: Code Intelligence Diagnostics (Optional Enhancement)
 
-Check `.gsd/tools.md` for available code intelligence tools. If cclsp is available, check for real-time diagnostics on changed files:
+Check `.opti-gsd/tools.json` for available code intelligence tools. If cclsp is available, check for real-time diagnostics on changed files:
 
 ```
-Code Intelligence (from .gsd/tools.md)
+Code Intelligence (from .opti-gsd/tools.json)
 ──────────────────────────────────────────────────────────────
 Checking files modified in this phase...
 ```
 
 **Check for cclsp availability:**
-1. Read `.gsd/tools.md`
+1. Read `.opti-gsd/tools.json`
 2. Look for "cclsp" in the MCP Servers section
 3. If available, use ToolSearch to load `mcp__cclsp__get_diagnostics`
 
@@ -244,7 +244,7 @@ Fix before continuing? [Y/n]
 
 **Note:** Code intelligence diagnostics are advisory. They often catch issues that CI would find later, but faster. This step never blocks verification - it just reports.
 
-**Checkpoint:** Write progress to `.gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md` after CI checks complete:
+**Checkpoint:** Write progress to `.opti-gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md` after CI checks complete:
 ```markdown
 # Verification Progress: Phase {N}
 
@@ -269,7 +269,7 @@ Fix before continuing? [Y/n]
 If `ci.e2e` is configured AND browser MCP is available:
 
 **Determine target URL:**
-1. Check `STATE.md` for `preview_url` (set by `/push`)
+1. Check `state.json` for `preview_url` (set by `/push`)
 2. If preview available, use it (tests against real deployment)
 3. Otherwise, use `urls.local` (tests against local dev server)
 
@@ -314,8 +314,8 @@ If browser MCP available, can also run visual verification:
 ### Step 4: Spawn Verifier
 
 Spawn opti-gsd-verifier agent with:
-- Phase goals from ROADMAP.md
-- Must-haves from plan.md
+- Phase goals from roadmap.md
+- Must-haves from plan.json
 - Execution summary
 
 The verifier performs three-level artifact verification:
@@ -346,9 +346,9 @@ If gaps found, spawn opti-gsd-integration-checker to verify:
 
 ### Step 5b: Story Acceptance Criteria Check
 
-If phase delivers user stories (has `Delivers: US*` in ROADMAP.md):
+If phase delivers user stories (has `Delivers: US*` in roadmap.md):
 
-1. Load story files from `.gsd/stories/`
+1. Load story files from `.opti-gsd/stories/`
 2. Extract acceptance criteria from each story
 3. Verify each criterion is satisfied
 
@@ -377,7 +377,7 @@ If phase delivers user stories (has `Delivers: US*` in ROADMAP.md):
 
 ### Step 6: Generate Report
 
-Write `.gsd/plans/phase-{N}/VERIFICATION.md`:
+Write `.opti-gsd/plans/phase-{N}/verification.md`:
 
 ```markdown
 # Verification Report: Phase {N}
@@ -432,7 +432,7 @@ Write `.gsd/plans/phase-{N}/VERIFICATION.md`:
 - [ ] Behavior: Auth redirect works correctly
 ```
 
-**Cleanup:** After writing VERIFICATION.md, delete `.gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md` (progress file is no longer needed once final report exists).
+**Cleanup:** After writing verification.md, delete `.opti-gsd/plans/phase-{N}/VERIFICATION-PROGRESS.md` (progress file is no longer needed once final report exists).
 
 ### Step 7: Handle Result
 
@@ -459,7 +459,7 @@ Next steps:
 💾 State saved. Safe to /compact or start new session if needed.
 ```
 
-Mark phase as verified in STATE.md.
+Mark phase as verified in state.json.
 
 **gaps_found:**
 ```markdown
@@ -528,7 +528,7 @@ When verification reports `gaps_found`, report to user and suggest next action.
 ### Step 8: Commit
 
 ```bash
-git add .gsd/plans/phase-{N}/VERIFICATION.md
+git add .opti-gsd/plans/phase-{N}/verification.md
 git commit -m "docs: verify phase {N} - {status}"
 ```
 

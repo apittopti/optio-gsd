@@ -10,7 +10,7 @@ Reduce context footprint of all project files.
 
 ### Step 1: Analyze Current State
 
-Scan `.gsd/` directory and calculate token estimates for all files.
+Scan `.opti-gsd/` directory and calculate token estimates for all files.
 
 ### Step 2: Archive Completed Phases
 
@@ -19,7 +19,7 @@ For each completed phase not yet archived:
 
 ### Step 3: Summarize Research Files
 
-For each `.gsd/plans/phase-{N}/RESEARCH.md`:
+For each `.opti-gsd/plans/phase-{N}/RESEARCH.md`:
 - If phase is complete, condense to key findings only
 - Remove verbose examples and exploration
 
@@ -46,7 +46,7 @@ After:
 - Feature-based folder structure
 ```
 
-### Step 4: Compact STATE.md
+### Step 4: Compact state.json
 
 Remove old session notes, keep only recent:
 
@@ -90,7 +90,7 @@ ESM compatible, smaller bundle, better TypeScript support.
 ### Step 6: Clean Debug Sessions
 
 For resolved issues:
-- Move to `.gsd/archive/debug/`
+- Move to `.opti-gsd/archive/debug/`
 - Keep only summary in main debug folder
 
 ### Step 7: Report Savings
@@ -101,7 +101,7 @@ For resolved issues:
 ### Actions Taken
 - Archived {N} completed phases
 - Condensed {M} research files
-- Trimmed STATE.md history
+- Trimmed state.json history
 - Compacted DECISIONS.md
 - Archived {K} resolved debug sessions
 
@@ -110,7 +110,7 @@ For resolved issues:
 |----------|--------|-------|-------|
 | Phase archives | 4,500 | 300 | 4,200 |
 | Research files | 2,400 | 600 | 1,800 |
-| STATE.md | 500 | 150 | 350 |
+| state.json | 500 | 150 | 350 |
 | DECISIONS.md | 800 | 200 | 600 |
 | Debug sessions | 1,200 | 100 | 1,100 |
 | **Total** | **9,400** | **1,350** | **8,050** |
@@ -121,7 +121,7 @@ For resolved issues:
 ### Step 8: Commit
 
 ```bash
-git add .gsd/
+git add .opti-gsd/
 git commit -m "chore: compact project files
 
 Saved ~{total}k tokens ({percentage}% reduction)"
