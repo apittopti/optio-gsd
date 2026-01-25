@@ -350,6 +350,38 @@ Task 03: 18 calls (Read: 4, Edit: 3, mcp__cclsp: 5, Bash: 6)
 - Avg tools per task: 9 calls
 ```
 
+#### Filtering Options
+
+Filter the usage report with optional flags:
+
+| Flag | Description | Example |
+|------|-------------|---------|
+| `--task=T01` | Filter to specific task | Show only tools used in Task 01 |
+| `--type=mcp` | Filter by tool type | Show only MCP tools |
+| `--type=builtin` | Filter by tool type | Show only built-in tools |
+| `--session=latest` | Session scope (default) | Most recent session only |
+| `--session=all` | Session scope | Aggregate all sessions |
+| `--format=json` | Output format | Machine-readable JSON |
+
+#### Examples
+
+```bash
+# Full summary (default)
+/opti-gsd:tools usage
+
+# Filter to specific task
+/opti-gsd:tools usage --task=T01
+
+# Show only MCP tools
+/opti-gsd:tools usage --type=mcp
+
+# Aggregate all sessions
+/opti-gsd:tools usage --session=all
+
+# JSON output for scripting
+/opti-gsd:tools usage --format=json
+```
+
 #### No Data Available
 
 If no usage data exists:
