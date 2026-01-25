@@ -312,7 +312,19 @@ If `ci.e2e` exists and Browser tool available:
     - Determine story delivery status:
       - All ACs have evidence + no deferral → can be 'delivered'
       - Any AC missing evidence OR deferral found → stays 'in_progress'
-12. Determine status (considering CI, artifacts, links, E2E, AND story completeness)
+12. Scan modified files for debt markers:
+    - Get file list from phase summary or git diff
+    - For each file, extract debt markers (TODO, FIXME, HACK, XXX, DEFER, @debt)
+    - Compare before/after using git diff
+    - Calculate: Resolved (removed lines), Created (added lines), Net Change
+13. Check debt balance:
+    - If Net > 0 without justification → add to gaps
+    - If new debt lacks issue reference (ISS###) → add to gaps
+    - Determine debt status:
+      - GOOD: Net <= 0 and all new debt tracked
+      - WARNING: Net <= 0 but untracked debt exists
+      - BLOCKED: Net > 0 without justification OR untracked debt
+14. Determine status (considering CI, artifacts, links, E2E, story completeness, AND debt balance)
 ```
 
 ## Checkpoint Protocol
