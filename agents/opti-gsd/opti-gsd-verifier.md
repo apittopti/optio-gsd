@@ -465,6 +465,30 @@ ON RESUME:
 ### Deferral Findings
 - **US003**: Notes contain 'pending migration to new auth'
 
+## Debt Balance
+
+| Metric | Count | Status |
+|--------|-------|--------|
+| Resolved | 5 | - |
+| Created | 2 | - |
+| Net Change | -3 | GOOD |
+
+### Resolved Debt
+- src/api/auth.ts:45 - TODO: rate limiting (implemented)
+- src/utils/date.ts:12 - FIXME: timezone bug (fixed)
+
+### New Debt
+- src/api/stats.ts:89 - TODO(ISS005): pagination (tracked)
+- src/components/Modal.tsx:15 - HACK: force rerender (UNTRACKED)
+
+### Debt Status: WARNING
+Net debt reduced but 1 untracked item found.
+
+**Status Values:**
+- `GOOD`: Net <= 0 and all new debt tracked
+- `WARNING`: Net <= 0 but untracked debt exists
+- `BLOCKED`: Net > 0 without justification OR untracked debt
+
 ## Gaps (for planner)
 ```xml
 <gaps>
@@ -486,6 +510,14 @@ ON RESUME:
   </gap>
   <gap type="story_ac_failed" story="US001">
     AC3: Error message displayed - L4 verification failed
+  </gap>
+  <gap type="debt_increase" net="+3">
+    Phase creates 5 new debt markers but only resolves 2.
+    Net increase of 3 debt items.
+  </gap>
+  <gap type="debt_untracked" file="src/components/Modal.tsx" line="15">
+    HACK: force rerender - No issue reference (ISS###).
+    Create issue or fix before completing phase.
   </gap>
 </gaps>
 ```
