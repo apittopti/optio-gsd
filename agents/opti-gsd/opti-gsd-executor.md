@@ -536,3 +536,33 @@ IF file path matches a FILE_NOT_FOUND learning:
   → Apply documented fix
   → Log: "Applied learning: {description}"
 ```
+
+### Agent Bug Detection
+
+When FILE_NOT_FOUND errors occur, determine if it's an agent bug:
+
+**Agent bug indicators:**
+- File path is hardcoded in an agent or command file
+- File was referenced but never created by the workflow
+- File was renamed/moved but agent still uses old path
+
+**Detection steps:**
+1. Search agent files for the missing file path:
+   ```bash
+   grep -r "{missing_file}" agents/ commands/
+   ```
+2. If found in agent/command: Flag as WORKFLOW_BUG
+3. Log which agent needs updating in the learning entry
+
+**Learning entry for agent bugs:**
+```markdown
+## FILE_NOT_FOUND: {file}
+
+**First seen:** {date}
+**Error:** Cannot read {file} - file does not exist
+**Root cause:** Agent {agent-name} references removed/moved file
+**Fix:** Updated to use {new_path} instead
+**Prevention:** Agent `agents/opti-gsd/{agent}.md` updated
+```
+
+This creates a feedback loop: errors improve the agents that caused them.
