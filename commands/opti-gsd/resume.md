@@ -38,7 +38,32 @@ Read `.opti-gsd/state.json` for:
 - Last active timestamp
 - Session context notes
 
-### Step 2: Show Context
+### Step 2a: Load Learnings
+
+If `.opti-gsd/learnings.md` exists:
+
+1. Read learnings file
+2. Count entries by category
+3. Display recent learnings summary:
+
+```markdown
+## Active Learnings
+
+{count} learnings loaded:
+- {count} DEPRECATED warnings
+- {count} CI_FAILURE fixes
+- {count} FILE_NOT_FOUND resolutions
+- {count} WORKFLOW_BUG patches
+
+Recent:
+- DEPRECATED: `next lint` → Use ESLint CLI directly
+- FILE_NOT_FOUND: plugin.json → Read from package.json
+```
+
+4. These learnings are now active for this session
+5. Executor will check them before running commands
+
+### Step 3: Show Context
 
 ```markdown
 # Resume Session
@@ -59,7 +84,7 @@ Read `.opti-gsd/state.json` for:
 Ready to continue from Task {M}?
 ```
 
-### Step 3: Verify State
+### Step 4: Verify State
 
 Check git status:
 - Any uncommitted changes?
@@ -78,7 +103,7 @@ B) Stash changes and continue
 C) Abort and resolve manually
 ```
 
-### Step 4: Continue
+### Step 5: Continue
 
 If user confirms, run /opti-gsd:execute to continue execution.
 

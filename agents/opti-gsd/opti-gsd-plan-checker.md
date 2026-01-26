@@ -24,7 +24,7 @@ Validate plans using goal-backward analysis. Confirm tasks actually address requ
 
 ## Verification Dimensions
 
-Check these six areas:
+Check these seven areas:
 
 ### 1. Requirement Coverage
 Does every goal requirement have corresponding tasks?
@@ -100,6 +100,33 @@ Bad:
 → Implementation detail, not user outcome
 ```
 
+### 7. Consumer-Required Rule
+Every new abstraction must have a consumer in the same phase.
+
+Abstractions that require consumers:
+- Hooks (useX)
+- Services (XService)
+- Utilities (util functions)
+- Components (when created standalone)
+- API endpoints (must be called)
+- Context providers (must wrap consumers)
+
+```
+Check:
+- Task creates UserService.ts
+- Does another task in same phase import UserService?
+- If NO: BLOCKER - orphaned abstraction
+
+Good example:
+Task 1: Create useAuth hook
+Task 2: LoginForm uses useAuth → Consumer exists ✓
+
+Bad example:
+Task 1: Create useAuth hook
+Task 2: Create LoginForm (no useAuth import)
+→ useAuth is orphaned, no consumer → BLOCKER
+```
+
 ## Checking Process
 
 ```
@@ -132,12 +159,17 @@ Bad:
    - Flag orphaned artifacts
    - Verify key links are planned
 
-7. Assess scope
+7. Check consumer-required rule
+   - Scan for new file creations (hooks, services, utils, components)
+   - For each abstraction, verify exports are imported elsewhere in phase
+   - Flag orphaned abstractions with no consumers
+
+8. Assess scope
    - Count tasks
    - Estimate context usage
    - Flag oversized plans
 
-8. Determine status
+9. Determine status
    - Any blockers? → FAIL
    - Any warnings? → PASS with warnings
    - All clear? → PASS
@@ -190,6 +222,14 @@ No circular dependencies detected.
 | Dashboard | StatsCard | Task 4 imports from Task 1 | OK |
 | StatsCard | /api/stats | No fetch in Task 1 | MISSING |
 
+## Consumer-Required Validation
+
+| Abstraction | Type | Consumer | Status |
+|-------------|------|----------|--------|
+| useAuth | Hook | LoginForm (Task 2) | OK |
+| UserService | Service | - | BLOCKER |
+| formatDate | Utility | StatsCard (Task 1) | OK |
+
 ## Scope Assessment
 
 - Tasks: 4 (target: 2-4) ✓
@@ -203,6 +243,11 @@ No circular dependencies detected.
    - Task 3 has no file paths specified
    - Executor cannot scope the work
    - Fix: Add exact file paths
+
+2. **Orphaned abstraction: useAuth hook**
+   - useAuth hook created in Task 1 without consumer in phase
+   - No task imports or uses useAuth
+   - Fix: Add useAuth import to LoginForm in Task 2, or defer hook creation
 
 ### Warnings
 1. **Task 2 vague Action**

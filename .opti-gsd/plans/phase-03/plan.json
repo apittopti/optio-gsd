@@ -1,0 +1,163 @@
+{
+  "phase": 3,
+  "title": "Story Completeness Gate",
+  "goal": "Stories cannot be partially delivered - all acceptance criteria must pass with mapped evidence",
+  "must_haves": [
+    "All acceptance criteria must pass for story to be 'delivered'",
+    "Partial delivery keeps story as 'in_progress'",
+    "Verification maps each AC to evidence",
+    "'Pending migration' notes in stories block delivery"
+  ],
+  "waves": [
+    {
+      "wave": 1,
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "01",
+          "title": "Add Story Completeness Gate section to verifier",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md"],
+          "test_required": false,
+          "action": "Add a new major section '## Story Completeness Gate' after the 'Re-Verification Mode' section (at end of file). This section defines:\n\n1. **Story Loading Protocol** - Load story files from `.opti-gsd/stories/*.md` directory\n2. **AC Parsing Rules** - Extract acceptance criteria from story markdown (lines matching `- [ ] AC:` or `- [x] AC:` pattern)\n3. **Delivery Blocking Conditions**:\n   - Any AC unchecked (no evidence) → blocked\n   - Deferral language in Notes → blocked\n   - Story stays 'in_progress' until 100% ACs verified\n\nInclude example story format and AC extraction.",
+          "user_observable": "When user runs /opti-gsd:verify, stories in .opti-gsd/stories/ are scanned and their delivery status is validated",
+          "verify": [
+            "Section header '## Story Completeness Gate' exists in verifier",
+            "Story loading protocol references .opti-gsd/stories/*.md",
+            "AC parsing rules specify checkbox format",
+            "Delivery blocking conditions list all criteria"
+          ],
+          "done": "Verifier contains complete Story Completeness Gate section with loading, parsing, and blocking rules",
+          "status": "pending"
+        },
+        {
+          "id": "02",
+          "title": "Add AC-to-Evidence Mapping subsection",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md"],
+          "test_required": false,
+          "action": "Within the Story Completeness Gate section (after task 01's content), add '### AC-to-Evidence Mapping' subsection. Define evidence sources:\n\n| Evidence Source | Used For | Example |\n|-----------------|----------|----------|\n| Test results | Behavior verification | 'User can login' → login.test.ts passes |\n| L4 verification | User value proof | 'User sees dashboard' → L4: USER_VALUE |\n| Browser screenshot | Visual proof | 'Modal displays correctly' → screenshot.png |\n| API response | Endpoint behavior | 'API returns user data' → GET /api/user: 200 |\n| CLI output | Command results | 'CLI shows status' → output matches expected |\n\nShow AC-evidence mapping format for output.",
+          "user_observable": "Verification report shows which evidence supports each acceptance criterion in a story",
+          "verify": [
+            "Subsection '### AC-to-Evidence Mapping' exists",
+            "Evidence sources table lists all five types",
+            "Example mapping format shown",
+            "Integration with existing L4 verification referenced"
+          ],
+          "done": "AC-to-Evidence Mapping subsection defines all evidence sources and mapping format",
+          "status": "pending"
+        },
+        {
+          "id": "03",
+          "title": "Add Deferral Language Detection for Stories subsection",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md"],
+          "test_required": false,
+          "action": "Add '### Story Deferral Language Detection' subsection (after AC-to-Evidence). Include:\n\n**Forbidden Patterns (from planner):**\n- 'can be migrated later'\n- 'ready for future use'\n- 'infrastructure for X'\n- 'consumers can adopt incrementally'\n- 'pages can be migrated'\n- 'will be connected in future phase'\n- 'placeholder for X'\n- 'frontend will call this later'\n- 'available for integration'\n- 'foundation for X'\n\n**Story-Specific Patterns:**\n- 'pending migration'\n- 'deferred to'\n- 'future sprint'\n- 'out of scope for now'\n- 'will be addressed in'\n\nSpecify: Scan story Notes section. If any pattern found, story cannot be marked 'delivered'.",
+          "user_observable": "Stories with deferral language in Notes section are flagged and cannot be marked as delivered",
+          "verify": [
+            "Subsection '### Story Deferral Language Detection' exists",
+            "References planner forbidden patterns for consistency",
+            "Story-specific patterns listed",
+            "Notes section scanning specified"
+          ],
+          "done": "Deferral language detection subsection covers all forbidden patterns and story-specific variants",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "wave": 2,
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "04",
+          "title": "Update Verification Protocol to include story checking",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md"],
+          "test_required": false,
+          "action": "Modify the existing '## Verification Protocol' section. Add story completeness checking as new step after current steps:\n\n```\n12. For each linked story in phase:\n    - Load story file from .opti-gsd/stories/\n    - Parse acceptance criteria\n    - Map each AC to evidence from prior checks\n    - Scan Notes section for deferral language\n    - Determine story delivery status:\n      - All ACs have evidence + no deferral → can be 'delivered'\n      - Any AC missing evidence OR deferral found → stays 'in_progress'\n```\n\nAlso update the final 'Determine status' step to include story completeness in overall phase status.",
+          "user_observable": "Verification protocol now includes story checking as part of the standard verification flow",
+          "verify": [
+            "New step added to Verification Protocol for story checking",
+            "Story loading, AC parsing, evidence mapping, deferral scanning all listed",
+            "Final status step references story completeness"
+          ],
+          "done": "Verification Protocol includes story completeness as integrated step",
+          "status": "pending"
+        },
+        {
+          "id": "05",
+          "title": "Update Checkpoint Protocol for story verification stage",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md"],
+          "test_required": false,
+          "action": "Update the '### Checkpoint Stages' table to add 'Story-Completeness' as new stage after E2E:\n\n| Story-Completeness | 9 | Story AC verification and delivery status |\n\nUpdate the '### Progress Format' template to include:\n- [ ] Story-Completeness\n\nThis allows story verification to checkpoint and resume after context reset.",
+          "user_observable": "Story completeness verification can be resumed after context reset without re-running",
+          "verify": [
+            "Stage 'Story-Completeness' added to Checkpoint Stages table",
+            "Progress Format template includes Story-Completeness checkbox",
+            "Description mentions story AC verification"
+          ],
+          "done": "Checkpoint protocol supports story completeness stage persistence",
+          "status": "pending"
+        },
+        {
+          "id": "06",
+          "title": "Add Story Completeness section to Output Format",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md"],
+          "test_required": false,
+          "action": "Update the '## Output Format' section to add a '## Story Completeness' section in the report template (after Key Links, before Gaps):\n\n```markdown\n## Story Completeness\n\n| Story | Title | Status | ACs Passed | ACs Failed | Blocked Reason |\n|-------|-------|--------|------------|------------|----------------|\n| US001 | User Login | DELIVERABLE | 3/3 | 0 | - |\n| US002 | Password Reset | BLOCKED | 2/3 | 1 | AC3: No test evidence |\n| US003 | Dashboard | BLOCKED | 3/3 | 0 | Deferral: 'pending migration' |\n\n### AC-Evidence Mapping: US002\n| AC | Evidence | Status |\n|----|----------|--------|\n| AC1: User can request reset | reset.test.ts: PASS | ✓ |\n| AC2: Email is sent | email.test.ts: PASS | ✓ |\n| AC3: Link expires after 24h | - | MISSING |\n\n### Deferral Findings\n- **US003**: Notes contain 'pending migration to new auth'\n```",
+          "user_observable": "Verification report includes Story Completeness section showing AC status and evidence mapping",
+          "verify": [
+            "Story Completeness section added to Output Format",
+            "Stories table format specified with all columns",
+            "AC-Evidence mapping example shown",
+            "Deferral findings section included"
+          ],
+          "done": "Output format includes comprehensive Story Completeness reporting",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "wave": 3,
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "07",
+          "title": "Add story gap types to Gaps XML format",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md"],
+          "test_required": false,
+          "action": "Update the Gaps XML format in Output Format section to add story-related gap types:\n\n```xml\n<gap type=\"story_incomplete\" story=\"US001\">\n  AC2: User can reset password - No test evidence found\n</gap>\n\n<gap type=\"story_deferral\" story=\"US002\">\n  Notes contain: 'pending migration to new auth system'\n</gap>\n\n<gap type=\"story_ac_failed\" story=\"US001\">\n  AC3: Error message displayed - L4 verification failed\n</gap>\n```\n\nThese gap types allow planner to generate gap closure plans for incomplete stories.",
+          "user_observable": "Gaps section includes story-specific gap types that trigger gap closure planning",
+          "verify": [
+            "Gap type 'story_incomplete' example added",
+            "Gap type 'story_deferral' example added",
+            "Gap type 'story_ac_failed' example added",
+            "Each gap includes story reference and reason"
+          ],
+          "done": "Gaps format supports story-related gap types for planner consumption",
+          "status": "pending"
+        },
+        {
+          "id": "08",
+          "title": "Add Story-Phase Linking guidance",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md"],
+          "test_required": false,
+          "action": "Add '### Story-Phase Linking' subsection within Story Completeness Gate section:\n\n**How to identify linked stories:**\n1. Check plan.json `stories` field (explicit list)\n2. Scan task `user_observable` fields for story references (US###)\n3. If no explicit linking, scan story ACs for overlap with phase must_haves\n\n**Partial vs Full Completion:**\n- Phase partially addresses story → story stays 'in_progress'\n- Phase fully addresses story AND all ACs pass → story can be 'delivered'\n- Only mark 'delivered' when ALL ACs have evidence\n\n**Example:**\n```\nPhase 2 delivers US001 AC1 and AC2\nUS001 has AC1, AC2, AC3\n→ US001 stays 'in_progress' (AC3 not addressed)\n```",
+          "user_observable": "Verifier knows which stories to check based on phase plan linkage",
+          "verify": [
+            "Subsection '### Story-Phase Linking' exists",
+            "Three methods for identifying linked stories documented",
+            "Partial vs full completion handling explained",
+            "Example showing partial delivery scenario"
+          ],
+          "done": "Story-Phase Linking subsection provides clear guidance on identifying relevant stories",
+          "status": "pending"
+        }
+      ]
+    }
+  ],
+  "links": [
+    "Story files (.opti-gsd/stories/) → Verifier parsing → AC extraction",
+    "Planner forbidden patterns → Verifier deferral detection (shared patterns)",
+    "L4 User Value checks → AC evidence mapping (evidence source)",
+    "Verification Protocol → Story Completeness stage → Output Format"
+  ]
+}

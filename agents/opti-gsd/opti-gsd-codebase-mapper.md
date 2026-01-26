@@ -25,6 +25,7 @@ Explore a codebase with a specific focus area, then write analysis documents dir
 | `quality` | conventions.md, testing.md |
 | `concerns` | concerns.md |
 | `deploy` | deployment.md |
+| `debt` | debt-baseline.json | Technical debt markers and deferral language |
 
 ## Document Specifications
 
@@ -373,6 +374,94 @@ describe('/api/users', () => {
 3. **Note inconsistencies** — If patterns differ across areas, say so
 4. **Write directly** — Don't return findings, write files
 5. **Minimal response** — Return only confirmation, not content
+
+## Debt Scanning Mode
+
+When focus is `debt`, scan for technical debt markers and generate baseline.
+
+### Debt Marker Patterns
+
+Scan for these patterns (case-insensitive):
+
+| Pattern | Category |
+|---------|----------|
+| TODO: | Planned |
+| FIXME: | Bug |
+| HACK: | Workaround |
+| XXX: | Attention |
+| DEFER: | Deferred |
+| @debt | Tagged |
+| 'later' | Deferral |
+| 'temporary' | Deferral |
+| 'workaround' | Deferral |
+| 'migrate' | Migration |
+| 'tech debt' | Tagged |
+
+### Scanning Protocol
+
+```bash
+# Scan all source files
+grep -rniE '(TODO|FIXME|HACK|XXX|DEFER|@debt)' --include='*.{ts,tsx,js,jsx,py,go,rs,java,md}' .
+grep -rniE '(later|temporary|workaround|migrate|tech debt)' --include='*.{ts,tsx,js,jsx,py,go,rs,java,md}' .
+```
+
+Exclude: node_modules, .git, dist, build, vendor
+
+### Baseline Comparison
+
+If existing baseline provided:
+1. Load `.opti-gsd/debt-baseline.json`
+2. Match current items against baseline by file+line+content hash
+3. Categorize: resolved (baseline only), remaining (both), new (current only)
+4. Calculate net change
+
+### Debt-Free Detection
+
+When current scan returns zero items, report debt-free state.
+
+### debt-baseline.json Format
+
+```json
+{
+  "created": "2026-01-20T10:30:00Z",
+  "updated": "2026-01-25T14:45:00Z",
+  "scan_root": "/path/to/project",
+  "exclude_patterns": ["node_modules", ".git", "dist"],
+  "summary": {
+    "total": 15,
+    "by_type": {
+      "TODO": 8,
+      "FIXME": 3,
+      "HACK": 2,
+      "XXX": 1,
+      "DEFERRAL": 1
+    }
+  },
+  "items": [
+    {
+      "id": "a1b2c3d4",
+      "file": "src/api/auth.ts",
+      "line": 45,
+      "type": "TODO",
+      "content": "// TODO: add rate limiting",
+      "first_seen": "2026-01-20T10:30:00Z"
+    },
+    {
+      "id": "e5f6g7h8",
+      "file": "src/utils/date.ts",
+      "line": 12,
+      "type": "FIXME",
+      "content": "// FIXME: timezone bug",
+      "first_seen": "2026-01-20T10:30:00Z"
+    }
+  ]
+}
+```
+
+**Field Descriptions:**
+- `id`: SHA256 hash of file+line+content (first 8 chars) for stable comparison
+- `first_seen`: Preserved across re-scans for tracking age
+- `summary.by_type`: Aggregated counts for reporting
 
 ## Return Format
 

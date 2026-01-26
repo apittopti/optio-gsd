@@ -1,0 +1,55 @@
+{
+  "phase": 1,
+  "title": "Planner Completeness Rules",
+  "goal": "Prevent plans from deferring work or creating orphaned code",
+  "must_haves": [
+    "Planner rejects tasks containing deferral language in action/notes fields",
+    "Every task has user_observable field describing what user sees after completion",
+    "Plan-checker validates that new abstractions have at least one consumer in same phase",
+    "Forbidden patterns and anti-patterns are documented with examples"
+  ],
+  "waves": [
+    {
+      "wave": 1,
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "01",
+          "title": "Add Forbidden Patterns and User-Observable Requirement to Planner",
+          "files": ["agents/opti-gsd/opti-gsd-planner.md"],
+          "test_required": false,
+          "action": "Modify opti-gsd-planner.md to add three new sections:\n\n1. **FORBIDDEN_PATTERNS section** (add after 'Anti-Patterns' section around line 303):\n   - Create a new ## Forbidden Deferral Patterns section\n   - List patterns that MUST NOT appear in task actions or notes:\n     - 'can be migrated later'\n     - 'ready for future use'\n     - 'infrastructure for X' (without consumer in same phase)\n     - 'consumers can adopt incrementally'\n     - 'pages can be migrated'\n     - 'will be connected in future phase'\n     - 'placeholder for X'\n   - Explain these indicate deferred work that creates orphaned code\n   - Include examples of BAD (rejected) vs GOOD (accepted) task descriptions\n\n2. **Add user_observable to Task Structure** (modify section at line 65-81):\n   - Add 'user_observable' as a REQUIRED field in task JSON structure\n   - Must describe what USER sees after task completion\n   - NOT acceptable: 'backend ready', 'infrastructure complete', 'hooks available'\n   - Acceptable: 'User sees loading spinner', 'Login form validates email format'\n   - Update the JSON example in Output Format section (line 229-294) to include user_observable field\n\n3. **Anti-Pattern Examples** (expand existing Anti-Patterns section at line 303-310):\n   - Add examples of forbidden deferral anti-patterns\n   - Show what NOT to write with concrete bad examples\n   - Show the correct alternative for each",
+          "verify": [
+            "Search planner.md for 'Forbidden Deferral Patterns' - should find new section",
+            "Search planner.md for 'user_observable' - should appear in task structure AND JSON example",
+            "Verify JSON example includes user_observable field with realistic example",
+            "Check Anti-Patterns section has expanded examples"
+          ],
+          "done": "opti-gsd-planner.md contains: (1) Forbidden Deferral Patterns section listing all prohibited phrases, (2) user_observable as required task field with examples of good/bad values, (3) expanded Anti-Patterns with deferral examples",
+          "user_observable": "When planner agent runs, it now includes forbidden patterns in its prompt and requires user_observable field in every task it generates",
+          "status": "pending"
+        },
+        {
+          "id": "02",
+          "title": "Add Consumer-Required Validation to Plan Checker",
+          "files": ["agents/opti-gsd/opti-gsd-plan-checker.md"],
+          "test_required": false,
+          "action": "Modify opti-gsd-plan-checker.md to add consumer-required validation:\n\n1. **Add new verification dimension** (add as section 7 after 'Verification Derivation' at line 91):\n   ## 7. Consumer-Required Rule\n   Every new abstraction must have a consumer in the same phase.\n   \n   Abstractions that require consumers:\n   - Hooks (useX)\n   - Services (XService)\n   - Utilities (util functions)\n   - Components (when created standalone)\n   - API endpoints (must be called)\n   - Context providers (must wrap consumers)\n   \n   Check:\n   - Task creates UserService.ts\n   - Does another task in same phase import UserService?\n   - If NO: BLOCKER - orphaned abstraction\n   \n   Good example:\n   Task 1: Create useAuth hook\n   Task 2: LoginForm uses useAuth → Consumer exists ✓\n   \n   Bad example:\n   Task 1: Create useAuth hook\n   Task 2: Create LoginForm (no useAuth import)\n   → useAuth is orphaned, no consumer → BLOCKER\n\n2. **Update Checking Process** (modify section at line 103-144):\n   - Add step 7: 'Check consumer-required rule for new abstractions'\n   - Scan for new file creations, check if exports are imported elsewhere in phase\n\n3. **Update Issue Severity** (add to blockers around line 148):\n   - Add 'Orphaned abstraction' as blocker example\n\n4. **Update Output Format** (add to sample output around line 188):\n   - Add Consumer-Required section showing validation results\n   - Add example blocker: 'useAuth hook created without consumer in phase'",
+          "verify": [
+            "Search plan-checker.md for 'Consumer-Required' - should find new section",
+            "Search plan-checker.md for 'orphan' - should appear in validation context",
+            "Verify Checking Process includes consumer validation step",
+            "Verify sample output shows consumer-required validation example"
+          ],
+          "done": "opti-gsd-plan-checker.md contains: (1) Consumer-Required Rule as verification dimension 7, (2) orphaned abstraction detection in checking process, (3) example output showing consumer validation pass/fail",
+          "user_observable": "When plan-checker agent runs, it validates that every new abstraction has a consumer and blocks plans with orphaned code",
+          "status": "pending"
+        }
+      ]
+    }
+  ],
+  "links": [
+    "Planner forbidden patterns → Plan-checker validates no orphans",
+    "user_observable field → Verifier L4 checks (Phase 2)"
+  ]
+}

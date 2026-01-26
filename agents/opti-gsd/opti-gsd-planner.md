@@ -73,12 +73,33 @@ Every task MUST include:
 - **Test Required:** {true | false | existing} (auto-detected, see rules below)
 - **Test Files:** {paths to test files - if test_required is true}
 - **Action:** {specific implementation with rationale}
+- **User Observable:** {what USER sees after task completion - REQUIRED}
 - **Skills:** {applicable skills or "none"}
 - **Verify:**
   - {concrete verification step 1}
   - {concrete verification step 2}
 - **Done:** {measurable acceptance criteria}
 ```
+
+### User Observable Requirement
+
+The `user_observable` field is REQUIRED for every task. It describes what a USER (not developer) can observe after the task is complete.
+
+**NOT Acceptable (developer-centric):**
+- "Backend ready for integration"
+- "Infrastructure complete"
+- "Hooks available for future use"
+- "API endpoint created"
+- "Database schema updated"
+
+**Acceptable (user-centric):**
+- "User sees loading spinner while data fetches"
+- "Login form shows validation error for invalid email"
+- "Dashboard displays current stats with refresh button"
+- "User can click 'Save' and see success toast"
+- "Error message appears when network request fails"
+
+If you cannot describe what a USER observes, the task likely creates orphaned infrastructure that will never be connected. Split or restructure the task to include its consumer.
 
 ### Test Requirement Auto-Detection
 
@@ -252,6 +273,7 @@ Write to `.opti-gsd/milestones/{version}/phases/{N}/plan.json`:
           "test_files": ["src/path/file.test.ts"],
           "test_required": true,
           "action": "Specific implementation instructions",
+          "user_observable": "User sees loading spinner while stats fetch, then sees current values",
           "skills": ["verification-before-completion"],
           "verify": ["Concrete verification step 1", "Step 2"],
           "done": "Measurable acceptance criteria",
@@ -263,6 +285,7 @@ Write to `.opti-gsd/milestones/{version}/phases/{N}/plan.json`:
           "files": ["src/other/file.ts"],
           "test_required": false,
           "action": "Instructions",
+          "user_observable": "User sees updated UI element after interaction",
           "verify": ["Check X"],
           "done": "Criteria",
           "status": "pending"
@@ -280,6 +303,7 @@ Write to `.opti-gsd/milestones/{version}/phases/{N}/plan.json`:
           "files": ["src/composite/file.ts"],
           "test_required": true,
           "action": "Instructions referencing outputs of wave 1",
+          "user_observable": "User sees complete dashboard with all components rendered and interactive",
           "verify": ["Integration check"],
           "done": "Criteria",
           "status": "pending"
@@ -308,6 +332,98 @@ Avoid:
 - Verification like "works correctly" (not measurable)
 - Missing file paths (executor can't scope)
 - Horizontal slicing (all models, then all controllers)
+
+### Deferral Anti-Pattern Examples
+
+**BAD: Infrastructure without consumer**
+```
+Task: Create useAuth hook
+Action: "Create authentication hook with login/logout functions.
+        Components can adopt this incrementally."
+```
+Problem: Hook exists but nothing uses it. Orphaned code.
+
+**GOOD: Full vertical slice**
+```
+Task: Add login form with authentication
+Action: "Create useAuth hook AND LoginForm component that uses it.
+        User sees login form that validates and submits."
+user_observable: "User sees login form, enters credentials, sees loading state, then redirects on success"
+```
+
+**BAD: Deferred wiring**
+```
+Task: Create API endpoint
+Action: "Create /api/stats endpoint. Frontend will be connected in future phase."
+```
+Problem: Endpoint exists but UI doesn't call it. Dead code until "future phase."
+
+**GOOD: End-to-end connection**
+```
+Task: Display stats on dashboard
+Action: "Create /api/stats endpoint AND StatsCard component that fetches from it."
+user_observable: "User sees stats card with current values on dashboard"
+```
+
+**BAD: Placeholder tasks**
+```
+Task: Set up database schema
+Action: "Create user table schema. Placeholder for authentication feature."
+```
+Problem: Schema exists but no code reads/writes it.
+
+**GOOD: Schema with consumer**
+```
+Task: Store user on signup
+Action: "Create user table AND signup API that inserts user record."
+user_observable: "User completes signup form and account is created"
+```
+
+## Forbidden Deferral Patterns
+
+The following phrases MUST NOT appear in task actions or notes. They indicate deferred work that creates orphaned code:
+
+### Prohibited Phrases
+
+| Pattern | Why It's Forbidden |
+|---------|-------------------|
+| "can be migrated later" | Defers work indefinitely |
+| "ready for future use" | No current consumer |
+| "infrastructure for X" (without consumer) | Orphaned code |
+| "consumers can adopt incrementally" | No guaranteed adoption |
+| "pages can be migrated" | Deferred integration |
+| "will be connected in future phase" | Cross-phase dependency |
+| "placeholder for X" | Incomplete implementation |
+| "frontend will call this later" | No current wiring |
+| "available for integration" | No actual integration |
+| "foundation for X" | Implies work happens elsewhere |
+
+### Self-Check Before Submitting Plan
+
+For EVERY task, ask:
+1. What does the USER observe after this task? (must have clear answer)
+2. Is every created artifact USED by something in this same task or wave?
+3. Would removing this task break something a user can see?
+
+If you cannot answer these questions, the task creates orphaned infrastructure.
+
+### Restructuring Deferred Work
+
+When you identify a deferral pattern, restructure:
+
+**Instead of:**
+- Task 1: Create utility function
+- Task 2: Create component (uses utility) - "in future phase"
+
+**Do:**
+- Task 1: Create component with utility (both together, user sees result)
+
+**Instead of:**
+- Task 1: Create API endpoint
+- Task 2: Create UI that calls endpoint - "consumers can adopt"
+
+**Do:**
+- Task 1: Create endpoint AND UI that displays data from it
 
 ## Input Requirements
 

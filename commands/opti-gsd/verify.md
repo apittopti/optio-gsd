@@ -13,7 +13,7 @@ Verify phase completion with goal-backward analysis and integration checking.
 
 ## Checkpoint Stages Reference
 
-Verification progress is tracked through 7 stages. Each stage writes to `.opti-gsd/plans/phase-{N}/verification-progress.md` on completion.
+Verification progress is tracked through 8 stages. Each stage writes to `.opti-gsd/plans/phase-{N}/verification-progress.md` on completion.
 
 | Stage | Order | Trigger | What Gets Written |
 |-------|-------|---------|-------------------|
@@ -21,9 +21,10 @@ Verification progress is tracked through 7 stages. Each stage writes to `.opti-g
 | CI-typecheck | 2 | After typecheck completes | Typecheck result (pass/fail, time) |
 | CI-test | 3 | After tests complete | Test result (pass/fail, time, count) |
 | CI-build | 4 | After build completes | Build result (pass/fail, time) |
-| Artifacts | 5 | After three-level verification | Artifact inventory (L1/L2/L3 status) |
-| Key-Links | 6 | After connection tracing | Link status (OK/BROKEN) |
-| E2E | 7 | After E2E tests complete | E2E result (pass/fail/skip, time) |
+| Debt-Balance | 5 | After debt marker scan | Resolved/created/net, untracked items |
+| Artifacts | 6 | After three-level verification | Artifact inventory (L1/L2/L3 status) |
+| Key-Links | 7 | After connection tracing | Link status (OK/BROKEN) |
+| E2E | 8 | After E2E tests complete | E2E result (pass/fail/skip, time) |
 
 **Resume Point:** When resuming, verification continues from the first incomplete stage. Completed stages are not re-run.
 
@@ -244,6 +245,48 @@ Fix before continuing? [Y/n]
 
 **Note:** Code intelligence diagnostics are advisory. They often catch issues that CI would find later, but faster. This step never blocks verification - it just reports.
 
+### Step 3c: Debt Balance Check
+
+Scan modified files for debt marker changes to track technical debt trends:
+
+```
+Debt Balance Check
+──────────────────────────────────────────────────────────────
+Scanning {N} modified files for debt markers...
+
+  Resolved: 5 markers
+  Created:  2 markers
+  Net:      -3 (GOOD)
+
+New debt items:
+  [✓] src/api/stats.ts:89 - TODO(ISS005): pagination
+  [✗] src/components/Modal.tsx:15 - HACK: force rerender
+
+⚠️ 1 untracked debt item found. Run /opti-gsd:add-issue to track.
+──────────────────────────────────────────────────────────────
+```
+
+**Debt markers scanned:**
+- `TODO`, `FIXME`, `HACK`, `XXX`, `BUG`, `DEBT`
+- Markers with issue references (e.g., `TODO(ISS005)`) are considered tracked
+- Markers without issue references are flagged as untracked
+
+**How it works:**
+1. Get list of files modified in this phase (from git diff against base branch)
+2. For each file, compare debt markers in old version vs new version
+3. Calculate resolved (removed), created (added), and net change
+4. Identify tracked vs untracked new debt items
+
+**Debt balance status indicators:**
+- `GOOD` — Net debt decreased or stayed the same
+- `WARN` — Net debt increased but all items are tracked
+- `ALERT` — Net debt increased with untracked items
+
+**Impact on verification:**
+- Debt balance is informational and does not block verification
+- Untracked debt items are flagged for awareness
+- High debt accumulation across phases may warrant a cleanup phase
+
 **Checkpoint:** Write progress to `.opti-gsd/plans/phase-{N}/verification-progress.md` after CI checks complete:
 ```markdown
 # Verification Progress: Phase {N}
@@ -255,6 +298,7 @@ Fix before continuing? [Y/n]
 - [x] CI Checks - {pass/fail} - {timestamp}
 
 ## Pending Stages
+- [ ] Debt Balance Check
 - [ ] E2E Tests
 - [ ] Artifact Verification
 - [ ] Key Link Verification
@@ -262,6 +306,9 @@ Fix before continuing? [Y/n]
 
 ## CI Results (cached)
 {lint: pass, typecheck: pass, test: pass, build: pass}
+
+## Debt Balance (cached)
+{resolved: 5, created: 2, net: -3, status: GOOD}
 ```
 
 ### Step 3: Run E2E Tests (if configured)
@@ -417,6 +464,16 @@ Write `.opti-gsd/plans/phase-{N}/verification.md`:
 | Login → Dashboard | OK | - |
 | Dashboard → StatsCard | BROKEN | Import missing |
 
+## Debt Balance
+| Metric | Value |
+|--------|-------|
+| Resolved | 5 |
+| Created | 2 |
+| Net | -3 (GOOD) |
+
+**Untracked debt items:**
+- src/components/Modal.tsx:15 - HACK: force rerender
+
 ## Gaps
 <gaps>
   <gap type="orphan" file="components/StatsCard.tsx">
@@ -448,6 +505,8 @@ All checks passed:
 **Stories Delivered:**
 - [x] US001: Export to Excel (all acceptance criteria met)
 - [x] US003: Faster search (all acceptance criteria met)
+
+**Debt Balance:** Net -3 (5 resolved, 2 created) - GOOD
 
 Phase {N} is ready for milestone completion.
 

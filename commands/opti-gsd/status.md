@@ -32,7 +32,8 @@ If `.opti-gsd/state.json` missing:
 ### Step 2: Load State
 
 1. Read state.json, roadmap.md, and check for phase plans/verification files
-2. Display status with progress bars and workflow stages as shown below
+2. Also read `.opti-gsd/learnings.md` if exists to count and display learnings
+3. Display status with progress bars and workflow stages as shown below
 
 ## Output Format
 
@@ -172,6 +173,27 @@ Phase 4: Payments       ○ pending
 ──────────────────────────────────────────────────────────────
 Overall: [████████▏░░░░░░░░░░░] 41%
 ```
+
+### Active Learnings Section
+
+If `.opti-gsd/learnings.md` exists and has content, show:
+
+```
+Active Learnings:
+──────────────────────────────────────────────────────────────
+{count} learnings | Recent: {most recent learning summary}
+
+Latest learning ({date}):
+  {CATEGORY}: {brief description}
+  Fix: {what to do}
+──────────────────────────────────────────────────────────────
+```
+
+**Learnings Display Rules:**
+- Only show learnings section if `.opti-gsd/learnings.md` exists and has content
+- Show "No learnings yet" if file is empty or doesn't exist
+- Count learnings by parsing `## {CATEGORY}:` headers in the file
+- Get most recent learning (last entry) for the Latest section
 
 ## Progress Bar Generation
 

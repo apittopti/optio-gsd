@@ -1,0 +1,71 @@
+{
+  "phase": 2,
+  "title": "Verifier L4 User Value Check",
+  "goal": "Verification must prove user value, not just code existence",
+  "must_haves": [
+    "Verifier checks L4: User can observe the change",
+    "Browser/CLI/API verification required for user-facing changes",
+    "Infrastructure ready without consumer fails verification",
+    "Verification report shows L4 status for each task"
+  ],
+  "waves": [
+    {
+      "wave": 1,
+      "parallel": false,
+      "tasks": [
+        {
+          "id": "01",
+          "title": "Add L4 User Value Verification Level to Verifier",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md"],
+          "test_required": false,
+          "action": "Modify opti-gsd-verifier.md to add Level 4 (User Value) verification. Make these specific changes:\n\n1. **Update Three-Level title to Four-Level** (around line 50):\n   - Change '## Three-Level Artifact Verification' to '## Four-Level Artifact Verification'\n   - Update description: 'Each required file gets checked at four levels'\n\n2. **Add Level 4 section after Level 3** (after line 90):\n   Add new section:\n   ### Level 4: User Value\n   Can the user observe the change?\n   \n   This level validates that the artifact contributes to something a user can see or interact with. L3 (wired) ensures code is connected; L4 ensures it produces observable value.\n   \n   Verification methods by artifact type:\n   \n   | Artifact Type | L4 Verification Method |\n   |--------------|------------------------|\n   | UI Component | Browser: Visual renders, interactive |\n   | API Endpoint | Response: Returns expected data |\n   | CLI Command | Output: Produces expected output |\n   | Backend Service | Consumer: Has consumer that provides user value |\n   | Hook/Utility | Consumer: Used by component with user value |\n   \n   Result:\n   - USER_VALUE: PASS - User can observe the artifact's effect\n   - NO_USER_VALUE: FAIL - '{path} (no observable user value)'\n   - INDIRECT: PASS with note - 'Provides value through {consumer}'\n\n3. **Add Orphan Detection subsection** (within L4 section):\n   #### Infrastructure Without Consumer = FAIL\n   \n   New exports without importers that lead to user-observable behavior fail L4:\n   \n   FAIL scenarios:\n   - API endpoint exists but no UI calls it\n   - Hook exists but no component uses it\n   - Service exists but nothing consumes it\n   - Component exists but no page renders it\n   \n   These indicate 'infrastructure ready' without actual user value.\n\n4. **Add L4 Verification Methods section** (after orphan detection):\n   #### L4 Verification Methods\n   \n   **Browser Verification** (when available):\n   - Load page containing component\n   - Check element renders without errors\n   - Verify interactions work (click, input, submit)\n   - Capture screenshot for evidence\n   \n   **CLI Verification**:\n   - Execute command with test input\n   - Check output matches expected format\n   - Verify exit code is 0\n   \n   **API Verification**:\n   - Call endpoint with test request\n   - Check response status and body\n   - Verify data format is correct\n   \n   **Consumer Chain Verification** (for backend-only):\n   - Trace from artifact to user-facing endpoint\n   - Document the chain: Service → API → Component → Page\n   - If chain incomplete, L4 fails",
+          "user_observable": "When verifier runs, it now checks Level 4 (User Value) for each artifact and reports whether the user can observe the change",
+          "verify": [
+            "Search verifier.md for 'Four-Level' - should replace 'Three-Level'",
+            "Search verifier.md for 'Level 4' or 'L4' - should find User Value section",
+            "Search verifier.md for 'Infrastructure Without Consumer' - should find orphan detection",
+            "Verify L4 verification methods for browser, CLI, API, and consumer chain are documented"
+          ],
+          "done": "opti-gsd-verifier.md contains: (1) Four-Level Artifact Verification with L4: User Value, (2) orphan detection rules, (3) verification methods for browser/CLI/API/consumer chain",
+          "status": "pending"
+        },
+        {
+          "id": "02",
+          "title": "Update Artifact Inventory Format with L4 Column",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md"],
+          "test_required": false,
+          "action": "Update the verification output format to include L4 status. Make these specific changes:\n\n1. **Update Must-Haves Derivation example** (around line 107):\n   Change:\n   - [ ] src/app/dashboard/page.tsx (L1: exists, L2: substantive, L3: wired)\n   To:\n   - [ ] src/app/dashboard/page.tsx (L1: exists, L2: substantive, L3: wired, L4: user value)\n\n2. **Update Artifact Inventory table in Output Format** (around line 344-350):\n   Change the table header from:\n   | File | L1 | L2 | L3 | Notes |\n   To:\n   | File | L1 | L2 | L3 | L4 | Notes |\n   \n   Update example rows to include L4 values:\n   | dashboard/page.tsx | YES | REAL | WIRED | USER_VALUE | OK |\n   | StatsCard.tsx | YES | REAL | WIRED | USER_VALUE | OK |\n   | api/stats/route.ts | YES | STUB | - | - | Only returns mock data |\n   | internal/helper.ts | YES | REAL | WIRED | INDIRECT | Via StatsCard |\n\n3. **Add L4 status values key** (after artifact inventory):\n   L4 Status Values:\n   - `USER_VALUE`: User directly observes this artifact's effect\n   - `INDIRECT`: User value provided through consumer (note consumer)\n   - `NO_VALUE`: No path to user observation (FAIL)\n   - `-`: Skipped (earlier level failed)\n\n4. **Update Gaps XML format** (around line 359-367):\n   Add gap type for L4:\n   <gap type=\"no_user_value\" file=\"api/internal/helper.ts\">\n     Created but not connected to any user-facing feature.\n     No component, page, or CLI command consumes this.\n   </gap>",
+          "user_observable": "When verifier completes, the verification report shows L4 status column for every artifact showing whether it provides user value",
+          "verify": [
+            "Search verifier.md for 'L4' in Artifact Inventory table - should have L4 column",
+            "Verify L4 status values (USER_VALUE, INDIRECT, NO_VALUE) are documented",
+            "Verify gaps XML includes 'no_user_value' type example"
+          ],
+          "done": "opti-gsd-verifier.md Output Format shows: (1) L4 column in artifact inventory, (2) L4 status values key, (3) no_user_value gap type",
+          "status": "pending"
+        },
+        {
+          "id": "03",
+          "title": "Update Verification Protocol to Include L4 Checks",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md"],
+          "test_required": false,
+          "action": "Update the verification protocol and checkpoint stages to include L4. Make these specific changes:\n\n1. **Update Verification Protocol** (around line 212-229):\n   Change step 6 from:\n   6. For each artifact:\n      - Check Level 1 (existence)\n      - Check Level 2 (substantive)\n      - Check Level 3 (wired)\n   To:\n   6. For each artifact:\n      - Check Level 1 (existence)\n      - Check Level 2 (substantive)\n      - Check Level 3 (wired)\n      - Check Level 4 (user value)\n   7. For each artifact with L4 check:\n      - Load task's user_observable field\n      - Verify observable outcome matches user_observable\n      - For UI: use Browser if available\n      - For API: verify response\n      - For backend: trace consumer chain\n   Renumber remaining steps (8, 9, 10, 11).\n\n2. **Update Checkpoint Stages table** (around line 244-252):\n   Add new stage after Artifacts:\n   | L4-User-Value | 6 | User value verification completed |\n   Renumber Key-Links to 7 and E2E to 8.\n\n3. **Update Progress Format checklist** (around line 260-266):\n   Add after Artifacts line:\n   - [ ] L4-User-Value\n\n4. **Add user_observable integration note** (in L4 section):\n   #### Integration with Plan Tasks\n   \n   Each task in plan.json includes a `user_observable` field describing what the user should see. L4 verification validates this claim:\n   \n   Task user_observable: \"User sees loading spinner while stats fetch\"\n   L4 Check:\n   1. Load dashboard page (browser or render test)\n   2. Trigger stats fetch\n   3. Verify spinner appears during loading\n   4. Result: USER_VALUE (matches user_observable)\n   \n   If user_observable cannot be verified, L4 fails with specific reason.",
+          "user_observable": "When verifier runs, it follows the updated protocol that includes L4 user value checks and can checkpoint/resume at the L4 verification stage",
+          "verify": [
+            "Search verifier.md for 'Level 4 (user value)' in verification protocol",
+            "Search verifier.md for 'L4-User-Value' in checkpoint stages",
+            "Verify user_observable integration is documented",
+            "Check protocol steps are correctly numbered after L4 addition"
+          ],
+          "done": "opti-gsd-verifier.md contains: (1) L4 step in verification protocol, (2) L4-User-Value checkpoint stage, (3) user_observable integration documentation",
+          "status": "pending"
+        }
+      ]
+    }
+  ],
+  "links": [
+    "Phase 1 user_observable field → L4 verification validates this claim",
+    "Plan-checker consumer-required → Verifier L4 orphan detection",
+    "Artifact L1/L2/L3 → L4 only checked if L3 passes"
+  ]
+}

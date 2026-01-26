@@ -440,3 +440,129 @@ When writing summary.md, gather tool usage data:
 
 **Alternative:** Use `node scripts/analyze-tool-usage.js --format=json` for structured data,
 but prefer direct reading of tool-usage.json for task-specific filtering.
+
+## Error Learning System
+
+Build institutional memory from errors so mistakes never repeat.
+
+### learnings.md Format
+
+Store learnings in `.opti-gsd/learnings.md`:
+
+```markdown
+# Project Learnings
+
+## DEPRECATED: {tool/command}
+
+**First seen:** {date}
+**Error:** {error message}
+**Fix:** {what to do instead}
+**Prevention:** {how to avoid in future}
+
+## CI_FAILURE: {description}
+
+**First seen:** {date}
+**Error:** {error message}
+**Root cause:** {analysis}
+**Fix:** {resolution}
+**Prevention:** {steps to avoid}
+
+## FILE_NOT_FOUND: {file}
+
+**First seen:** {date}
+**Error:** {error message}
+**Root cause:** {why file was expected but missing}
+**Fix:** {what was done}
+**Prevention:** {agent/command that needs updating}
+
+## WORKFLOW_BUG: {description}
+
+**First seen:** {date}
+**Error:** {symptom}
+**Root cause:** {analysis}
+**Fix:** {resolution}
+**Agent to update:** {agent file}
+```
+
+### Error Categories
+
+| Category | Trigger | Action |
+|----------|---------|--------|
+| DEPRECATED | Tool/command deprecated warning | Log alternative, use it |
+| CI_FAILURE | Build/test/lint fails | Log root cause and fix |
+| FILE_NOT_FOUND | Expected file missing | Log as potential agent bug |
+| WORKFLOW_BUG | Unexpected workflow behavior | Log for agent update |
+
+### Error Logging Protocol
+
+When encountering errors during execution:
+
+1. **Detect error category** based on error message patterns:
+   - `deprecated` / `will be removed` → DEPRECATED
+   - `ENOENT` / `file not found` / `no such file` → FILE_NOT_FOUND
+   - CI command exits non-zero → CI_FAILURE
+   - Unexpected state or workflow issue → WORKFLOW_BUG
+
+2. **Check existing learnings**:
+   - Read `.opti-gsd/learnings.md` if exists
+   - Search for similar error pattern
+   - If found: apply documented fix automatically
+   - If not found: create new learning entry
+
+3. **Log new learning**:
+   ```markdown
+   ## {CATEGORY}: {brief description}
+
+   **First seen:** {YYYY-MM-DD}
+   **Error:** {exact error message}
+   **Root cause:** {analysis of why this happened}
+   **Fix:** {what was done to resolve}
+   **Prevention:** {how to avoid in future / agent to update}
+   ```
+
+4. **Apply fix and continue** if possible
+
+### Pattern Matching
+
+Before executing commands, scan learnings for relevant entries:
+
+```
+IF command matches a DEPRECATED learning:
+  → Use documented alternative instead
+  → Log: "Applied learning: using {alternative} instead of {deprecated}"
+
+IF file path matches a FILE_NOT_FOUND learning:
+  → Check if file was moved/renamed
+  → Apply documented fix
+  → Log: "Applied learning: {description}"
+```
+
+### Agent Bug Detection
+
+When FILE_NOT_FOUND errors occur, determine if it's an agent bug:
+
+**Agent bug indicators:**
+- File path is hardcoded in an agent or command file
+- File was referenced but never created by the workflow
+- File was renamed/moved but agent still uses old path
+
+**Detection steps:**
+1. Search agent files for the missing file path:
+   ```bash
+   grep -r "{missing_file}" agents/ commands/
+   ```
+2. If found in agent/command: Flag as WORKFLOW_BUG
+3. Log which agent needs updating in the learning entry
+
+**Learning entry for agent bugs:**
+```markdown
+## FILE_NOT_FOUND: {file}
+
+**First seen:** {date}
+**Error:** Cannot read {file} - file does not exist
+**Root cause:** Agent {agent-name} references removed/moved file
+**Fix:** Updated to use {new_path} instead
+**Prevention:** Agent `agents/opti-gsd/{agent}.md` updated
+```
+
+This creates a feedback loop: errors improve the agents that caused them.

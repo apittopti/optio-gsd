@@ -1,0 +1,92 @@
+{
+  "phase": 5,
+  "title": "Debt Baseline Scanning",
+  "goal": "Establish, track, and verify complete elimination of technical debt through baseline scanning",
+  "must_haves": [
+    "/opti-gsd:map-codebase --debt scans all debt markers and displays results",
+    "Baseline saved to .opti-gsd/debt-baseline.json with file, line, content, timestamp",
+    "Re-scan compares against baseline showing resolved, remaining, and new debt",
+    "Debt-free state clearly reportable when zero items remain"
+  ],
+  "waves": [
+    {
+      "wave": 1,
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "01",
+          "title": "Add --debt flag to map-codebase command",
+          "files": ["commands/opti-gsd/map-codebase.md"],
+          "test_required": false,
+          "action": "Add --debt flag behavior to map-codebase.md:\n\n1. **Update Arguments section** to add:\n   - `--debt` — Scan for technical debt markers and generate/compare baseline\n\n2. **Add Step 2a: Check for --debt Flag** section:\n   When --debt flag present:\n   - Skip normal codebase mapping\n   - Check if .opti-gsd/debt-baseline.json exists\n   - Spawn codebase-mapper with focus='debt'\n   - If baseline exists, pass path for comparison mode\n   - If no baseline, agent creates initial baseline\n\n3. **Add Step 3a: Debt Scan Report** with formatted output:\n   ```\n   Debt Scan Results\n   ──────────────────────────────────────────────────────────────\n   Baseline: {date} ({count} items)\n   Current:  {date} ({count} items)\n\n   Resolved: {count} items ✓\n     - {file}:{line} ({type}: {content}) → Resolved\n\n   Remaining: {count} items\n     - {file}:{line} ({type}: {content})\n\n   New debt: {count} items ⚠️\n     - {file}:{line} ({type}: {content})\n\n   Net change: {±count} ({good!/needs attention})\n   \n   🎉 DEBT-FREE! (when zero items)\n   ```\n\n4. **Update Use Cases** to include debt tracking example.",
+          "user_observable": "User runs /opti-gsd:map-codebase --debt and sees formatted debt scan results",
+          "verify": [
+            "map-codebase.md contains '--debt' flag in Arguments section",
+            "map-codebase.md contains 'debt-baseline.json' reference",
+            "map-codebase.md contains debt scan report format example"
+          ],
+          "done": "map-codebase command documents --debt flag with baseline comparison and formatted output",
+          "status": "pending"
+        },
+        {
+          "id": "02",
+          "title": "Add debt focus mode to codebase-mapper agent",
+          "files": ["agents/opti-gsd/opti-gsd-codebase-mapper.md"],
+          "test_required": false,
+          "action": "Add debt scanning capability to codebase-mapper:\n\n1. **Update Focus Modes table** to add:\n   | debt | debt-baseline.json | Technical debt markers and deferral language |\n\n2. **Add '## Debt Scanning Mode' section** with:\n\n### Debt Marker Patterns\n\nScan for these patterns (case-insensitive):\n\n| Pattern | Category |\n|---------|----------|\n| TODO: | Planned |\n| FIXME: | Bug |\n| HACK: | Workaround |\n| XXX: | Attention |\n| DEFER: | Deferred |\n| @debt | Tagged |\n| 'later' | Deferral |\n| 'temporary' | Deferral |\n| 'workaround' | Deferral |\n| 'migrate' | Migration |\n| 'tech debt' | Tagged |\n\n### Scanning Protocol\n\n```bash\n# Scan all source files\ngrep -rniE '(TODO|FIXME|HACK|XXX|DEFER|@debt)' --include='*.{ts,tsx,js,jsx,py,go,rs,java,md}' .\ngrep -rniE '(later|temporary|workaround|migrate|tech debt)' --include='*.{ts,tsx,js,jsx,py,go,rs,java,md}' .\n```\n\nExclude: node_modules, .git, dist, build, vendor\n\n### Baseline Comparison\n\nIf existing baseline provided:\n1. Load .opti-gsd/debt-baseline.json\n2. Match current items against baseline by file+line+content hash\n3. Categorize: resolved (baseline only), remaining (both), new (current only)\n4. Calculate net change\n\n### Debt-Free Detection\n\nWhen current scan returns zero items, report debt-free state.",
+          "user_observable": "Codebase mapper agent can scan for debt markers and generate baseline JSON",
+          "verify": [
+            "opti-gsd-codebase-mapper.md contains 'debt' in Focus Modes table",
+            "opti-gsd-codebase-mapper.md contains debt marker patterns table",
+            "opti-gsd-codebase-mapper.md contains scanning protocol",
+            "opti-gsd-codebase-mapper.md contains baseline comparison logic"
+          ],
+          "done": "Codebase mapper has debt focus mode with scanning, baseline generation, and comparison",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "wave": 2,
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "03",
+          "title": "Add debt-baseline.json format specification",
+          "files": ["agents/opti-gsd/opti-gsd-codebase-mapper.md"],
+          "test_required": false,
+          "action": "Add complete JSON schema for debt-baseline.json in the Debt Scanning Mode section:\n\n### debt-baseline.json Format\n\n```json\n{\n  \"created\": \"2026-01-20T10:30:00Z\",\n  \"updated\": \"2026-01-25T14:45:00Z\",\n  \"scan_root\": \"/path/to/project\",\n  \"exclude_patterns\": [\"node_modules\", \".git\", \"dist\"],\n  \"summary\": {\n    \"total\": 15,\n    \"by_type\": {\n      \"TODO\": 8,\n      \"FIXME\": 3,\n      \"HACK\": 2,\n      \"XXX\": 1,\n      \"DEFERRAL\": 1\n    }\n  },\n  \"items\": [\n    {\n      \"id\": \"a1b2c3d4\",\n      \"file\": \"src/api/auth.ts\",\n      \"line\": 45,\n      \"type\": \"TODO\",\n      \"content\": \"// TODO: add rate limiting\",\n      \"first_seen\": \"2026-01-20T10:30:00Z\"\n    },\n    {\n      \"id\": \"e5f6g7h8\",\n      \"file\": \"src/utils/date.ts\",\n      \"line\": 12,\n      \"type\": \"FIXME\",\n      \"content\": \"// FIXME: timezone bug\",\n      \"first_seen\": \"2026-01-20T10:30:00Z\"\n    }\n  ]\n}\n```\n\n**Field Descriptions:**\n- `id`: SHA256 hash of file+line+content (first 8 chars) for stable comparison\n- `first_seen`: Preserved across re-scans for tracking age\n- `summary.by_type`: Aggregated counts for reporting",
+          "user_observable": "Baseline JSON file has complete, parseable structure for tracking debt over time",
+          "verify": [
+            "opti-gsd-codebase-mapper.md contains debt-baseline.json schema",
+            "Schema includes 'items' array with id, file, line, type, content",
+            "Schema includes 'summary' with total and by_type counts"
+          ],
+          "done": "Complete debt-baseline.json schema documented with example",
+          "status": "pending"
+        },
+        {
+          "id": "04",
+          "title": "Document integration with Phase 4 debt balance tracking",
+          "files": ["agents/opti-gsd/opti-gsd-verifier.md", "commands/opti-gsd/map-codebase.md"],
+          "test_required": false,
+          "action": "Add cross-references between Phase 4 and Phase 5 features:\n\n1. **In opti-gsd-verifier.md** (Debt Balance Tracking section), add note:\n\n### Integration with Baseline Scanning\n\nFor project-wide baseline tracking, see `/opti-gsd:map-codebase --debt` which maintains `.opti-gsd/debt-baseline.json`.\n\n- **Baseline scanning**: Tracks absolute project debt state\n- **Verification tracking**: Tracks per-phase debt delta\n\nRecommended workflow:\n1. Establish baseline at project start: `/opti-gsd:map-codebase --debt`\n2. Phase verification tracks each phase delta\n3. Re-scan periodically: `/opti-gsd:map-codebase --debt`\n\n2. **In map-codebase.md** (debt section), add note:\n\nThis baseline complements per-phase debt tracking in `/opti-gsd:verify`. The baseline shows overall project debt state while verification shows what changed in each phase.",
+          "user_observable": "Documentation clearly explains how baseline scanning and verification debt tracking work together",
+          "verify": [
+            "opti-gsd-verifier.md references map-codebase --debt",
+            "map-codebase.md references verification debt tracking",
+            "Recommended workflow documented"
+          ],
+          "done": "Both features cross-reference each other with clear workflow guidance",
+          "status": "pending"
+        }
+      ]
+    }
+  ],
+  "links": [
+    "map-codebase --debt → spawns codebase-mapper focus=debt",
+    "codebase-mapper debt mode → writes .opti-gsd/debt-baseline.json",
+    "re-scan --debt → compares current vs baseline",
+    "verifier debt balance → references baseline for context"
+  ]
+}

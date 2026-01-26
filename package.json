@@ -1,6 +1,6 @@
 {
   "name": "opti-gsd",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Spec-driven development with fresh context execution for Claude Code",
   "bin": {
     "opti-gsd": "./bin/cli.js"

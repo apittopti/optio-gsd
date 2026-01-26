@@ -1,0 +1,114 @@
+{
+  "phase": 6,
+  "title": "Error Learning System",
+  "goal": "Log errors and build institutional memory so mistakes never repeat",
+  "must_haves": [
+    "All errors logged to .opti-gsd/learnings.md with context",
+    "Learnings loaded at session start (resume command)",
+    "Pattern matching detects similar errors and suggests fixes",
+    "Error categories: CI_FAILURE, FILE_NOT_FOUND, DEPRECATED, WORKFLOW_BUG",
+    "Status command shows recent learnings"
+  ],
+  "waves": [
+    {
+      "wave": 1,
+      "parallel": false,
+      "tasks": [
+        {
+          "id": "01",
+          "title": "Add learnings.md format specification to executor",
+          "files": ["agents/opti-gsd/opti-gsd-executor.md"],
+          "test_required": false,
+          "action": "Add Error Learning System section to executor with:\n\n1. **Add '## Error Learning System' section** after Tool Usage Tracking section:\n\n### learnings.md Format\n\n```markdown\n# Project Learnings\n\n## DEPRECATED: {tool/command}\n\n**First seen:** {date}\n**Error:** {error message}\n**Fix:** {what to do instead}\n**Prevention:** {how to avoid in future}\n\n## CI_FAILURE: {description}\n\n**First seen:** {date}\n**Error:** {error message}\n**Root cause:** {analysis}\n**Fix:** {resolution}\n**Prevention:** {steps to avoid}\n\n## FILE_NOT_FOUND: {file}\n\n**First seen:** {date}\n**Error:** {error message}\n**Root cause:** {why file was expected but missing}\n**Fix:** {what was done}\n**Prevention:** {agent/command that needs updating}\n\n## WORKFLOW_BUG: {description}\n\n**First seen:** {date}\n**Error:** {symptom}\n**Root cause:** {analysis}\n**Fix:** {resolution}\n**Agent to update:** {agent file}\n```\n\n### Error Categories\n\n| Category | Trigger | Action |\n|----------|---------|--------|\n| DEPRECATED | Tool/command deprecated warning | Log alternative, use it |\n| CI_FAILURE | Build/test/lint fails | Log root cause and fix |\n| FILE_NOT_FOUND | Expected file missing | Log as potential agent bug |\n| WORKFLOW_BUG | Unexpected workflow behavior | Log for agent update |",
+          "user_observable": "Executor agent documents learnings.md format and error categories",
+          "verify": [
+            "opti-gsd-executor.md contains 'Error Learning System' section",
+            "opti-gsd-executor.md contains learnings.md format specification",
+            "opti-gsd-executor.md contains error categories table"
+          ],
+          "done": "Executor documents learnings.md format with all error categories",
+          "status": "pending"
+        },
+        {
+          "id": "02",
+          "title": "Add error logging protocol to executor",
+          "files": ["agents/opti-gsd/opti-gsd-executor.md"],
+          "test_required": false,
+          "action": "Add error logging protocol to the Error Learning System section:\n\n### Error Logging Protocol\n\nWhen encountering errors during execution:\n\n1. **Detect error category** based on error message patterns:\n   - `deprecated` / `will be removed` → DEPRECATED\n   - `ENOENT` / `file not found` / `no such file` → FILE_NOT_FOUND\n   - CI command exits non-zero → CI_FAILURE\n   - Unexpected state or workflow issue → WORKFLOW_BUG\n\n2. **Check existing learnings**:\n   - Read `.opti-gsd/learnings.md` if exists\n   - Search for similar error pattern\n   - If found: apply documented fix automatically\n   - If not found: create new learning entry\n\n3. **Log new learning**:\n   ```markdown\n   ## {CATEGORY}: {brief description}\n\n   **First seen:** {YYYY-MM-DD}\n   **Error:** {exact error message}\n   **Root cause:** {analysis of why this happened}\n   **Fix:** {what was done to resolve}\n   **Prevention:** {how to avoid in future / agent to update}\n   ```\n\n4. **Apply fix and continue** if possible\n\n### Pattern Matching\n\nBefore executing commands, scan learnings for relevant entries:\n\n```\nIF command matches a DEPRECATED learning:\n  → Use documented alternative instead\n  → Log: \"Applied learning: using {alternative} instead of {deprecated}\"\n\nIF file path matches a FILE_NOT_FOUND learning:\n  → Check if file was moved/renamed\n  → Apply documented fix\n  → Log: \"Applied learning: {description}\"\n```",
+          "user_observable": "Executor checks learnings before commands and logs new errors with full context",
+          "verify": [
+            "opti-gsd-executor.md contains 'Error Logging Protocol' subsection",
+            "opti-gsd-executor.md contains error detection patterns",
+            "opti-gsd-executor.md contains 'Pattern Matching' subsection"
+          ],
+          "done": "Executor has protocol for logging errors and checking learnings",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "wave": 2,
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "03",
+          "title": "Add learnings loading to resume command",
+          "files": ["commands/opti-gsd/resume.md"],
+          "test_required": false,
+          "action": "Add Step 2a: Load Learnings after Step 2 in resume.md:\n\n### Step 2a: Load Learnings\n\nIf `.opti-gsd/learnings.md` exists:\n\n1. Read learnings file\n2. Count entries by category\n3. Display recent learnings summary:\n\n```markdown\n## Active Learnings\n\n{count} learnings loaded:\n- {count} DEPRECATED warnings\n- {count} CI_FAILURE fixes\n- {count} FILE_NOT_FOUND resolutions\n- {count} WORKFLOW_BUG patches\n\nRecent:\n- DEPRECATED: `next lint` → Use ESLint CLI directly\n- FILE_NOT_FOUND: plugin.json → Read from package.json\n```\n\n4. These learnings are now active for this session\n5. Executor will check them before running commands",
+          "user_observable": "User sees learnings summary when running /opti-gsd:resume",
+          "verify": [
+            "resume.md contains 'Step 2a: Load Learnings'",
+            "resume.md references learnings.md",
+            "resume.md shows learnings count by category"
+          ],
+          "done": "Resume command loads and displays learnings summary",
+          "status": "pending"
+        },
+        {
+          "id": "04",
+          "title": "Add learnings display to status command",
+          "files": ["commands/opti-gsd/status.md"],
+          "test_required": false,
+          "action": "Add learnings section to status.md output format:\n\n1. **Add to Output Format** section, after the Phase Overview:\n\n```\nActive Learnings:\n──────────────────────────────────────────────────────────────\n{count} learnings | Recent: {most recent learning summary}\n\nLatest learning ({date}):\n  {CATEGORY}: {brief description}\n  Fix: {what to do}\n──────────────────────────────────────────────────────────────\n```\n\n2. **Add to Step 2: Load State**:\n   - Also read `.opti-gsd/learnings.md` if exists\n   - Count learnings by category\n   - Get most recent learning for display\n\n3. **Add conditional display rule**:\n   - Only show learnings section if `.opti-gsd/learnings.md` exists and has content\n   - Show \"No learnings yet\" if file is empty",
+          "user_observable": "User sees active learnings summary when running /opti-gsd:status",
+          "verify": [
+            "status.md output format includes learnings section",
+            "status.md references learnings.md in Load State step",
+            "status.md has conditional display for learnings"
+          ],
+          "done": "Status command displays active learnings summary",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "wave": 3,
+      "parallel": false,
+      "tasks": [
+        {
+          "id": "05",
+          "title": "Add file-not-found agent bug detection to executor",
+          "files": ["agents/opti-gsd/opti-gsd-executor.md"],
+          "test_required": false,
+          "action": "Add agent bug detection section to executor Error Learning System:\n\n### Agent Bug Detection\n\nWhen FILE_NOT_FOUND errors occur, determine if it's an agent bug:\n\n**Agent bug indicators:**\n- File path is hardcoded in an agent or command file\n- File was referenced but never created by the workflow\n- File was renamed/moved but agent still uses old path\n\n**Detection steps:**\n1. Search agent files for the missing file path:\n   ```bash\n   grep -r \"{missing_file}\" agents/ commands/\n   ```\n2. If found in agent/command: Flag as WORKFLOW_BUG\n3. Log which agent needs updating in the learning entry\n\n**Learning entry for agent bugs:**\n```markdown\n## FILE_NOT_FOUND: {file}\n\n**First seen:** {date}\n**Error:** Cannot read {file} - file does not exist\n**Root cause:** Agent {agent-name} references removed/moved file\n**Fix:** Updated to use {new_path} instead\n**Prevention:** Agent `agents/opti-gsd/{agent}.md` updated\n```\n\nThis creates a feedback loop: errors improve the agents that caused them.",
+          "user_observable": "Executor identifies agent bugs from file-not-found errors and logs which agent to update",
+          "verify": [
+            "opti-gsd-executor.md contains 'Agent Bug Detection' subsection",
+            "opti-gsd-executor.md contains grep command to find agent references",
+            "opti-gsd-executor.md contains learning entry template for agent bugs"
+          ],
+          "done": "Executor detects agent bugs from file errors and creates actionable learnings",
+          "status": "pending"
+        }
+      ]
+    }
+  ],
+  "links": [
+    "executor logs errors → writes to learnings.md",
+    "resume loads learnings → displays summary",
+    "status shows learnings → displays recent",
+    "executor checks learnings → applies fixes before commands",
+    "file-not-found → agent bug detection → workflow improvement"
+  ]
+}
