@@ -35,6 +35,56 @@ If `.opti-gsd/state.json` missing:
 2. Also read `.opti-gsd/learnings.md` if exists to count and display learnings
 3. Display status with progress bars and workflow stages as shown below
 
+### Step 2a: Check CLAUDE.md Integration
+
+Check if CLAUDE.md has the opti-gsd workflow section:
+
+```bash
+# Check if CLAUDE.md exists and contains opti-gsd section
+grep -q "opti-gsd" CLAUDE.md 2>/dev/null
+```
+
+**If CLAUDE.md is missing opti-gsd section:**
+
+Display warning in status output:
+
+```
+⚠️ CLAUDE.md Missing Workflow Instructions
+─────────────────────────────────────────────────────────────
+Your CLAUDE.md doesn't include opti-gsd workflow instructions.
+This means Claude may not follow the workflow on every prompt.
+
+→ Run /opti-gsd:setup-claude-md to add workflow instructions
+```
+
+**Create `/opti-gsd:setup-claude-md` behavior inline:**
+
+When user runs this (or says "yes" to adding it), append to CLAUDE.md:
+
+```markdown
+
+---
+
+## opti-gsd Workflow
+
+This project uses **opti-gsd** for spec-driven development.
+
+**Before any code changes:**
+1. Check status: `/opti-gsd:status`
+2. Ensure on milestone branch (never master/main)
+3. Follow: Plan → Execute → Verify
+
+**Protected branches:** master, main, production, prod — PR only!
+
+**Key commands:** `/opti-gsd:status`, `/opti-gsd:start-milestone`, `/opti-gsd:roadmap`, `/opti-gsd:plan-phase`, `/opti-gsd:execute`, `/opti-gsd:verify`
+```
+
+Then commit:
+```bash
+git add CLAUDE.md
+git commit -m "docs: add opti-gsd workflow instructions to CLAUDE.md"
+```
+
 ## Output Format
 
 Display this format (adapt values from actual state):
