@@ -1,0 +1,44 @@
+{
+  "phase": 1,
+  "title": "Remove VERSION File",
+  "goal": "Single source of truth for version (package.json only)",
+  "must_haves": [
+    "VERSION file deleted from repository",
+    "No broken references to VERSION file",
+    "package.json remains the authoritative version source"
+  ],
+  "waves": [
+    {
+      "wave": 1,
+      "parallel": false,
+      "tasks": [
+        {
+          "id": "01",
+          "title": "Verify no VERSION file references exist",
+          "files": [],
+          "action": "Search entire codebase for references to VERSION file:\n\n1. Check bin/cli.js for any VERSION file reads\n2. grep -r 'VERSION' to find any references\n3. Confirm package.json is already used as version source\n\nIf references found, document them for task 02.",
+          "user_observable": "Confirmation that VERSION file is not used anywhere",
+          "verify": [
+            "grep -r VERSION shows no file reads of VERSION",
+            "bin/cli.js does not read VERSION file"
+          ],
+          "done": "Verified no code depends on VERSION file",
+          "status": "pending"
+        },
+        {
+          "id": "02",
+          "title": "Delete VERSION file",
+          "files": ["VERSION"],
+          "action": "Delete the VERSION file from the repository:\n\n```bash\ngit rm VERSION\n```\n\nCommit the deletion.",
+          "user_observable": "VERSION file no longer exists in repository",
+          "verify": [
+            "VERSION file does not exist",
+            "git status shows VERSION deleted"
+          ],
+          "done": "VERSION file removed from repository",
+          "status": "pending"
+        }
+      ]
+    }
+  ]
+}

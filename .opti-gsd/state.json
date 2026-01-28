@@ -1,14 +1,14 @@
 {
   "milestone": "v2.4.0",
   "branch": "gsd/v2.4.0",
-  "phase": null,
-  "task": null,
-  "status": "milestone_started",
+  "phase": 1,
+  "task": 0,
+  "status": "planned",
   "phases": {
     "complete": [],
-    "in_progress": [],
+    "in_progress": [1],
     "pending": []
   },
   "last_active": "2026-01-28T00:00:00Z",
-  "context": "Started milestone v2.4.0. Ready to create roadmap."
+  "context": "Phase 1 planned. Remove VERSION file for single source of truth."
 }
