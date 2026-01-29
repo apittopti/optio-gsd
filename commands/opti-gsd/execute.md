@@ -12,34 +12,12 @@ This is the core execution engine. It uses Claude Code's **Task tool** to spawn 
 
 ### Claude Code Task Integration
 
-opti-gsd integrates with Claude Code's built-in task system for real-time visual progress:
-
-```
-plan.json (persistent)          Claude Code Tasks (ephemeral)
-┌─────────────────────┐         ┌─────────────────────┐
-│ T01: Setup schema   │ ──────► │ [✓] Setup schema    │
-│ T02: Create API     │ ──────► │ [▸] Create API      │
-│ T03: Add validation │ ──────► │ [ ] Add validation  │
-└─────────────────────┘         └─────────────────────┘
-     Source of Truth              Real-time Visual UI
-```
+opti-gsd integrates with Claude Code's built-in task system for real-time visual progress.
+This is implemented in **Step 4c** (create tasks) and **Step 5** (update tasks during execution).
 
 **Two-Layer Architecture:**
 - **plan.json** — Persistent source of truth, workflow history, survives sessions
-- **Claude Code Tasks** — Ephemeral visual progress, created at execution start
-
-**How It Works:**
-1. At phase start, `TaskCreate` is called for each task in plan.json
-2. Tasks appear in Claude Code's task list (Ctrl+T to view)
-3. `TaskUpdate` marks tasks as `in_progress` when starting
-4. `TaskUpdate` marks tasks as `completed` when done
-5. Subagents can use `TaskGet` to read task context
-
-**Benefits:**
-- Real-time progress visibility during execution
-- Task state shared between spawned agents
-- User can monitor via Ctrl+T while tasks run
-- Future-proof as Anthropic improves task system
+- **Claude Code Tasks** — Ephemeral visual progress in CLI (Ctrl+T to view)
 
 ### Step 0: Validate Branch (CRITICAL - Protected Branch Check)
 
@@ -168,6 +146,42 @@ git tag -f "gsd/checkpoint/phase-{N}/pre" HEAD
 
 This enables /opti-gsd:rollback {N} to revert to before the phase started.
 
+### Step 4c: Create Claude Code Tasks (MANDATORY)
+
+**You MUST call TaskCreate for every task in plan.json before executing any waves.**
+This makes tasks visible in Claude Code's CLI task list (Ctrl+T).
+
+```
+FOR each task in plan.json:
+  TaskCreate(
+    subject="P{phase} T{task.id}: {task.title}",
+    description="{task.action}",
+    activeForm="{task.title in present participle form}"
+  )
+  → Store returned taskId mapped to task.id (e.g., T01 → taskId "1")
+```
+
+**Example calls:**
+```python
+TaskCreate(
+  subject="P1 T01: Setup authentication schema",
+  description="Create user table with email, password_hash, created_at fields...",
+  activeForm="Setting up authentication schema"
+)
+# Returns taskId "1" → map T01 to "1"
+
+TaskCreate(
+  subject="P1 T02: Create API endpoints",
+  description="Add login and register endpoints...",
+  activeForm="Creating API endpoints"
+)
+# Returns taskId "2" → map T02 to "2"
+```
+
+After this step, the user sees all tasks listed as `pending` in Ctrl+T.
+
+**Store the mapping** of plan task IDs to Claude Code task IDs for use in Step 5.
+
 ### Step 5: Execute Waves with Background Tasks
 
 ```
@@ -177,32 +191,43 @@ FOR each wave:
        Ask: "Wave {W-1} complete. Continue to Wave {W}?"
 
   3. FOR each task in wave:
-     - Build subagent prompt (see below)
-     - Build description from plan: "P{phase} T{id}: {task.action[:30]}"
-     - Spawn via Task tool:
+     a. Mark task as in_progress (MANDATORY):
+        TaskUpdate(
+          taskId="{claude_task_id for this task}",
+          status="in_progress"
+        )
+     b. Build subagent prompt (see Step 6 below)
+     c. Spawn via Task tool:
          Task(
            description="P{phase} T{id}: {short_title}",
            prompt="{subagent_prompt}",
            subagent_type="opti-gsd-executor",
            run_in_background=true
          )
-     - Store returned task_id for each spawned task
-     - Update state.json with background_tasks array
-     - User sees tasks appear in Ctrl+T task list
+     d. Store returned agent_task_id for polling
+     e. Update state.json with background_tasks array
 
   4. Poll for completion using TaskOutput:
      WHILE any tasks pending:
-       FOR each task_id in background_tasks:
-         result = TaskOutput(task_id, block=false)
+       FOR each agent_task_id in background_tasks:
+         result = TaskOutput(agent_task_id, block=false)
          IF result.complete:
            - Parse result (COMPLETE | FAILED | CHECKPOINT)
            - Process result (see Step 7)
+           - Mark Claude Code task as completed (MANDATORY):
+             TaskUpdate(
+               taskId="{claude_task_id for this task}",
+               status="completed"
+             )
            - Remove from background_tasks
        IF still waiting:
          Brief status update to user: "Tasks running: {count}"
 
   5. All tasks in wave complete? → Next wave
 ```
+
+**IMPORTANT:** The TaskUpdate calls in steps 3a and 4 are MANDATORY. They drive the visual
+progress display in Claude Code's CLI. Without them, users see no task progress.
 
 **Why Background Tasks:**
 - User sees real-time progress (Ctrl+T to toggle task list)

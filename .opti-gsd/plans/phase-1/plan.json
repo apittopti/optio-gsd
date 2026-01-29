@@ -1,0 +1,31 @@
+{
+  "phase": 1,
+  "title": "Embed TaskCreate/TaskUpdate in Execution Steps",
+  "goal": "Make Claude Code Tasks visual progress mandatory in execute.md orchestrator flow",
+  "waves": [
+    {
+      "wave": 1,
+      "tasks": ["T01", "T02"]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T01",
+      "title": "Add explicit TaskCreate/TaskUpdate steps to execute.md",
+      "action": "Modify execute.md to add Step 4c (Create Claude Code Tasks) that calls TaskCreate for every task in plan.json at phase start. Modify Step 5 wave loop to call TaskUpdate(in_progress) BEFORE spawning each subagent and TaskUpdate(completed) AFTER result handling. Update the conceptual section (lines 14-42) to reference these concrete steps. Make the instructions imperative with exact tool call syntax so the orchestrator cannot skip them.",
+      "files": ["commands/opti-gsd/execute.md"],
+      "test_required": false,
+      "verify": "execute.md contains a numbered Step 4c that calls TaskCreate for each task, Step 5 includes TaskUpdate calls at task start and completion",
+      "done": "TaskCreate and TaskUpdate are embedded as mandatory steps in the execute.md orchestrator flow"
+    },
+    {
+      "id": "T02",
+      "title": "Bump version to 2.5.0",
+      "action": "Update package.json version field from 2.4.0 to 2.5.0",
+      "files": ["package.json"],
+      "test_required": false,
+      "verify": "package.json shows version 2.5.0",
+      "done": "Version bumped to 2.5.0"
+    }
+  ]
+}

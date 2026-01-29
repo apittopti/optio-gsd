@@ -1,14 +1,14 @@
 {
-  "milestone": null,
-  "branch": "master",
-  "phase": null,
+  "milestone": "v2.5.0",
+  "branch": "gsd/v2.5.0",
+  "phase": 1,
   "task": null,
-  "status": "milestone_complete",
+  "status": "phase_complete",
   "phases": {
-    "complete": [],
+    "complete": ["1"],
     "in_progress": [],
     "pending": []
   },
-  "last_active": "2026-01-28T00:00:00Z",
-  "context": "Milestone v2.4.0 complete. Ready for next milestone."
+  "last_active": "2026-01-29T00:00:00Z",
+  "context": "Phase 1 complete. TaskCreate/TaskUpdate embedded as mandatory steps in execute.md."
 }
