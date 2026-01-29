@@ -32,6 +32,7 @@ This is the opti-gsd source repository. You are using opti-gsd to develop opti-g
 | /opti-gsd:roadmap | View/create project roadmap |
 | /opti-gsd:plan-phase | Generate executable plan for a phase |
 | /opti-gsd:execute | Execute current phase plan |
+| /opti-gsd:quick | Fast-track ad-hoc tasks (skips research/checker/verifier) |
 | /opti-gsd:verify | Verify phase completion |
 | /opti-gsd:add-feature | Capture features without interrupting work |
 | /opti-gsd:add-story | Capture user/client requests |
@@ -74,11 +75,14 @@ Use these specialized agents for complex tasks:
   - `features/` - Feature ideas (F{NNN}.md)
   - `codebase/` - Codebase analysis files
   - `plans/` - Phase execution plans
+  - `quick/` - Quick task artifacts ({NNN}-{slug}/)
   - `debug/` - Debug session files
 
 ## Ad-hoc Changes
 
-Even for small ad-hoc changes:
+For small ad-hoc changes, use /opti-gsd:quick for fast execution with GSD guarantees (atomic commits, state tracking) while skipping optional agents.
+
+For other cases:
 
 1. Consider if it should be captured as a feature (/opti-gsd:add-feature) or story (/opti-gsd:add-story)
 2. For bug fixes, use /opti-gsd:debug for systematic investigation

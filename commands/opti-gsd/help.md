@@ -94,6 +94,7 @@ Project: Not initialized
 | Command | Description |
 |---------|-------------|
 | /opti-gsd:status | **Start here** — shows where you are + next action |
+| /opti-gsd:quick | Fast-track ad-hoc tasks (bug fixes, small features) |
 | /opti-gsd:add-feature | Capture a feature idea without interrupting work |
 | /opti-gsd:add-story | Capture a user request or feature |
 | /opti-gsd:debug | Systematic bug investigation |
@@ -145,6 +146,7 @@ Switch with /opti-gsd:mode yolo or /opti-gsd:mode interactive
 ### Execution (Advanced)
 | Command | Description |
 |---------|-------------|
+| /opti-gsd:quick [description] | Ad-hoc tasks with GSD guarantees, skipping optional agents |
 | /opti-gsd:execute-task [N] | Execute single task N (not whole phase) |
 
 ### Milestones
