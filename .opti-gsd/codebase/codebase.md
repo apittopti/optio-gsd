@@ -61,13 +61,13 @@ The tool is self-hosted (used to build itself) and is installed via `npx opti-gs
     │   └── opti-gsd-verifier.md
     ├── bin/                        # CLI entry point
     │   └── cli.js                 # Install/uninstall CLI (380 lines)
-    ├── commands/opti-gsd/          # Slash commands (40+ commands)
-    │   ├── init.md                # Project initialization
-    │   ├── status.md              # Status display
-    │   ├── execute.md             # Task execution
-    │   ├── plan-phase.md          # Phase planning
-    │   ├── verify.md              # Verification
-    │   ├── tools.md               # Tool management
+    ├── skills/opti-gsd/             # Skills (40+ slash commands)
+    │   ├── init/SKILL.md          # Project initialization
+    │   ├── status/SKILL.md        # Status display
+    │   ├── execute/SKILL.md       # Task execution
+    │   ├── plan-phase/SKILL.md    # Phase planning
+    │   ├── verify/SKILL.md        # Verification
+    │   ├── tools/SKILL.md         # Tool management
     │   └── ... (35+ more)
     ├── docs/                       # Documentation
     │   ├── ERROR-HANDLING.md      # Standardized error patterns
@@ -106,11 +106,11 @@ The tool is self-hosted (used to build itself) and is installed via `npx opti-gs
 
 | Command | File | Purpose |
 |---------|------|---------|
-| /opti-gsd:roadmap | commands/opti-gsd/roadmap.md | Define phases and success criteria |
-| /opti-gsd:plan-phase | commands/opti-gsd/plan-phase.md | Generate execution plan for phase |
-| /opti-gsd:execute | commands/opti-gsd/execute.md | Run plan with subagents |
-| /opti-gsd:push | commands/opti-gsd/push.md | Push for preview deployment |
-| /opti-gsd:verify | commands/opti-gsd/verify.md | Verify phase completion |
+| /opti-gsd:roadmap | skills/opti-gsd/roadmap/SKILL.md | Define phases and success criteria |
+| /opti-gsd:plan-phase | skills/opti-gsd/plan-phase/SKILL.md | Generate execution plan for phase |
+| /opti-gsd:execute | skills/opti-gsd/execute/SKILL.md | Run plan with subagents |
+| /opti-gsd:push | skills/opti-gsd/push/SKILL.md | Push for preview deployment |
+| /opti-gsd:verify | skills/opti-gsd/verify/SKILL.md | Verify phase completion |
 
 ### Core Agents (5 Primary)
 
@@ -338,12 +338,12 @@ CI execution order (fail-fast):
 
 ### Adding New Commands
 
-1. Create commands/opti-gsd/{command-name}.md
-2. Add YAML frontmatter with description
+1. Create skills/opti-gsd/{skill-name}/SKILL.md
+2. Add YAML frontmatter with name, description, and disable-model-invocation (if needed)
 3. Document behavior with step-by-step instructions
 4. Follow error handling patterns from docs/ERROR-HANDLING.md
 5. Specify context budget
-6. Update help.md with new command
+6. Update help skill with new command
 
 ### Adding New Agents
 
@@ -388,8 +388,8 @@ Key files for understanding the tool:
 
 - **Extension manifest:** C:/Optimotive-dev/opti-gsd/.claude-plugin/plugin.json
 - **CLI installer:** C:/Optimotive-dev/opti-gsd/bin/cli.js
-- **Main workflow:** C:/Optimotive-dev/opti-gsd/commands/opti-gsd/execute.md
-- **Tool discovery:** C:/Optimotive-dev/opti-gsd/commands/opti-gsd/tools.md
+- **Main workflow:** skills/opti-gsd/execute/SKILL.md
+- **Tool discovery:** skills/opti-gsd/tools/SKILL.md
 - **Error patterns:** C:/Optimotive-dev/opti-gsd/docs/ERROR-HANDLING.md
 - **Workflow diagram:** C:/Optimotive-dev/opti-gsd/docs/WORKFLOW-FLOWCHART.md
 - **Feature backlog:** C:/Optimotive-dev/opti-gsd/.opti-gsd/features.md

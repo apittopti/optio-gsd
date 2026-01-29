@@ -266,8 +266,10 @@ async function main() {
   }
 
   if (command === 'init') {
-    // Check if already installed
-    const existingInstall = fs.existsSync(path.join(installDir, 'commands', 'opti-gsd'));
+    // Check if already installed (check both old commands/ and new skills/ locations)
+    const existingCommands = fs.existsSync(path.join(installDir, 'commands', 'opti-gsd'));
+    const existingSkills = fs.existsSync(path.join(installDir, 'skills', 'opti-gsd'));
+    const existingInstall = existingCommands || existingSkills;
     const action = existingInstall ? 'Update' : 'Install';
 
     // Confirm before proceeding (if TTY available)
@@ -285,13 +287,19 @@ async function main() {
       fs.mkdirSync(installDir, { recursive: true });
     }
 
+    // Clean up legacy commands/ directory (migrated to skills/ in v2.6.0)
+    const legacyCommandsPath = path.join(installDir, 'commands', 'opti-gsd');
+    if (fs.existsSync(legacyCommandsPath)) {
+      removeRecursive(legacyCommandsPath);
+      log.success('Removed legacy commands/opti-gsd (migrated to skills/)');
+    }
+
     // Copy opti-gsd files
     log.info('Copying opti-gsd files...');
 
-    // Source structure has namespace folders: commands/opti-gsd/, agents/opti-gsd/
-    // Copy directly to preserve structure: commands/opti-gsd/ -> ~/.claude/commands/opti-gsd/
-    const dirsToVopy = ['commands', 'agents', 'skills', 'docs'];
-    for (const dir of dirsToVopy) {
+    // Skills replaced commands in v2.6.0 — skills support auto-invocation and supporting files
+    const dirsToInstall = ['skills', 'agents', 'docs'];
+    for (const dir of dirsToInstall) {
       const srcPath = path.join(sourceDir, dir, 'opti-gsd');
       const destPath = path.join(installDir, dir, 'opti-gsd');
       if (fs.existsSync(srcPath)) {
