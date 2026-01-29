@@ -514,7 +514,8 @@ Phase {N} is ready for milestone completion.
 
 **Next steps:**
 → /opti-gsd:plan-phase {N+1}      — Plan next phase
-→ /opti-gsd:complete-milestone    — If all phases done
+→ /opti-gsd:push                  — Push branch for preview deployment
+→ /opti-gsd:complete-milestone    — If all phases done (pushes and creates PR)
 → /opti-gsd:archive {N}           — Archive to free context
 
 💾 State saved. Safe to /compact or start new session if needed.
