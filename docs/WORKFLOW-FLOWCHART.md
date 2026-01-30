@@ -7,14 +7,14 @@
 │                                                                                     │
 │   ANYTIME COMMANDS (can run at any point in the workflow)                          │
 │   ─────────────────────────────────────────────────────────────────────            │
-│   /status           → See where you are + what to do next                          │
-│   /track feature    → Capture feature for later                                    │
-│   /track story      → Capture user request                                         │
-│   /track issue      → View/add issues                                              │
-│   /track decision   → Log architectural decisions                                  │
-│   /debug            → Start debugging session                                      │
-│   /session context  → Check context usage                                          │
-│   /help             → Show commands                                                │
+│   /status      → See where you are + what to do next                               │
+│   /add-feature    → Capture feature for later                                            │
+│   /add-story   → Capture user request                                              │
+│   /debug       → Start debugging session                                           │
+│   /issues      → View/add issues                                                   │
+│   /decisions   → Log architectural decisions                                       │
+│   /context     → Check context usage                                               │
+│   /help        → Show commands                                                     │
 │                                                                                     │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
@@ -39,7 +39,7 @@
          │ NEW        EXISTING │            │ NO              YES│
          ▼                     ▼            ▼                    │
 ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐    │
-│ /init new       │  │ /init           │  │ /roadmap        │    │
+│ /new-project    │  │ /init           │  │ /roadmap        │    │
 │                 │  │                 │  │ Define phases   │    │
 │ Guided setup    │  │ Initialize in   │  └────────┬────────┘    │
 │ wizard          │  │ existing code   │           │             │
@@ -78,7 +78,7 @@
                                        │ (all phases done)
                                        ▼
                          ┌──────────────────────────┐
-                         │  /milestone complete     │
+                         │   /complete-milestone    │
                          │   Creates PR, tags       │
                          └──────────────────────────┘
 ```
@@ -110,17 +110,17 @@ BACKWARD PATHS (rework):
 ────────────────────────────────────────────────────────────────
 
   • VERIFY finds gaps → back to EXECUTE
-    VERIFY ──► gaps found ──►  /plan fix ──► EXECUTE ──► VERIFY
+    VERIFY ──► gaps found ──► /plan-fix ──► EXECUTE ──► VERIFY
 
   • EXECUTE fails → choose recovery
-    EXECUTE ──► failure ──┬──► /debug recover (diagnose + retry)
+    EXECUTE ──► failure ──┬──► /recover (diagnose + retry)
                           │
-                          ├──► /session rollback (undo to checkpoint)
+                          ├──► /rollback (undo to checkpoint)
                           │
                           └──► revise PLAN (if fundamentally wrong)
 
   • VERIFY fundamentally broken → back to PLAN
-    VERIFY ──► major issues ──► /session rollback ──► PLAN (rethink approach)
+    VERIFY ──► major issues ──► /rollback ──► PLAN (rethink approach)
 
 
 REPEAT PATHS (iterate):
@@ -130,7 +130,7 @@ REPEAT PATHS (iterate):
     VERIFY ──► pass ──► PLAN (next phase) ──► EXECUTE ──► ...
 
   • All phases done → complete milestone
-    VERIFY (last) ──► pass ──► /milestone complete
+    VERIFY (last) ──► pass ──► /complete-milestone
 ```
 
 ---
@@ -147,13 +147,13 @@ REPEAT PATHS (iterate):
                     ▼                                         │
           ┌─────────────────┐                                │
           │   OPTIONAL:     │                                │
-          │  /plan discuss  │  ◄── Capture decisions first   │
-          │  /plan research │  ◄── Research best practices   │
+          │  /discuss-phase │  ◄── Capture decisions first   │
+          │  /research      │  ◄── Research best practices   │
           └────────┬────────┘                                │
                    │                                         │
                    ▼                                         │
 ┌──────────────────────────────────────┐                     │
-│               /plan N                │                     │
+│             /plan-phase N            │                     │
 ├──────────────────────────────────────┤                     │
 │ • Reads project.md, roadmap.md       │                     │
 │ • Auto-detects test requirements     │                     │
@@ -195,8 +195,8 @@ REPEAT PATHS (iterate):
         │         ┌────────────────────┐                     │
         │         │  RECOVERY OPTIONS  │                     │
         │         ├────────────────────┤                     │
-        │         │ /debug recover    ← diagnose│              │
-        │         │ /session rollback ← undo   │              │
+        │         │ /recover  ← diagnose│                    │
+        │         │ /rollback ← undo   │                     │
         │         └────────────────────┘                     │
         │                                                    │
         ▼                                                    │
@@ -233,7 +233,7 @@ REPEAT PATHS (iterate):
         │                     │                              │
         │                     ▼                              │
         │         ┌────────────────────┐                     │
-        │         │    /plan fix N     │                     │
+        │         │    /plan-fix N     │                     │
         │         │ Generate fix tasks │                     │
         │         └─────────┬──────────┘                     │
         │                   │                                │
@@ -260,7 +260,7 @@ REPEAT PATHS (iterate):
               │                           │                  │
               │                           ▼                  │
               │               ┌─────────────────────┐        │
-              │               │ /milestone complete │        │
+              │               │ /complete-milestone │        │
               │               │ • Creates PR        │        │
               │               │ • Tags release      │        │
               │               │ • Archives phases   │        │
@@ -272,83 +272,128 @@ REPEAT PATHS (iterate):
 
 ---
 
-## Complete Skill Reference (15 skills)
+## Complete Command Reference (40 commands)
 
-### CORE WORKFLOW (6)
+### CORE WORKFLOW (5) - The essentials
 ```
-┌──────────────────────────┬──────────────────────────────────────────────────┐
-│ Skill                    │ Purpose                                          │
-├──────────────────────────┼──────────────────────────────────────────────────┤
-│ /opti-gsd:status         │ WHERE AM I? WHAT DO I DO NEXT?                   │
-│ /opti-gsd:roadmap        │ Define what you're building (phases)             │
-│   roadmap add            │   Add new phase to end of roadmap                │
-│   roadmap insert N       │   Insert phase at specific position              │
-│   roadmap remove N       │   Remove a pending phase                         │
-│ /opti-gsd:plan           │ Generate execution plan for phase N              │
-│   plan fix               │   Generate fix plan for verification gaps        │
-│   plan discuss N         │   Capture decisions before planning              │
-│   plan research [topic]  │   Research best practices for a topic            │
-│ /opti-gsd:execute        │ Run the plan (TDD, parallel, auto-commit)        │
-│   execute task N         │   Execute single task (not whole phase)          │
-│   execute quick [desc]   │   Fast-track ad-hoc tasks                        │
-│ /opti-gsd:verify         │ Verify everything works                          │
-│ /opti-gsd:push           │ Push to trigger preview deployment               │
-└──────────────────────────┴──────────────────────────────────────────────────┘
+┌────────────────┬─────────────────────────────────────────────────┐
+│ Command        │ Purpose                                         │
+├────────────────┼─────────────────────────────────────────────────┤
+│ /roadmap       │ Define what you're building (phases)            │
+│ /plan-phase    │ Generate execution plan for phase N             │
+│ /execute       │ Run the plan (TDD, parallel, auto-commit)       │
+│ /push          │ Push to trigger preview deployment              │
+│ /verify        │ Verify everything works                         │
+└────────────────┴─────────────────────────────────────────────────┘
 ```
 
-### PROJECT MANAGEMENT (4)
+### PROJECT SETUP (5)
 ```
-┌──────────────────────────┬──────────────────────────────────────────────────┐
-│ Skill                    │ Purpose                                          │
-├──────────────────────────┼──────────────────────────────────────────────────┤
-│ /opti-gsd:init           │ Initialize opti-gsd in existing project          │
-│   init new               │   Create new project with guided setup           │
-│   init claude-md         │   Add opti-gsd instructions to CLAUDE.md        │
-│   init migrate           │   Migrate from older opti-gsd version            │
-│ /opti-gsd:milestone      │ Manage milestone lifecycle                       │
-│   milestone start [name] │   Create milestone branch (before work)          │
-│   milestone complete     │   Create PR, tag release (after all phases)      │
-│ /opti-gsd:track *        │ Capture and manage project artifacts             │
-│   track feature          │   Capture feature idea                           │
-│   track story            │   Capture user request                           │
-│   track issue            │   Log a bug or problem                           │
-│   track decision         │   Log architectural decision                     │
-│   track list             │   View all tracked items                         │
-│   track view [ID]        │   View specific item details                     │
-│   track resolve [ID]     │   Resolve an open item                           │
-│ /opti-gsd:debug *        │ Systematic bug investigation                     │
-│   debug recover          │   Diagnose & fix interrupted execution           │
-└──────────────────────────┴──────────────────────────────────────────────────┘
+┌────────────────┬─────────────────────────────────────────────────┐
+│ Command        │ Purpose                                         │
+├────────────────┼─────────────────────────────────────────────────┤
+│ /init          │ Initialize opti-gsd in existing project         │
+│ /new-project   │ Create new project with guided setup            │
+│ /map-codebase  │ Analyze existing codebase structure             │
+│ /ci            │ View or configure CI/CD toolchain               │
+│ /migrate       │ Migrate from older opti-gsd version             │
+└────────────────┴─────────────────────────────────────────────────┘
 ```
 
-### SESSION & CONFIGURATION (5)
+### PLANNING - Advanced (5)
 ```
-┌──────────────────────────┬──────────────────────────────────────────────────┐
-│ Skill                    │ Purpose                                          │
-├──────────────────────────┼──────────────────────────────────────────────────┤
-│ /opti-gsd:session        │ Session lifecycle management                     │
-│   session pause          │   Pause work with context save                   │
-│   session resume         │   Resume from last session                       │
-│   session rollback       │   Undo to a previous checkpoint                  │
-│   session archive        │   Archive completed phase to save context        │
-│   session context        │   Check context usage and budget                 │
-│   session compact        │   Reduce context footprint                       │
-│ /opti-gsd:tools          │ Tool and CI/CD discovery & configuration         │
-│   tools detect           │   Detect available MCP servers and plugins       │
-│   tools configure        │   Configure a specific tool                      │
-│   tools usage            │   View tool usage statistics                     │
-│   tools ci               │   View or configure CI/CD toolchain              │
-│ /opti-gsd:codebase       │ Analyze existing codebase structure              │
-│ /opti-gsd:help *         │ Show commands and help                           │
-│   help advanced          │   Advanced usage guide                           │
-│   help whats-new         │   Check for updates and changelog                │
-│   help mode              │   Switch between interactive/yolo modes          │
-│ /opti-gsd:config         │ Terminal configuration                           │
-│   config statusline      │   Configure terminal status line                 │
-└──────────────────────────┴──────────────────────────────────────────────────┘
+┌────────────────┬─────────────────────────────────────────────────┐
+│ Command        │ Purpose                                         │
+├────────────────┼─────────────────────────────────────────────────┤
+│ /discuss-phase │ Capture decisions before planning               │
+│ /research      │ Research best practices for a topic             │
+│ /add-phase     │ Add new phase to end of roadmap                 │
+│ /insert-phase  │ Insert phase at specific position               │
+│ /remove-phase  │ Remove a pending phase                          │
+└────────────────┴─────────────────────────────────────────────────┘
 ```
 
-*Skills marked with \* support auto-invocation by Claude.*
+### EXECUTION - Advanced (1)
+```
+┌────────────────┬─────────────────────────────────────────────────┐
+│ Command        │ Purpose                                         │
+├────────────────┼─────────────────────────────────────────────────┤
+│ /execute-task  │ Execute single task (not whole phase)           │
+└────────────────┴─────────────────────────────────────────────────┘
+```
+
+### RECOVERY (3) - When things go wrong
+```
+┌────────────────┬─────────────────────────────────────────────────┐
+│ Command        │ Purpose                                         │
+├────────────────┼─────────────────────────────────────────────────┤
+│ /recover       │ Diagnose and fix interrupted execution          │
+│ /rollback      │ Undo to a previous checkpoint                   │
+│ /plan-fix      │ Generate fix plan for verification gaps         │
+└────────────────┴─────────────────────────────────────────────────┘
+```
+
+### MILESTONES (2)
+```
+┌────────────────────┬─────────────────────────────────────────────┐
+│ Command            │ Purpose                                     │
+├────────────────────┼─────────────────────────────────────────────┤
+│ /start-milestone   │ Create milestone branch (before work)       │
+│ /complete-milestone│ Create PR, tag release (after all phases)   │
+└────────────────────┴─────────────────────────────────────────────┘
+```
+
+### SESSION MANAGEMENT (4)
+```
+┌────────────────┬─────────────────────────────────────────────────┐
+│ Command        │ Purpose                                         │
+├────────────────┼─────────────────────────────────────────────────┤
+│ /status        │ WHERE AM I? WHAT DO I DO NEXT?                  │
+│ /pause         │ Pause work with context save                    │
+│ /resume        │ Resume from last session                        │
+│ /help          │ Show commands                                   │
+└────────────────┴─────────────────────────────────────────────────┘
+```
+
+### CONTEXT MANAGEMENT (3)
+```
+┌────────────────┬─────────────────────────────────────────────────┐
+│ Command        │ Purpose                                         │
+├────────────────┼─────────────────────────────────────────────────┤
+│ /context       │ Check context usage and budget                  │
+│ /archive       │ Archive completed phase to save context         │
+│ /compact       │ Reduce context footprint                        │
+└────────────────┴─────────────────────────────────────────────────┘
+```
+
+### CAPTURE & TRACKING (7) - Anytime commands
+```
+┌────────────────┬─────────────────────────────────────────────────┐
+│ Command        │ Purpose                                         │
+├────────────────┼─────────────────────────────────────────────────┤
+│ /add-feature │ Capture feature idea without interrupting       │
+│ /add-story   │ Capture user request                            │
+│ /features    │ View captured feature ideas                     │
+│ /stories       │ View captured user stories                      │
+│ /issues        │ Track and manage issues                         │
+│ /decisions     │ Log architectural decisions                     │
+│ /debug         │ Systematic bug investigation                    │
+└────────────────┴─────────────────────────────────────────────────┘
+```
+
+### CONFIGURATION (6)
+```
+┌──────────────────┬───────────────────────────────────────────────┐
+│ Command          │ Purpose                                       │
+├──────────────────┼───────────────────────────────────────────────┤
+│ /mode            │ Switch between interactive/yolo modes         │
+│ /skills          │ Discover and configure Claude skills          │
+│ /mcps            │ Discover and configure MCP servers            │
+│ /detect-tools    │ Detect available MCP servers and plugins      │
+│ /whats-new       │ Check for updates and changelog               │
+│ /statusline-setup│ Configure terminal status line                │
+└──────────────────┴───────────────────────────────────────────────┘
+```
 
 ---
 
@@ -415,7 +460,7 @@ REPEAT PATHS (iterate):
                   │
                   ▼
         ┌───────────────────┐
-        │  /debug recover   │───────► Diagnose issue
+        │     /recover      │───────► Diagnose issue
         └─────────┬─────────┘         Shows:
                   │                   • Git state
                   │                   • state.json vs reality
@@ -426,8 +471,8 @@ REPEAT PATHS (iterate):
     │                           │
     ▼                           ▼
 ┌──────────────┐        ┌───────────────┐
-│ Fix manually │        │ /session      │
-│ then /execute│        │  rollback     │
+│ Fix manually │        │   /rollback   │
+│ then /execute│        │   to checkpoint│
 └──────────────┘        └───────────────┘
 ```
 
@@ -439,7 +484,7 @@ REPEAT PATHS (iterate):
                   │
                   ▼
         ┌───────────────────┐
-        │    /plan fix N    │───────► Generate fix tasks
+        │    /plan-fix N    │───────► Generate fix tasks
         └─────────┬─────────┘
                   │
                   ▼
@@ -484,9 +529,9 @@ Timeline of a phase execution:
     │      └────┬────┘                                          │
     │           │                                               │
     │           ▼                                               │
-    │  /session rollback 2-03  ───► Resets to T02 checkpoint     │
-    │  /session rollback 2     ───► Resets to pre checkpoint    │
-    │  /session rollback last  ───► Resets to most recent       │
+    │  /rollback 2-03  ───► Resets to T02 checkpoint            │
+    │  /rollback 2     ───► Resets to pre checkpoint            │
+    │  /rollback last  ───► Resets to most recent checkpoint    │
     │                                                           │
     │  gsd/checkpoint/phase-2/post  (after all tasks)           │
     │                                                           │
@@ -497,68 +542,68 @@ Timeline of a phase execution:
 
 ---
 
-## When Can Each Skill Be Used?
+## When Can Each Command Be Used?
 
 ```
 SETUP (before workflow starts):
 ────────────────────────────────────────────────────────────────
-  /init, /init new, /codebase, /tools ci, /init migrate
+  /init, /new-project, /map-codebase, /ci, /migrate
 
 
 ANYTIME (run at any point):
 ────────────────────────────────────────────────────────────────
-  /status              ← WHERE AM I?
-  /help                ← Show commands
-  /track feature       ← Capture feature
-  /track story         ← Capture request
-  /track list          ← View all tracked items
-  /track issue         ← Track issues
-  /track decision      ← Log decisions
-  /debug               ← Bug investigation
-  /session context     ← Check context usage
-  /help mode           ← Switch modes
-  /session pause       ← Save and pause
-  /session resume      ← Continue session
+  /status         ← WHERE AM I?
+  /help           ← Show commands
+  /add-feature       ← Capture feature
+  /add-story      ← Capture request
+  /features          ← View features
+  /stories        ← View stories
+  /issues         ← Track issues
+  /decisions      ← Log decisions
+  /debug          ← Bug investigation
+  /context        ← Check context usage
+  /mode           ← Switch modes
+  /pause          ← Save and pause
+  /resume         ← Continue session
 
 
 WORKFLOW-SPECIFIC (at certain stages):
 ────────────────────────────────────────────────────────────────
 
   At START:
-    /milestone start    ← Create milestone branch
+    /start-milestone    ← Create milestone branch
 
   Before PLAN:
-    /plan discuss       ← Optional: capture decisions first
-    /plan research      ← Optional: research best practices
+    /discuss-phase      ← Optional: capture decisions first
+    /research           ← Optional: research best practices
 
   At PLAN:
-    /plan               ← Generate plan
-    /roadmap add        ← Add to roadmap
-    /roadmap insert     ← Insert in roadmap
-    /roadmap remove     ← Remove from roadmap
+    /plan-phase         ← Generate plan
+    /add-phase          ← Add to roadmap
+    /insert-phase       ← Insert in roadmap
+    /remove-phase       ← Remove from roadmap
 
   At EXECUTE:
     /execute            ← Run whole phase
-    /execute task       ← Run single task
-    /execute quick      ← Fast-track ad-hoc task
+    /execute-task       ← Run single task
 
   After EXECUTE:
     /push               ← Push for preview deploy
     /verify             ← Verify (with or without push)
 
   After VERIFY:
-    /session archive    ← Archive completed phase
-    /session compact    ← Reduce context
+    /archive            ← Archive completed phase
+    /compact            ← Reduce context
 
   At END:
-    /milestone complete ← Create PR, finalize
+    /complete-milestone ← Create PR, finalize
 
 
 RECOVERY (when things break):
 ────────────────────────────────────────────────────────────────
-  /debug recover       ← After execution failure
-  /session rollback    ← Undo to checkpoint
-  /plan fix            ← After verification gaps
+  /recover    ← After execution failure
+  /rollback   ← Undo to checkpoint
+  /plan-fix   ← After verification gaps
 ```
 
 ---
@@ -577,10 +622,10 @@ RECOVERY (when things break):
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  THE CORE WORKFLOW:                                             │
+│  THE 5-COMMAND WORKFLOW:                                        │
 │  ───────────────────────                                        │
 │                                                                 │
-│      /roadmap → /plan → /execute ─┬─► /push → /verify           │
+│      /roadmap → /plan-phase → /execute ─┬─► /push → /verify     │
 │                      │                  │                       │
 │                      │                  └─► /verify (local)     │
 │                      │                           │              │
@@ -591,13 +636,13 @@ RECOVERY (when things break):
 │  SOMETHING WENT WRONG?                                          │
 │  ─────────────────────                                          │
 │                                                                 │
-│      /debug recover      ← Diagnose and fix                     │
-│      /session rollback   ← Undo to checkpoint                   │
-│      /plan fix           ← Fix verification gaps                │
+│      /recover   ← Diagnose and fix                              │
+│      /rollback  ← Undo to checkpoint                            │
+│      /plan-fix  ← Fix verification gaps                         │
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  ANYTIME:  /status /help /track feature /debug /track issue        │
+│  ANYTIME:  /status /help /add-feature /debug /issues /context      │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```

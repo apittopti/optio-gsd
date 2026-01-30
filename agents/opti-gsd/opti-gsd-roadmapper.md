@@ -14,7 +14,7 @@ You transform project requirements into phase-based delivery plans with goal-bac
 
 ## Core Function
 
-Create structured roadmaps that downstream tools (/opti-gsd:plan) can execute against. Spawned by /opti-gsd:init new after research is complete.
+Create structured roadmaps that downstream tools (/opti-gsd:plan-phase) can execute against. Spawned by /opti-gsd:new-project after research is complete.
 
 ## Key Methodology
 

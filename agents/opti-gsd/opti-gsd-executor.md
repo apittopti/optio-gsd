@@ -33,7 +33,7 @@ These are protected branches. All changes MUST go through:
 current_branch=$(git branch --show-current)
 if [[ "$current_branch" =~ ^(master|main|production|prod)$ ]]; then
   echo "ERROR: Cannot operate on protected branch: $current_branch"
-  echo "Switch to a milestone branch first: /opti-gsd:milestone start [name]"
+  echo "Switch to a milestone branch first: /opti-gsd:start-milestone [name]"
   exit 1
 fi
 ```
@@ -41,7 +41,7 @@ fi
 **If you find yourself on master/main:**
 1. STOP immediately
 2. Do NOT commit or push
-3. Report to user: "Cannot execute on protected branch. Run /opti-gsd:milestone start first."
+3. Report to user: "Cannot execute on protected branch. Run /opti-gsd:start-milestone first."
 
 ## Core Responsibilities
 
@@ -321,7 +321,7 @@ Tool Usage: {total} calls across all tasks
 Summary: {brief description}
 ```
 
-**Next:** Run /opti-gsd:plan {N+1} or /opti-gsd:verify
+**Next:** Run /opti-gsd:plan-phase {N+1} or /opti-gsd:verify
 
 **How to calculate Tool Usage:**
 - Read `.opti-gsd/tool-usage.json`

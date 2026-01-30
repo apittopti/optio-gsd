@@ -61,22 +61,14 @@ The tool is self-hosted (used to build itself) and is installed via `npx opti-gs
     │   └── opti-gsd-verifier.md
     ├── bin/                        # CLI entry point
     │   └── cli.js                 # Install/uninstall CLI (380 lines)
-    ├── skills/opti-gsd/             # Skills (15 consolidated)
-    │   ├── status/SKILL.md        # Current state and next action
-    │   ├── init/SKILL.md          # Project initialization (+ new, claude-md, migrate)
-    │   ├── roadmap/SKILL.md       # Roadmap management (+ add, insert, remove)
-    │   ├── plan/SKILL.md          # Planning (+ fix, discuss, research)
-    │   ├── execute/SKILL.md       # Execution (+ task, quick)
-    │   ├── verify/SKILL.md        # Phase verification
-    │   ├── debug/SKILL.md         # Bug investigation (+ recover)
-    │   ├── milestone/SKILL.md     # Milestone lifecycle (start, complete)
-    │   ├── track/SKILL.md         # Artifact tracking (feature, story, issue, decision)
-    │   ├── session/SKILL.md       # Session management (pause, resume, rollback, etc.)
-    │   ├── push/SKILL.md          # Push for deployment
-    │   ├── tools/SKILL.md         # Tool and CI/CD management
-    │   ├── codebase/SKILL.md      # Codebase analysis
-    │   ├── help/SKILL.md          # Help, whats-new, mode
-    │   └── config/SKILL.md        # Terminal configuration
+    ├── commands/opti-gsd/          # Slash commands (40+ commands)
+    │   ├── init.md                # Project initialization
+    │   ├── status.md              # Status display
+    │   ├── execute.md             # Task execution
+    │   ├── plan-phase.md          # Phase planning
+    │   ├── verify.md              # Verification
+    │   ├── tools.md               # Tool management
+    │   └── ... (35+ more)
     ├── docs/                       # Documentation
     │   ├── ERROR-HANDLING.md      # Standardized error patterns
     │   └── WORKFLOW-FLOWCHART.md  # Visual workflow documentation
@@ -110,25 +102,15 @@ The tool is self-hosted (used to build itself) and is installed via `npx opti-gs
 | .opti-gsd/tools.json | Detected MCP servers and plugin capabilities |
 | .opti-gsd/roadmap.md | Project roadmap with phases and success criteria |
 
-### Core Skills (15 Consolidated)
+### Core Commands (5 Essential)
 
-| Skill | File | Purpose |
-|-------|------|---------|
-| /opti-gsd:status | skills/opti-gsd/status/SKILL.md | Current state and next action |
-| /opti-gsd:roadmap | skills/opti-gsd/roadmap/SKILL.md | Roadmap and phase management |
-| /opti-gsd:plan | skills/opti-gsd/plan/SKILL.md | Planning, discussion, research |
-| /opti-gsd:execute | skills/opti-gsd/execute/SKILL.md | Execution (phase, task, quick) |
-| /opti-gsd:verify | skills/opti-gsd/verify/SKILL.md | Phase verification |
-| /opti-gsd:push | skills/opti-gsd/push/SKILL.md | Push for deployment |
-| /opti-gsd:init | skills/opti-gsd/init/SKILL.md | Project initialization |
-| /opti-gsd:milestone | skills/opti-gsd/milestone/SKILL.md | Milestone lifecycle |
-| /opti-gsd:track | skills/opti-gsd/track/SKILL.md | Artifact tracking |
-| /opti-gsd:debug | skills/opti-gsd/debug/SKILL.md | Bug investigation and recovery |
-| /opti-gsd:session | skills/opti-gsd/session/SKILL.md | Session management |
-| /opti-gsd:tools | skills/opti-gsd/tools/SKILL.md | Tool and CI/CD management |
-| /opti-gsd:codebase | skills/opti-gsd/codebase/SKILL.md | Codebase analysis |
-| /opti-gsd:help | skills/opti-gsd/help/SKILL.md | Help and configuration |
-| /opti-gsd:config | skills/opti-gsd/config/SKILL.md | Terminal configuration |
+| Command | File | Purpose |
+|---------|------|---------|
+| /opti-gsd:roadmap | commands/opti-gsd/roadmap.md | Define phases and success criteria |
+| /opti-gsd:plan-phase | commands/opti-gsd/plan-phase.md | Generate execution plan for phase |
+| /opti-gsd:execute | commands/opti-gsd/execute.md | Run plan with subagents |
+| /opti-gsd:push | commands/opti-gsd/push.md | Push for preview deployment |
+| /opti-gsd:verify | commands/opti-gsd/verify.md | Verify phase completion |
 
 ### Core Agents (5 Primary)
 
@@ -220,7 +202,7 @@ File locking prevents gaming the tests.
 - Check artifacts (L1, L2, L3)
 - Trace key links
 - Run E2E if configured
-- Result: PASSED -> next phase, GAPS -> /plan fix required
+- Result: PASSED -> next phase, GAPS -> /plan-fix required
 
 ---
 
@@ -229,7 +211,7 @@ File locking prevents gaming the tests.
 ### File Naming
 | Type | Convention | Example |
 |------|------------|---------|
-| Skills | lowercase directories | plan/SKILL.md, track/SKILL.md |
+| Commands | lowercase with hyphens | plan-phase.md, add-feature.md |
 | Agents | prefixed with opti-gsd- | opti-gsd-executor.md |
 | State files | lowercase JSON | config.json, state.json |
 | Plans | JSON format | plan.json |
@@ -312,18 +294,24 @@ The bin/cli.js provides:
    - .claude-plugin/plugin.json shows 2.0.0
    - These should be synchronized
 
-3. ~~**Statusline Script Outdated**~~ *(FIXED: updated to .opti-gsd/ and state.json)*
+3. **Statusline Script Outdated**
+   - scripts/gsd-statusline.js references .gsd/ instead of .opti-gsd/
+   - Uses old STATE.md instead of state.json
 
-4. ~~**No Skills Directory**~~ *(FIXED: skills/opti-gsd/ now contains 15 consolidated skills)*
+4. **No Skills Directory**
+   - bin/cli.js copies skills/opti-gsd/ but directory does not exist
+   - Skills are mentioned in config but not implemented
 
-5. ~~**Documentation Gaps**~~ *(FIXED: /opti-gsd:skills and /opti-gsd:mcps consolidated into /opti-gsd:tools)*
+5. **Documentation Gaps**
+   - Some commands referenced in help.md do not have dedicated command files
+   - /opti-gsd:skills and /opti-gsd:mcps listed but may be consolidated into /opti-gsd:tools
 
 ### Consistency Issues
-| Issue | Location | Status |
+| Issue | Location | Impact |
 |-------|----------|--------|
-| ~~Old .gsd/ references~~ | statusline script | FIXED |
-| ~~Missing skills dir~~ | Plugin structure | FIXED |
-| Version mismatch | package.json vs plugin.json | Needs sync |
+| Old .gsd/ references | statusline script | Script will not work |
+| Missing skills dir | Plugin structure | Copy fails silently |
+| Version mismatch | package.json vs plugin.json | Confusion |
 
 ---
 
@@ -348,20 +336,14 @@ CI execution order (fail-fast):
 
 ## Key Insights for Feature Development
 
-### Adding New Skills or Subcommands
+### Adding New Commands
 
-**Adding a subcommand to an existing skill:**
-1. Edit `skills/opti-gsd/{skill-name}/SKILL.md`
-2. Add new routing entry and full documentation section
-3. Update help skill's advanced reference table
-
-**Adding a new top-level skill (rare — prefer subcommands):**
-1. Create `skills/opti-gsd/{skill-name}/SKILL.md`
-2. Add YAML frontmatter with name, description, and `disable-model-invocation: true` (unless safe for auto-invoke)
+1. Create commands/opti-gsd/{command-name}.md
+2. Add YAML frontmatter with description
 3. Document behavior with step-by-step instructions
 4. Follow error handling patterns from docs/ERROR-HANDLING.md
 5. Specify context budget
-6. Update help skill with new skill reference
+6. Update help.md with new command
 
 ### Adding New Agents
 
@@ -406,8 +388,8 @@ Key files for understanding the tool:
 
 - **Extension manifest:** C:/Optimotive-dev/opti-gsd/.claude-plugin/plugin.json
 - **CLI installer:** C:/Optimotive-dev/opti-gsd/bin/cli.js
-- **Main workflow:** skills/opti-gsd/execute/SKILL.md
-- **Tool discovery:** skills/opti-gsd/tools/SKILL.md
+- **Main workflow:** C:/Optimotive-dev/opti-gsd/commands/opti-gsd/execute.md
+- **Tool discovery:** C:/Optimotive-dev/opti-gsd/commands/opti-gsd/tools.md
 - **Error patterns:** C:/Optimotive-dev/opti-gsd/docs/ERROR-HANDLING.md
 - **Workflow diagram:** C:/Optimotive-dev/opti-gsd/docs/WORKFLOW-FLOWCHART.md
 - **Feature backlog:** C:/Optimotive-dev/opti-gsd/.opti-gsd/features.md

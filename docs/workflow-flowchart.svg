@@ -53,7 +53,7 @@
     <text x="15" y="25" font-size="14" font-weight="600" fill="#1e293b">Legend</text>
 
     <rect x="15" y="40" width="20" height="14" rx="3" fill="url(#coreGrad)"/>
-    <text x="45" y="51" font-size="11" fill="#475569">Core Workflow (6 skills)</text>
+    <text x="45" y="51" font-size="11" fill="#475569">Core Workflow (5 commands)</text>
 
     <rect x="15" y="60" width="20" height="14" rx="3" fill="url(#optionalGrad)"/>
     <text x="45" y="71" font-size="11" fill="#475569">Optional Step</text>
@@ -143,7 +143,7 @@
 
   <!-- Command labels -->
   <text x="140" y="215" text-anchor="middle" fill="#64748b" font-size="10">/roadmap</text>
-  <text x="310" y="215" text-anchor="middle" fill="#64748b" font-size="10">/plan</text>
+  <text x="310" y="215" text-anchor="middle" fill="#64748b" font-size="10">/plan-phase</text>
   <text x="480" y="215" text-anchor="middle" fill="#64748b" font-size="10">/execute</text>
   <text x="710" y="240" text-anchor="middle" fill="#64748b" font-size="10">/verify</text>
   <text x="710" y="180" text-anchor="middle" fill="#a78bfa" font-size="10">/push</text>
@@ -157,11 +157,11 @@
   <rect x="40" y="490" width="360" height="35" rx="12" fill="url(#recoveryGrad)"/>
   <rect x="40" y="510" width="360" height="15" fill="url(#recoveryGrad)"/>
   <text x="220" y="515" text-anchor="middle" fill="white" font-size="14" font-weight="600">Recovery Commands</text>
-  <text x="60" y="555" fill="#92400e" font-size="12" font-weight="600">/debug recover</text>
-  <text x="195" y="555" fill="#78716c" font-size="11">Diagnose &amp; fix interrupted execution</text>
-  <text x="60" y="585" fill="#92400e" font-size="12" font-weight="600">/session rollback</text>
-  <text x="210" y="585" fill="#78716c" font-size="11">Undo to a previous checkpoint</text>
-  <text x="60" y="615" fill="#92400e" font-size="12" font-weight="600">/plan fix</text>
+  <text x="60" y="555" fill="#92400e" font-size="12" font-weight="600">/recover</text>
+  <text x="180" y="555" fill="#78716c" font-size="11">Diagnose &amp; fix interrupted execution</text>
+  <text x="60" y="585" fill="#92400e" font-size="12" font-weight="600">/rollback</text>
+  <text x="180" y="585" fill="#78716c" font-size="11">Undo to a previous checkpoint</text>
+  <text x="60" y="615" fill="#92400e" font-size="12" font-weight="600">/plan-fix</text>
   <text x="180" y="615" fill="#78716c" font-size="11">Generate fix plan for verification gaps</text>
   <text x="60" y="650" fill="#94a3b8" font-size="10" font-style="italic">Use when things go wrong</text>
 
@@ -172,9 +172,9 @@
   <text x="600" y="515" text-anchor="middle" fill="white" font-size="14" font-weight="600">Anytime Commands</text>
   <text x="440" y="555" fill="#065f46" font-size="12" font-weight="600">/status</text>
   <text x="540" y="555" fill="#78716c" font-size="11">Where am I? What's next?</text>
-  <text x="440" y="580" fill="#065f46" font-size="12" font-weight="600">/track feature</text>
+  <text x="440" y="580" fill="#065f46" font-size="12" font-weight="600">/add-feature</text>
   <text x="540" y="580" fill="#78716c" font-size="11">Capture idea for later</text>
-  <text x="440" y="605" fill="#065f46" font-size="12" font-weight="600">/track story</text>
+  <text x="440" y="605" fill="#065f46" font-size="12" font-weight="600">/add-story</text>
   <text x="540" y="605" fill="#78716c" font-size="11">Capture user request</text>
   <text x="440" y="630" fill="#065f46" font-size="12" font-weight="600">/debug</text>
   <text x="540" y="630" fill="#78716c" font-size="11">Systematic bug investigation</text>
@@ -186,13 +186,13 @@
   <rect x="800" y="490" width="360" height="35" rx="12" fill="url(#headerGrad)"/>
   <rect x="800" y="510" width="360" height="15" fill="url(#headerGrad)"/>
   <text x="980" y="515" text-anchor="middle" fill="white" font-size="14" font-weight="600">Milestones &amp; Setup</text>
-  <text x="820" y="555" fill="#4338ca" font-size="12" font-weight="600">/milestone start</text>
+  <text x="820" y="555" fill="#4338ca" font-size="12" font-weight="600">/start-milestone</text>
   <text x="960" y="555" fill="#78716c" font-size="11">Create milestone branch</text>
-  <text x="820" y="580" fill="#4338ca" font-size="12" font-weight="600">/milestone complete</text>
+  <text x="820" y="580" fill="#4338ca" font-size="12" font-weight="600">/complete-milestone</text>
   <text x="980" y="580" fill="#78716c" font-size="11">Create PR, finalize</text>
   <text x="820" y="615" fill="#4338ca" font-size="12" font-weight="600">/init</text>
   <text x="880" y="615" fill="#78716c" font-size="11">Initialize in existing project</text>
-  <text x="820" y="640" fill="#4338ca" font-size="12" font-weight="600">/init new</text>
+  <text x="820" y="640" fill="#4338ca" font-size="12" font-weight="600">/new-project</text>
   <text x="940" y="640" fill="#78716c" font-size="11">Create new project</text>
 
   <!-- Quick Start Box -->
@@ -200,31 +200,31 @@
   <text x="60" y="720" fill="#166534" font-size="16" font-weight="700">Quick Start</text>
 
   <text x="60" y="750" fill="#1e293b" font-size="13" font-weight="600">New Project:</text>
-  <text x="60" y="775" fill="#475569" font-size="12" font-family="monospace">/init new → /roadmap → /plan 1 → /execute → /verify 1</text>
+  <text x="60" y="775" fill="#475569" font-size="12" font-family="monospace">/new-project → /roadmap → /plan-phase 1 → /execute → /verify 1</text>
 
   <text x="60" y="810" fill="#1e293b" font-size="13" font-weight="600">Existing Project:</text>
-  <text x="60" y="835" fill="#475569" font-size="12" font-family="monospace">/init → /roadmap → /plan 1 → /execute → /verify 1</text>
+  <text x="60" y="835" fill="#475569" font-size="12" font-family="monospace">/init → /roadmap → /plan-phase 1 → /execute → /verify 1</text>
 
   <text x="60" y="865" fill="#64748b" font-size="11" font-style="italic">Lost? Run /status to see where you are and what to do next.</text>
 
   <!-- Command Count -->
   <rect x="620" y="690" width="250" height="190" rx="12" fill="white" stroke="#e2e8f0" stroke-width="2" filter="url(#shadow)"/>
-  <text x="745" y="720" text-anchor="middle" fill="#1e293b" font-size="14" font-weight="700">15 Skills Total</text>
+  <text x="745" y="720" text-anchor="middle" fill="#1e293b" font-size="14" font-weight="700">40 Commands Total</text>
 
   <text x="640" y="750" fill="#3b82f6" font-size="12">Core Workflow</text>
-  <text x="830" y="750" text-anchor="end" fill="#64748b" font-size="12">6</text>
+  <text x="830" y="750" text-anchor="end" fill="#64748b" font-size="12">5</text>
 
-  <text x="640" y="775" fill="#8b5cf6" font-size="12">Project Management</text>
-  <text x="830" y="775" text-anchor="end" fill="#64748b" font-size="12">4</text>
+  <text x="640" y="775" fill="#8b5cf6" font-size="12">Setup &amp; Planning</text>
+  <text x="830" y="775" text-anchor="end" fill="#64748b" font-size="12">10</text>
 
-  <text x="640" y="800" fill="#f59e0b" font-size="12">Session &amp; Config</text>
-  <text x="830" y="800" text-anchor="end" fill="#64748b" font-size="12">5</text>
+  <text x="640" y="800" fill="#f59e0b" font-size="12">Recovery</text>
+  <text x="830" y="800" text-anchor="end" fill="#64748b" font-size="12">3</text>
 
-  <text x="640" y="825" fill="#10b981" font-size="12"></text>
-  <text x="830" y="825" text-anchor="end" fill="#64748b" font-size="12"></text>
+  <text x="640" y="825" fill="#10b981" font-size="12">Anytime &amp; Tracking</text>
+  <text x="830" y="825" text-anchor="end" fill="#64748b" font-size="12">15</text>
 
-  <text x="640" y="850" fill="#6366f1" font-size="12"></text>
-  <text x="830" y="850" text-anchor="end" fill="#64748b" font-size="12"></text>
+  <text x="640" y="850" fill="#6366f1" font-size="12">Config &amp; Context</text>
+  <text x="830" y="850" text-anchor="end" fill="#64748b" font-size="12">7</text>
 
   <!-- Key insight box -->
   <rect x="890" y="690" width="270" height="190" rx="12" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" filter="url(#shadow)"/>

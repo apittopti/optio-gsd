@@ -105,4 +105,4 @@
 **Ready for release.** All success criteria met, both issues fixed.
 
 **Next steps:**
-→ /opti-gsd:milestone complete — Create v2.1.0 release
+→ /opti-gsd:complete-milestone — Create v2.1.0 release
