@@ -220,7 +220,7 @@ File locking prevents gaming the tests.
 - Check artifacts (L1, L2, L3)
 - Trace key links
 - Run E2E if configured
-- Result: PASSED -> next phase, GAPS -> /plan-fix required
+- Result: PASSED -> next phase, GAPS -> /plan fix required
 
 ---
 

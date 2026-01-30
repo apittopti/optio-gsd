@@ -46,7 +46,7 @@ Show this example:
 
 The statusline script is located at:
 ```
-~/.claude-skills/optimotive-marketplace/opti-gsd/scripts/gsd-statusline.js
+~/.claude/scripts/opti-gsd/gsd-statusline.js
 ```
 
 Add to `~/.claude/settings.json`:
@@ -54,7 +54,7 @@ Add to `~/.claude/settings.json`:
 {
   "statusLine": {
     "type": "command",
-    "command": "node ~/.claude-skills/optimotive-marketplace/opti-gsd/scripts/gsd-statusline.js",
+    "command": "node ~/.claude/scripts/opti-gsd/gsd-statusline.js",
     "padding": 0
   }
 }
@@ -62,14 +62,15 @@ Add to `~/.claude/settings.json`:
 
 ### Steps
 
-1. Read the user's current `~/.claude/settings.json` (create if missing)
-2. Add or update the `statusLine` configuration
-3. Inform user to restart Claude Code to see changes
+1. Check if `~/.claude/scripts/opti-gsd/gsd-statusline.js` exists. If not, inform the user to reinstall: `npx github:apittopti/opti-gsd init`
+2. Read the user's current `~/.claude/settings.json` (create if missing)
+3. Add or update the `statusLine` configuration
+4. Inform user to restart Claude Code to see changes
 
 ### Platform Notes
 
 - **All platforms**: Uses Node.js (required) - works on macOS, Linux, and Windows
-- **Windows path**: May need `node "%USERPROFILE%\.claude-skills\optimotive-marketplace\opti-gsd\scripts\gsd-statusline.js"`
+- **Windows path**: May need `node "%USERPROFILE%\.claude\scripts\opti-gsd\gsd-statusline.js"`
 
 ### Fallback
 

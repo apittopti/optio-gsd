@@ -76,7 +76,7 @@ After installation, start Claude Code and run:
 |---------|---------|
 | /opti-gsd:status | See current state and next action |
 | /opti-gsd:roadmap | Create or view project roadmap |
-| /opti-gsd:plan-phase N | Generate execution plan for phase |
+| /opti-gsd:plan N | Generate execution plan for phase |
 | /opti-gsd:execute | Execute current phase with fresh context |
 | /opti-gsd:verify | Verify phase completion |
 
@@ -84,9 +84,9 @@ After installation, start Claude Code and run:
 
 | Type | Add | View |
 |------|-----|------|
-| Features | /opti-gsd:add-feature | /opti-gsd:features |
-| Stories | /opti-gsd:add-story | /opti-gsd:stories |
-| Issues | /opti-gsd:issues add | /opti-gsd:issues |
+| Features | /opti-gsd:track feature | /opti-gsd:track list features |
+| Stories | /opti-gsd:track story | /opti-gsd:track list stories |
+| Issues | /opti-gsd:track issue | /opti-gsd:track list issues |
 
 Run `/opti-gsd:help` for full command reference.
 

@@ -263,7 +263,7 @@ New debt items:
   [✓] src/api/stats.ts:89 - TODO(ISS005): pagination
   [✗] src/components/Modal.tsx:15 - HACK: force rerender
 
-⚠️ 1 untracked debt item found. Run /opti-gsd:add-issue to track.
+⚠️ 1 untracked debt item found. Run /opti-gsd:track issue to track.
 ──────────────────────────────────────────────────────────────
 ```
 

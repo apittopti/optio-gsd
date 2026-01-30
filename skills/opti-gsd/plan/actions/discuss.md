@@ -51,7 +51,7 @@ If no phase specified:
 
 All phases are complete or in progress.
 
-Add a new phase: /opti-gsd:add-phase {title}
+Add a new phase: /opti-gsd:roadmap add {title}
 ```
 
 ## Step 2: Load Phase Context

@@ -8,8 +8,8 @@
 │   ANYTIME COMMANDS (can run at any point in the workflow)                          │
 │   ─────────────────────────────────────────────────────────────────────            │
 │   /status      → See where you are + what to do next                               │
-│   /add-feature    → Capture feature for later                                            │
-│   /add-story   → Capture user request                                              │
+│   /track feature  → Capture feature for later                                            │
+│   /track story → Capture user request                                              │
 │   /debug       → Start debugging session                                           │
 │   /issues      → View/add issues                                                   │
 │   /decisions   → Log architectural decisions                                       │
@@ -39,7 +39,7 @@
          │ NEW        EXISTING │            │ NO              YES│
          ▼                     ▼            ▼                    │
 ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐    │
-│ /new-project    │  │ /init           │  │ /roadmap        │    │
+│ /init new       │  │ /init           │  │ /roadmap        │    │
 │                 │  │                 │  │ Define phases   │    │
 │ Guided setup    │  │ Initialize in   │  └────────┬────────┘    │
 │ wizard          │  │ existing code   │           │             │
@@ -78,7 +78,7 @@
                                        │ (all phases done)
                                        ▼
                          ┌──────────────────────────┐
-                         │   /complete-milestone    │
+                         │  /milestone complete     │
                          │   Creates PR, tags       │
                          └──────────────────────────┘
 ```
@@ -110,7 +110,7 @@ BACKWARD PATHS (rework):
 ────────────────────────────────────────────────────────────────
 
   • VERIFY finds gaps → back to EXECUTE
-    VERIFY ──► gaps found ──► /plan-fix ──► EXECUTE ──► VERIFY
+    VERIFY ──► gaps found ──►  /plan fix ──► EXECUTE ──► VERIFY
 
   • EXECUTE fails → choose recovery
     EXECUTE ──► failure ──┬──► /recover (diagnose + retry)
@@ -130,7 +130,7 @@ REPEAT PATHS (iterate):
     VERIFY ──► pass ──► PLAN (next phase) ──► EXECUTE ──► ...
 
   • All phases done → complete milestone
-    VERIFY (last) ──► pass ──► /complete-milestone
+    VERIFY (last) ──► pass ──► /milestone complete
 ```
 
 ---
@@ -147,13 +147,13 @@ REPEAT PATHS (iterate):
                     ▼                                         │
           ┌─────────────────┐                                │
           │   OPTIONAL:     │                                │
-          │  /discuss-phase │  ◄── Capture decisions first   │
+          │  /plan discuss  │  ◄── Capture decisions first   │
           │  /research      │  ◄── Research best practices   │
           └────────┬────────┘                                │
                    │                                         │
                    ▼                                         │
 ┌──────────────────────────────────────┐                     │
-│             /plan-phase N            │                     │
+│               /plan N                │                     │
 ├──────────────────────────────────────┤                     │
 │ • Reads project.md, roadmap.md       │                     │
 │ • Auto-detects test requirements     │                     │
@@ -233,7 +233,7 @@ REPEAT PATHS (iterate):
         │                     │                              │
         │                     ▼                              │
         │         ┌────────────────────┐                     │
-        │         │    /plan-fix N     │                     │
+        │         │    /plan fix N     │                     │
         │         │ Generate fix tasks │                     │
         │         └─────────┬──────────┘                     │
         │                   │                                │
@@ -260,7 +260,7 @@ REPEAT PATHS (iterate):
               │                           │                  │
               │                           ▼                  │
               │               ┌─────────────────────┐        │
-              │               │ /complete-milestone │        │
+              │               │ /milestone complete │        │
               │               │ • Creates PR        │        │
               │               │ • Tags release      │        │
               │               │ • Archives phases   │        │
@@ -280,7 +280,7 @@ REPEAT PATHS (iterate):
 │ Command        │ Purpose                                         │
 ├────────────────┼─────────────────────────────────────────────────┤
 │ /roadmap       │ Define what you're building (phases)            │
-│ /plan-phase    │ Generate execution plan for phase N             │
+│ /plan          │ Generate execution plan for phase N             │
 │ /execute       │ Run the plan (TDD, parallel, auto-commit)       │
 │ /push          │ Push to trigger preview deployment              │
 │ /verify        │ Verify everything works                         │
@@ -293,8 +293,8 @@ REPEAT PATHS (iterate):
 │ Command        │ Purpose                                         │
 ├────────────────┼─────────────────────────────────────────────────┤
 │ /init          │ Initialize opti-gsd in existing project         │
-│ /new-project   │ Create new project with guided setup            │
-│ /map-codebase  │ Analyze existing codebase structure             │
+│ /init new      │ Create new project with guided setup            │
+│ /codebase      │ Analyze existing codebase structure             │
 │ /ci            │ View or configure CI/CD toolchain               │
 │ /migrate       │ Migrate from older opti-gsd version             │
 └────────────────┴─────────────────────────────────────────────────┘
@@ -305,11 +305,11 @@ REPEAT PATHS (iterate):
 ┌────────────────┬─────────────────────────────────────────────────┐
 │ Command        │ Purpose                                         │
 ├────────────────┼─────────────────────────────────────────────────┤
-│ /discuss-phase │ Capture decisions before planning               │
+│ /plan discuss  │ Capture decisions before planning               │
 │ /research      │ Research best practices for a topic             │
-│ /add-phase     │ Add new phase to end of roadmap                 │
-│ /insert-phase  │ Insert phase at specific position               │
-│ /remove-phase  │ Remove a pending phase                          │
+│ /roadmap add   │ Add new phase to end of roadmap                 │
+│ /roadmap insert│ Insert phase at specific position               │
+│ /roadmap remove│ Remove a pending phase                          │
 └────────────────┴─────────────────────────────────────────────────┘
 ```
 
@@ -318,7 +318,7 @@ REPEAT PATHS (iterate):
 ┌────────────────┬─────────────────────────────────────────────────┐
 │ Command        │ Purpose                                         │
 ├────────────────┼─────────────────────────────────────────────────┤
-│ /execute-task  │ Execute single task (not whole phase)           │
+│ /execute task  │ Execute single task (not whole phase)           │
 └────────────────┴─────────────────────────────────────────────────┘
 ```
 
@@ -329,7 +329,7 @@ REPEAT PATHS (iterate):
 ├────────────────┼─────────────────────────────────────────────────┤
 │ /recover       │ Diagnose and fix interrupted execution          │
 │ /rollback      │ Undo to a previous checkpoint                   │
-│ /plan-fix      │ Generate fix plan for verification gaps         │
+│ /plan fix      │ Generate fix plan for verification gaps         │
 └────────────────┴─────────────────────────────────────────────────┘
 ```
 
@@ -338,8 +338,8 @@ REPEAT PATHS (iterate):
 ┌────────────────────┬─────────────────────────────────────────────┐
 │ Command            │ Purpose                                     │
 ├────────────────────┼─────────────────────────────────────────────┤
-│ /start-milestone   │ Create milestone branch (before work)       │
-│ /complete-milestone│ Create PR, tag release (after all phases)   │
+│ /milestone start   │ Create milestone branch (before work)       │
+│ /milestone complete│ Create PR, tag release (after all phases)   │
 └────────────────────┴─────────────────────────────────────────────┘
 ```
 
@@ -371,8 +371,8 @@ REPEAT PATHS (iterate):
 ┌────────────────┬─────────────────────────────────────────────────┐
 │ Command        │ Purpose                                         │
 ├────────────────┼─────────────────────────────────────────────────┤
-│ /add-feature │ Capture feature idea without interrupting       │
-│ /add-story   │ Capture user request                            │
+│ /track feature │ Capture feature idea without interrupting     │
+│ /track story │ Capture user request                            │
 │ /features    │ View captured feature ideas                     │
 │ /stories       │ View captured user stories                      │
 │ /issues        │ Track and manage issues                         │
@@ -391,7 +391,7 @@ REPEAT PATHS (iterate):
 │ /mcps            │ Discover and configure MCP servers            │
 │ /detect-tools    │ Detect available MCP servers and plugins      │
 │ /whats-new       │ Check for updates and changelog               │
-│ /statusline-setup│ Configure terminal status line                │
+│ /config statusline│ Configure terminal status line               │
 └──────────────────┴───────────────────────────────────────────────┘
 ```
 
@@ -484,7 +484,7 @@ REPEAT PATHS (iterate):
                   │
                   ▼
         ┌───────────────────┐
-        │    /plan-fix N    │───────► Generate fix tasks
+        │    /plan fix N    │───────► Generate fix tasks
         └─────────┬─────────┘
                   │
                   ▼
@@ -547,15 +547,15 @@ Timeline of a phase execution:
 ```
 SETUP (before workflow starts):
 ────────────────────────────────────────────────────────────────
-  /init, /new-project, /map-codebase, /ci, /migrate
+  /init, /init new, /codebase, /ci, /migrate
 
 
 ANYTIME (run at any point):
 ────────────────────────────────────────────────────────────────
   /status         ← WHERE AM I?
   /help           ← Show commands
-  /add-feature       ← Capture feature
-  /add-story      ← Capture request
+  /track feature     ← Capture feature
+  /track story    ← Capture request
   /features          ← View features
   /stories        ← View stories
   /issues         ← Track issues
@@ -571,21 +571,21 @@ WORKFLOW-SPECIFIC (at certain stages):
 ────────────────────────────────────────────────────────────────
 
   At START:
-    /start-milestone    ← Create milestone branch
+    /milestone start    ← Create milestone branch
 
   Before PLAN:
-    /discuss-phase      ← Optional: capture decisions first
+    /plan discuss       ← Optional: capture decisions first
     /research           ← Optional: research best practices
 
   At PLAN:
-    /plan-phase         ← Generate plan
-    /add-phase          ← Add to roadmap
-    /insert-phase       ← Insert in roadmap
-    /remove-phase       ← Remove from roadmap
+    /plan               ← Generate plan
+    /roadmap add        ← Add to roadmap
+    /roadmap insert     ← Insert in roadmap
+    /roadmap remove     ← Remove from roadmap
 
   At EXECUTE:
     /execute            ← Run whole phase
-    /execute-task       ← Run single task
+    /execute task       ← Run single task
 
   After EXECUTE:
     /push               ← Push for preview deploy
@@ -596,14 +596,14 @@ WORKFLOW-SPECIFIC (at certain stages):
     /compact            ← Reduce context
 
   At END:
-    /complete-milestone ← Create PR, finalize
+    /milestone complete ← Create PR, finalize
 
 
 RECOVERY (when things break):
 ────────────────────────────────────────────────────────────────
   /recover    ← After execution failure
   /rollback   ← Undo to checkpoint
-  /plan-fix   ← After verification gaps
+  /plan fix   ← After verification gaps
 ```
 
 ---
@@ -625,7 +625,7 @@ RECOVERY (when things break):
 │  THE 5-COMMAND WORKFLOW:                                        │
 │  ───────────────────────                                        │
 │                                                                 │
-│      /roadmap → /plan-phase → /execute ─┬─► /push → /verify     │
+│      /roadmap → /plan → /execute ─┬─► /push → /verify           │
 │                      │                  │                       │
 │                      │                  └─► /verify (local)     │
 │                      │                           │              │
@@ -638,11 +638,11 @@ RECOVERY (when things break):
 │                                                                 │
 │      /recover   ← Diagnose and fix                              │
 │      /rollback  ← Undo to checkpoint                            │
-│      /plan-fix  ← Fix verification gaps                         │
+│      /plan fix  ← Fix verification gaps                         │
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  ANYTIME:  /status /help /add-feature /debug /issues /context      │
+│  ANYTIME:  /status /help /track feature /debug /issues /context    │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```

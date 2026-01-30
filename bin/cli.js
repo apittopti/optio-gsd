@@ -328,6 +328,14 @@ async function main() {
       }
     }
 
+    // Copy scripts (statusline, tool analysis)
+    const scriptsSrc = path.join(sourceDir, 'scripts');
+    if (fs.existsSync(scriptsSrc)) {
+      const scriptsDest = path.join(installDir, 'scripts', 'opti-gsd');
+      copyRecursive(scriptsSrc, scriptsDest);
+      log.success('Installed scripts/opti-gsd');
+    }
+
     // Copy CLAUDE.md content
     const claudeMdSrc = path.join(sourceDir, 'CLAUDE.md');
     if (fs.existsSync(claudeMdSrc)) {

@@ -143,7 +143,7 @@
 
   <!-- Command labels -->
   <text x="140" y="215" text-anchor="middle" fill="#64748b" font-size="10">/roadmap</text>
-  <text x="310" y="215" text-anchor="middle" fill="#64748b" font-size="10">/plan-phase</text>
+  <text x="310" y="215" text-anchor="middle" fill="#64748b" font-size="10">/plan</text>
   <text x="480" y="215" text-anchor="middle" fill="#64748b" font-size="10">/execute</text>
   <text x="710" y="240" text-anchor="middle" fill="#64748b" font-size="10">/verify</text>
   <text x="710" y="180" text-anchor="middle" fill="#a78bfa" font-size="10">/push</text>
@@ -161,7 +161,7 @@
   <text x="180" y="555" fill="#78716c" font-size="11">Diagnose &amp; fix interrupted execution</text>
   <text x="60" y="585" fill="#92400e" font-size="12" font-weight="600">/rollback</text>
   <text x="180" y="585" fill="#78716c" font-size="11">Undo to a previous checkpoint</text>
-  <text x="60" y="615" fill="#92400e" font-size="12" font-weight="600">/plan-fix</text>
+  <text x="60" y="615" fill="#92400e" font-size="12" font-weight="600">/plan fix</text>
   <text x="180" y="615" fill="#78716c" font-size="11">Generate fix plan for verification gaps</text>
   <text x="60" y="650" fill="#94a3b8" font-size="10" font-style="italic">Use when things go wrong</text>
 
@@ -172,9 +172,9 @@
   <text x="600" y="515" text-anchor="middle" fill="white" font-size="14" font-weight="600">Anytime Commands</text>
   <text x="440" y="555" fill="#065f46" font-size="12" font-weight="600">/status</text>
   <text x="540" y="555" fill="#78716c" font-size="11">Where am I? What's next?</text>
-  <text x="440" y="580" fill="#065f46" font-size="12" font-weight="600">/add-feature</text>
+  <text x="440" y="580" fill="#065f46" font-size="12" font-weight="600">/track feature</text>
   <text x="540" y="580" fill="#78716c" font-size="11">Capture idea for later</text>
-  <text x="440" y="605" fill="#065f46" font-size="12" font-weight="600">/add-story</text>
+  <text x="440" y="605" fill="#065f46" font-size="12" font-weight="600">/track story</text>
   <text x="540" y="605" fill="#78716c" font-size="11">Capture user request</text>
   <text x="440" y="630" fill="#065f46" font-size="12" font-weight="600">/debug</text>
   <text x="540" y="630" fill="#78716c" font-size="11">Systematic bug investigation</text>
@@ -186,13 +186,13 @@
   <rect x="800" y="490" width="360" height="35" rx="12" fill="url(#headerGrad)"/>
   <rect x="800" y="510" width="360" height="15" fill="url(#headerGrad)"/>
   <text x="980" y="515" text-anchor="middle" fill="white" font-size="14" font-weight="600">Milestones &amp; Setup</text>
-  <text x="820" y="555" fill="#4338ca" font-size="12" font-weight="600">/start-milestone</text>
+  <text x="820" y="555" fill="#4338ca" font-size="12" font-weight="600">/milestone start</text>
   <text x="960" y="555" fill="#78716c" font-size="11">Create milestone branch</text>
-  <text x="820" y="580" fill="#4338ca" font-size="12" font-weight="600">/complete-milestone</text>
+  <text x="820" y="580" fill="#4338ca" font-size="12" font-weight="600">/milestone complete</text>
   <text x="980" y="580" fill="#78716c" font-size="11">Create PR, finalize</text>
   <text x="820" y="615" fill="#4338ca" font-size="12" font-weight="600">/init</text>
   <text x="880" y="615" fill="#78716c" font-size="11">Initialize in existing project</text>
-  <text x="820" y="640" fill="#4338ca" font-size="12" font-weight="600">/new-project</text>
+  <text x="820" y="640" fill="#4338ca" font-size="12" font-weight="600">/init new</text>
   <text x="940" y="640" fill="#78716c" font-size="11">Create new project</text>
 
   <!-- Quick Start Box -->
@@ -200,10 +200,10 @@
   <text x="60" y="720" fill="#166534" font-size="16" font-weight="700">Quick Start</text>
 
   <text x="60" y="750" fill="#1e293b" font-size="13" font-weight="600">New Project:</text>
-  <text x="60" y="775" fill="#475569" font-size="12" font-family="monospace">/new-project → /roadmap → /plan-phase 1 → /execute → /verify 1</text>
+  <text x="60" y="775" fill="#475569" font-size="12" font-family="monospace">/init new → /roadmap → /plan 1 → /execute → /verify 1</text>
 
   <text x="60" y="810" fill="#1e293b" font-size="13" font-weight="600">Existing Project:</text>
-  <text x="60" y="835" fill="#475569" font-size="12" font-family="monospace">/init → /roadmap → /plan-phase 1 → /execute → /verify 1</text>
+  <text x="60" y="835" fill="#475569" font-size="12" font-family="monospace">/init → /roadmap → /plan 1 → /execute → /verify 1</text>
 
   <text x="60" y="865" fill="#64748b" font-size="11" font-style="italic">Lost? Run /status to see where you are and what to do next.</text>
 

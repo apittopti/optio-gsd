@@ -82,8 +82,11 @@ Use these specialized agents for complex tasks:
 - Exception: Standard files like `README.md`, `CLAUDE.md` remain uppercase
 
 **Directory Structure:**
-- `skills/opti-gsd/` - Skills (15 consolidated, each with SKILL.md)
+- `skills/opti-gsd/` - Skills (15 consolidated, each with SKILL.md + detail files)
+  - Each skill uses **progressive disclosure**: SKILL.md (<400 lines) contains routing and overview; `actions/` and `reference/` subdirectories contain full procedures loaded on-demand
+  - YAML frontmatter includes `argument-hint` for autocomplete suggestions
 - `agents/opti-gsd/` - Specialized agents
+- `scripts/` - Utility scripts (statusline, tool analysis)
 - `.opti-gsd/` - Main workflow directory
   - `stories/` - User stories (US{NNN}.md)
   - `issues/` - Bug tracking (ISS{NNN}.md)

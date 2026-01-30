@@ -139,7 +139,7 @@ Capture implementation decisions and constraints for a phase.
 ### When to Use
 
 - **Before planning** — to inform the initial plan
-- **After planning** — to refine decisions, then re-run `plan-phase` to regenerate
+- **After planning** — to refine decisions, then re-run `/opti-gsd:plan` to regenerate
 
 ### Overview
 
