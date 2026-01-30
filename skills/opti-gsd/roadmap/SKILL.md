@@ -373,7 +373,7 @@ If no milestone:
 ## No Active Milestone
 
 Start a milestone first:
-/opti-gsd:start-milestone v1.0
+/opti-gsd:milestone start v1.0
 ```
 
 ### Step 2: Determine Phase Number
@@ -435,7 +435,7 @@ git commit -m "chore: add phase {N} - {title}"
 ```
 
 **Next steps:**
--> /opti-gsd:plan-phase {N}       — Plan this phase
+-> /opti-gsd:plan {N}       — Plan this phase
 -> /opti-gsd:roadmap add {another} — Or add more phases
 
 ### Context Budget
@@ -543,7 +543,7 @@ Renumbered phases {position}+ to {position+1}+"
 ```
 
 **Next steps:**
--> /opti-gsd:plan-phase {position} — Plan new phase
+-> /opti-gsd:plan {position} — Plan new phase
 
 ### Context Budget
 
@@ -575,13 +575,13 @@ Phase {N} is {status}. Only PENDING phases can be removed.
 
 {If IN_PROGRESS}
 Options:
-- Pause work: /opti-gsd:pause
+- Pause work: /opti-gsd:session pause
 - Complete phase first
 - Use `--force` to remove anyway (will lose progress)
 
 {If COMPLETE}
 This phase is already complete. Removing it would break history.
-Consider archiving instead: /opti-gsd:archive {N}
+Consider archiving instead: /opti-gsd:session archive {N}
 ```
 
 ### Step 2: Show Phase Details

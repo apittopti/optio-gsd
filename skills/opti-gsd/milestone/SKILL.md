@@ -117,7 +117,7 @@ git commit -m "chore: start milestone {name}"
 
 **Next steps:**
 > /opti-gsd:roadmap      — Define roadmap
-> /opti-gsd:plan-phase 1 — Or start planning if roadmap exists
+> /opti-gsd:plan 1 — Or start planning if roadmap exists
 
 ### Context Budget
 

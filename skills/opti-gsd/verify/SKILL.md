@@ -85,7 +85,7 @@ If `.opti-gsd/` doesn't exist:
 No .opti-gsd/ directory found in this project.
 
 → Run /opti-gsd:init to initialize an existing project
-→ Run /opti-gsd:new-project to start a new project
+→ Run /opti-gsd:init new to start a new project
 ```
 
 If `.opti-gsd/state.json` missing:
@@ -515,10 +515,10 @@ Phase {N} is ready for milestone completion.
 ```
 
 **Next steps:**
-→ /opti-gsd:plan-phase {N+1}      — Plan next phase
+→ /opti-gsd:plan {N+1}      — Plan next phase
 → /opti-gsd:push                  — Push branch for preview deployment
-→ /opti-gsd:complete-milestone    — If all phases done (pushes and creates PR)
-→ /opti-gsd:archive {N}           — Archive to free context
+→ /opti-gsd:milestone complete    — If all phases done (pushes and creates PR)
+→ /opti-gsd:session archive {N}           — Archive to free context
 
 💾 State saved. Safe to /compact or start new session if needed.
 
@@ -533,7 +533,7 @@ Mark phase as verified in state.json.
 2. {gap 2 description}
 
 **Options:**
-A) Run /opti-gsd:plan-phase {N} --gaps to create gap closure plan
+A) Run /opti-gsd:plan {N} --gaps to create gap closure plan
 B) Fix manually and re-verify
 
 Recommended: Option A for systematic closure
@@ -573,9 +573,9 @@ When verification reports `gaps_found`, report to user and suggest next action.
 | 2 | broken_link | Dashboard → API | Incorrect endpoint path |
 
 **Next Steps:**
-→ /opti-gsd:plan-fix {N} — Generate fix plan for these gaps
+→ /opti-gsd:plan fix {N} — Generate fix plan for these gaps
 → Fix manually and re-run /opti-gsd:verify
-→ /opti-gsd:rollback {N} — Revert phase if fundamentally broken
+→ /opti-gsd:session rollback {N} — Revert phase if fundamentally broken
 ```
 
 **Gap Types Reference:**

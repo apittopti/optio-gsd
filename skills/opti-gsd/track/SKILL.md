@@ -1036,14 +1036,14 @@ View details: /opti-gsd:track view D001
 
 ## Integration Points
 
-| Command | Integration |
-|---------|-------------|
-| roadmap | Can pull from high-priority features; pulls from backlog stories for milestone planning |
-| plan-phase | References stories being delivered |
-| verify | Checks story acceptance criteria |
-| complete-milestone | Reports stories delivered |
-| status | Shows feature count and issue count in summary |
-| pause | Reminder to check pending features |
+| Skill | Integration |
+|-------|-------------|
+| /opti-gsd:roadmap | Can pull from high-priority features; pulls from backlog stories for milestone planning |
+| /opti-gsd:plan | References stories being delivered |
+| /opti-gsd:verify | Checks story acceptance criteria |
+| /opti-gsd:milestone complete | Reports stories delivered |
+| /opti-gsd:status | Shows feature count and issue count in summary |
+| /opti-gsd:session pause | Reminder to check pending features |
 
 ---
 

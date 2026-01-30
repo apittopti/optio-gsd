@@ -66,8 +66,8 @@ Generate an executable plan for phase N with XML-structured tasks.
    All development work MUST happen on milestone branches.
    Master/main can ONLY be updated via pull request.
 
-   → Run /opti-gsd:start-milestone [name] to create a milestone branch
-   → Then run /opti-gsd:plan-phase again
+   → Run /opti-gsd:milestone start [name] to create a milestone branch
+   → Then run /opti-gsd:plan again
    ```
    **STOP here. Do NOT offer to continue on master.**
 
@@ -79,7 +79,7 @@ Generate an executable plan for phase N with XML-structured tasks.
    ─────────────────────────────────────
    You're on {current_branch} but no milestone is active.
 
-   → Run /opti-gsd:start-milestone [name] to create a milestone branch
+   → Run /opti-gsd:milestone start [name] to create a milestone branch
    ```
    Stop execution here.
 
@@ -104,7 +104,7 @@ If `.opti-gsd/` doesn't exist:
 No .opti-gsd/ directory found in this project.
 
 → Run /opti-gsd:init to initialize an existing project
-→ Run /opti-gsd:new-project to start a new project
+→ Run /opti-gsd:init new to start a new project
 ```
 
 If `.opti-gsd/state.json` missing:
@@ -589,7 +589,7 @@ If `branching: milestone` is configured in `.opti-gsd/config.json`:
    You're on {base} with branching: milestone configured,
    but no milestone is active.
 
-   → Run /opti-gsd:start-milestone [name] to create a milestone branch
+   → Run /opti-gsd:milestone start [name] to create a milestone branch
    ```
    Stop execution here.
 

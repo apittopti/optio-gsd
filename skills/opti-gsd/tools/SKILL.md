@@ -214,7 +214,7 @@ Add skill to project configuration:
 
 **Integration points:**
 - /opti-gsd:execute — Available during task execution
-- /opti-gsd:pause — Include in commit workflow
+- /opti-gsd:session pause — Include in commit workflow
 
 Added to `.opti-gsd/config.json`.
 ```
@@ -416,7 +416,7 @@ If `.opti-gsd/` doesn't exist:
 No .opti-gsd/ directory found in this project.
 
 → Run /opti-gsd:init to initialize an existing project
-→ Run /opti-gsd:new-project to start a new project
+→ Run /opti-gsd:init new to start a new project
 ```
 
 If `.opti-gsd/config.json` missing:

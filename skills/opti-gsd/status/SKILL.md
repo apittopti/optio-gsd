@@ -18,7 +18,7 @@ If `.opti-gsd/` doesn't exist:
 No .opti-gsd/ directory found in this project.
 
 → Run /opti-gsd:init to initialize an existing project
-→ Run /opti-gsd:new-project to start a new project
+→ Run /opti-gsd:init new to start a new project
 ```
 
 If `.opti-gsd/state.json` missing:
@@ -55,10 +55,10 @@ Display warning in status output:
 Your CLAUDE.md doesn't include opti-gsd workflow instructions.
 This means Claude may not follow the workflow on every prompt.
 
-→ Run /opti-gsd:setup-claude-md to add workflow instructions
+→ Run /opti-gsd:init claude-md to add workflow instructions
 ```
 
-**Create `/opti-gsd:setup-claude-md` behavior inline:**
+**Create `/opti-gsd:init claude-md` behavior inline:**
 
 When user runs this (or says "yes" to adding it), append to CLAUDE.md:
 
@@ -77,7 +77,7 @@ This project uses **opti-gsd** for spec-driven development.
 
 **Protected branches:** master, main, production, prod — PR only!
 
-**Key commands:** `/opti-gsd:status`, `/opti-gsd:start-milestone`, `/opti-gsd:roadmap`, `/opti-gsd:plan-phase`, `/opti-gsd:execute`, `/opti-gsd:verify`
+**Key commands:** `/opti-gsd:status`, `/opti-gsd:milestone start`, `/opti-gsd:roadmap`, `/opti-gsd:plan`, `/opti-gsd:execute`, `/opti-gsd:verify`
 ```
 
 Then commit:
@@ -128,7 +128,7 @@ Phase 2 Progress: [████████████▎░░░░░░░]
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 Also relevant:
-  → /opti-gsd:add-feature — Capture something for later
+  → /opti-gsd:track feature — Capture something for later
   → /opti-gsd:help     — See all commands
 ```
 
@@ -186,16 +186,16 @@ Show the primary action, with alternatives when choices exist:
 
 | State | DO THIS NOW | Alternatives |
 |-------|-------------|--------------|
-| No .opti-gsd/ | /opti-gsd:new-project | or /opti-gsd:init (existing code) |
+| No .opti-gsd/ | /opti-gsd:init new | or /opti-gsd:init (existing code) |
 | No roadmap | /opti-gsd:roadmap | — |
-| No plan for phase | /opti-gsd:plan-phase {N} | /opti-gsd:discuss-phase first |
+| No plan for phase | /opti-gsd:plan {N} | /opti-gsd:plan discuss first |
 | Plan exists, not executed | /opti-gsd:execute | — |
-| Execution in progress | /opti-gsd:execute (continue) | /opti-gsd:recover if stuck |
+| Execution in progress | /opti-gsd:execute (continue) | /opti-gsd:debug recover if stuck |
 | **Phase executed** | /opti-gsd:push | or /opti-gsd:verify (local) |
 | Pushed, not verified | /opti-gsd:verify {N} | — |
-| **Gaps found** | /opti-gsd:plan-fix | or /opti-gsd:rollback |
-| Verified, more phases | /opti-gsd:plan-phase {N+1} | /opti-gsd:archive {N} |
-| All phases done | /opti-gsd:complete-milestone | — |
+| **Gaps found** | /opti-gsd:plan fix | or /opti-gsd:session rollback |
+| Verified, more phases | /opti-gsd:plan {N+1} | /opti-gsd:session archive {N} |
+| All phases done | /opti-gsd:milestone complete | — |
 
 **When there are choices, show both:**
 
@@ -296,8 +296,8 @@ If loop state indicates a problem, show recovery info:
 Task 3 failed after 2 retries.
 
 DO THIS NOW:
-  /opti-gsd:recover     — Diagnose and fix the issue
+  /opti-gsd:debug recover     — Diagnose and fix the issue
 
 Or:
-  /opti-gsd:rollback 2-02  — Rollback to before Task 3
+  /opti-gsd:session rollback 2-02  — Rollback to before Task 3
 ```

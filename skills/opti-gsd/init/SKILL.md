@@ -320,7 +320,7 @@ This project uses **opti-gsd** for spec-driven development workflow.
 **IMPORTANT:** All development work must follow the opti-gsd workflow:
 
 1. **Never commit directly to master/main** — These are protected branches
-2. **Always use milestone branches** — Run `/opti-gsd:start-milestone [name]` first
+2. **Always use milestone branches** — Run `/opti-gsd:milestone start [name]` first
 3. **Check status before starting** — Run `/opti-gsd:status` to understand current state
 4. **Follow the phase workflow** — Plan → Execute → Verify
 
@@ -329,9 +329,9 @@ This project uses **opti-gsd** for spec-driven development workflow.
 | Command | Purpose |
 |---------|---------|
 | `/opti-gsd:status` | Check current state and next action |
-| `/opti-gsd:start-milestone [name]` | Start a new milestone branch |
+| `/opti-gsd:milestone start [name]` | Start a new milestone branch |
 | `/opti-gsd:roadmap` | View or create project roadmap |
-| `/opti-gsd:plan-phase [N]` | Plan a phase |
+| `/opti-gsd:plan [N]` | Plan a phase |
 | `/opti-gsd:execute` | Execute current phase |
 | `/opti-gsd:verify` | Verify phase completion |
 
@@ -350,7 +350,7 @@ All changes to these branches MUST go through a pull request.
 Ask yourself:
 1. Is there an active milestone? (`/opti-gsd:status`)
 2. Am I on a milestone branch? (not master/main)
-3. Is there a plan for this work? (`/opti-gsd:plan-phase`)
+3. Is there a plan for this work? (`/opti-gsd:plan`)
 
 If any answer is "no", set up the workflow first.
 ```
@@ -374,7 +374,7 @@ This project uses **opti-gsd** for spec-driven development.
 
 **Protected branches:** master, main, production, prod — PR only!
 
-**Key commands:** `/opti-gsd:status`, `/opti-gsd:start-milestone`, `/opti-gsd:roadmap`, `/opti-gsd:plan-phase`, `/opti-gsd:execute`, `/opti-gsd:verify`
+**Key commands:** `/opti-gsd:status`, `/opti-gsd:milestone start`, `/opti-gsd:roadmap`, `/opti-gsd:plan`, `/opti-gsd:execute`, `/opti-gsd:verify`
 ```
 
 ### Step 11: Commit
@@ -704,7 +704,7 @@ Files created:
   CLAUDE.md (workflow instructions)
   {.opti-gsd/research/* if researched}
 
-Next: Run /opti-gsd:plan-phase 1 to plan the first phase
+Next: Run /opti-gsd:plan 1 to plan the first phase
 ```
 
 ### Context Budget
@@ -753,7 +753,7 @@ This project uses **opti-gsd** for spec-driven development workflow.
 **IMPORTANT:** All development work must follow the opti-gsd workflow:
 
 1. **Never commit directly to master/main** — These are protected branches
-2. **Always use milestone branches** — Run `/opti-gsd:start-milestone [name]` first
+2. **Always use milestone branches** — Run `/opti-gsd:milestone start [name]` first
 3. **Check status before starting** — Run `/opti-gsd:status` to understand current state
 4. **Follow the phase workflow** — Plan → Execute → Verify
 
@@ -762,9 +762,9 @@ This project uses **opti-gsd** for spec-driven development workflow.
 | Command | Purpose |
 |---------|---------|
 | `/opti-gsd:status` | Check current state and next action |
-| `/opti-gsd:start-milestone [name]` | Start a new milestone branch |
+| `/opti-gsd:milestone start [name]` | Start a new milestone branch |
 | `/opti-gsd:roadmap` | View or create project roadmap |
-| `/opti-gsd:plan-phase [N]` | Plan a phase |
+| `/opti-gsd:plan [N]` | Plan a phase |
 | `/opti-gsd:execute` | Execute current phase |
 | `/opti-gsd:verify` | Verify phase completion |
 
@@ -783,7 +783,7 @@ All changes to these branches MUST go through a pull request.
 Ask yourself:
 1. Is there an active milestone? (`/opti-gsd:status`)
 2. Am I on a milestone branch? (not master/main)
-3. Is there a plan for this work? (`/opti-gsd:plan-phase`)
+3. Is there a plan for this work? (`/opti-gsd:plan`)
 
 If any answer is "no", set up the workflow first.
 ```
@@ -807,7 +807,7 @@ This project uses **opti-gsd** for spec-driven development.
 
 **Protected branches:** master, main, production, prod — PR only!
 
-**Key commands:** `/opti-gsd:status`, `/opti-gsd:start-milestone`, `/opti-gsd:roadmap`, `/opti-gsd:plan-phase`, `/opti-gsd:execute`, `/opti-gsd:verify`
+**Key commands:** `/opti-gsd:status`, `/opti-gsd:milestone start`, `/opti-gsd:roadmap`, `/opti-gsd:plan`, `/opti-gsd:execute`, `/opti-gsd:verify`
 ```
 
 **If opti-gsd section already exists:**
@@ -980,7 +980,7 @@ Your project now uses the simplified workflow:
 - Stories (user needs with acceptance criteria)
 - Issues (bugs/problems)
 
-Run /opti-gsd:stories to see your migrated stories.
+Run /opti-gsd:track list stories to see your migrated stories.
 ```
 
 ### Context Budget

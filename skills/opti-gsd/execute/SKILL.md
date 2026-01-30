@@ -71,7 +71,7 @@ This is implemented in **Step 4c** (create tasks) and **Step 5** (update tasks d
    All development work MUST happen on milestone branches.
    Master/main can ONLY be updated via pull request.
 
-   → Run /opti-gsd:start-milestone [name] to create a milestone branch
+   → Run /opti-gsd:milestone start [name] to create a milestone branch
    → Then run /opti-gsd:execute again
    ```
    **STOP execution here. Do NOT offer to continue on master.**
@@ -84,7 +84,7 @@ This is implemented in **Step 4c** (create tasks) and **Step 5** (update tasks d
    ─────────────────────────────────────
    You're on {current_branch} but no milestone is active.
 
-   → Run /opti-gsd:start-milestone [name] to create a milestone branch
+   → Run /opti-gsd:milestone start [name] to create a milestone branch
    ```
    Stop execution here.
 
@@ -109,7 +109,7 @@ If `.opti-gsd/` doesn't exist:
 No .opti-gsd/ directory found in this project.
 
 → Run /opti-gsd:init to initialize an existing project
-→ Run /opti-gsd:new-project to start a new project
+→ Run /opti-gsd:init new to start a new project
 ```
 
 If `.opti-gsd/state.json` missing:
@@ -127,7 +127,7 @@ If no plan exists for current phase:
 ─────────────────────────────────────
 No plan found for phase {N}.
 
-→ Run /opti-gsd:plan-phase {N} to create a plan
+→ Run /opti-gsd:plan {N} to create a plan
 ```
 
 ### Step 2: Load State
@@ -171,7 +171,7 @@ Before executing any tasks, create a Git checkpoint for rollback safety:
 git tag -f "gsd/checkpoint/phase-{N}/pre" HEAD
 ```
 
-This enables /opti-gsd:rollback {N} to revert to before the phase started.
+This enables /opti-gsd:session rollback {N} to revert to before the phase started.
 
 ### Step 4c: Create Claude Code Tasks (MANDATORY)
 
@@ -596,8 +596,8 @@ If no deployment configured, skip this step.
 **Next steps:**
 → /opti-gsd:verify {N}       — Verify phase completion {against preview if pushed}
 → /opti-gsd:push             — Push to trigger preview deployment {if not pushed yet}
-→ /opti-gsd:plan-phase {N+1} — Plan next phase
-→ /opti-gsd:archive {N}      — Archive phase to free context
+→ /opti-gsd:plan {N+1} — Plan next phase
+→ /opti-gsd:session archive {N}      — Archive phase to free context
 
 State saved. Safe to /compact or start new session if needed.
 
@@ -635,7 +635,7 @@ Wave 2: [Task 04]
 - Each agent gets fresh 100% context
 - User sees real-time progress in Claude Code's task list (Ctrl+T)
 - Truly parallel execution, not sequential spawns
-- Tasks persist if session interrupted (use /opti-gsd:recover)
+- Tasks persist if session interrupted (use /opti-gsd:debug recover)
 - TaskOutput provides clean result retrieval without context bloat
 
 **Task Tool Calls:**
@@ -703,7 +703,7 @@ Execute tracks state in state.json:
 **Background Task Tracking:**
 - `background_tasks` array tracks all spawned Task tool instances
 - Each entry has `task_id` (for TaskOutput), `task_num`, and `status`
-- On session interrupt, /opti-gsd:recover uses these IDs to check TaskOutput
+- On session interrupt, /opti-gsd:debug recover uses these IDs to check TaskOutput
 - Tasks persist in Claude Code's task system across sessions
 
 **Note on TDD Loop:**
@@ -712,7 +712,7 @@ The TDD Red-Green-Refactor loop runs INSIDE subagents as natural control flow. T
 - TDD attempts exhausted (TASK FAILED)
 
 **Philosophy:** Following GSD principles, there's no stop hook forcing loop continuation.
-Human judgment gates all decisions. Use /opti-gsd:recover if session interrupted.
+Human judgment gates all decisions. Use /opti-gsd:debug recover if session interrupted.
 
 ---
 
@@ -834,7 +834,7 @@ If `.opti-gsd/` doesn't exist:
 No .opti-gsd/ directory found.
 
 → Run /opti-gsd:init to initialize an existing project
-→ Run /opti-gsd:new-project to start a new project
+→ Run /opti-gsd:init new to start a new project
 ```
 
 If `.opti-gsd/roadmap.md` doesn't exist:

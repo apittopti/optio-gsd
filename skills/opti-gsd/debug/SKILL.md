@@ -211,8 +211,8 @@ FOR each task in loop.background_tasks:
 
 **Options:**
 A) Wait for completion: TaskOutput(task_id="abc123", block=true)
-B) Continue monitoring: /opti-gsd:recover again later
-C) Abandon and restart: /opti-gsd:rollback {phase}
+B) Continue monitoring: /opti-gsd:debug recover again later
+C) Abandon and restart: /opti-gsd:session rollback {phase}
 
 User can also press Ctrl+T to view task progress.
 ```
@@ -249,7 +249,7 @@ If state.json claims more progress than commits show:
 state.json says Task 4 complete, but no commit found.
 
 **Options:**
-→ /opti-gsd:rollback 2-03 — Rollback to last known good
+→ /opti-gsd:session rollback 2-03 — Rollback to last known good
 → Continue anyway (work may be lost)
 ```
 
@@ -278,6 +278,6 @@ If TaskOutput returns a failed task:
 
 **Options:**
 → /opti-gsd:execute — Retry task with error context
-→ /opti-gsd:rollback 2-02 — Rollback to before failed task
+→ /opti-gsd:session rollback 2-02 — Rollback to before failed task
 → Fix manually and commit
 ```

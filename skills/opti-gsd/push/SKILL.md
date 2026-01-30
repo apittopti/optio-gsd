@@ -34,9 +34,9 @@ Cannot push directly to '{current_branch}'.
 Protected branches (master, main, production) can ONLY be updated via pull request.
 
 To deploy your changes:
-1. Ensure you're on a milestone branch: /opti-gsd:start-milestone [name]
+1. Ensure you're on a milestone branch: /opti-gsd:milestone start [name]
 2. Push the milestone branch: /opti-gsd:push
-3. Create a PR: /opti-gsd:complete-milestone
+3. Create a PR: /opti-gsd:milestone complete
 4. Merge the PR on GitHub
 ```
 **STOP here. Do NOT push.**
@@ -49,7 +49,7 @@ If no milestone active:
 ```
 No milestone branch active. Nothing to push.
 
-Start a milestone first: /opti-gsd:start-milestone [name]
+Start a milestone first: /opti-gsd:milestone start [name]
 ```
 
 ### Step 2: Check for Changes
@@ -237,7 +237,7 @@ Remote:      origin/gsd/v1.0
 Commits:     5 new commits pushed
 
 No preview deployment configured.
-→ Run /opti-gsd:ci configure to set up deployment platform.
+→ Run /opti-gsd:tools ci configure to set up deployment platform.
 
 ```
 
