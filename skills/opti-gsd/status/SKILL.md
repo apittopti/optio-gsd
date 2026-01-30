@@ -176,7 +176,7 @@ BACKWARD FLOWS (rework needed):
                               │
                  ┌────────────┴────────────┐
                  ▼                         ▼
-            /recover              /rollback (undo)
+         /debug recover      /session rollback (undo)
             (diagnose)
 ```
 

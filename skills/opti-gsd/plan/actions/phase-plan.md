@@ -117,7 +117,7 @@ Read these files (lazy loading):
 
 **Check for project-level research first:**
 - If `.opti-gsd/research/summary.md` exists, load it for context
-- If missing and this is phase 1, suggest: "Run /opti-gsd:research first for domain best practices?"
+- If missing and this is phase 1, suggest: "Run /opti-gsd:plan research first for domain best practices?"
 
 **Skip phase research if:**
 - `--skip-research` flag

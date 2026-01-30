@@ -43,4 +43,4 @@ Used during CI/CD verification to determine what testing is possible:
 | `MCP_DOCKER` (GitHub) | CI status checks, PR validation | /opti-gsd:verify, /opti-gsd:tools ci |
 | `playwright` | Headless browser testing | /opti-gsd:verify |
 | `cclsp` | Code intelligence | /opti-gsd:debug, /opti-gsd:execute |
-| `context7` | Library documentation | /opti-gsd:research |
+| `context7` | Library documentation | /opti-gsd:plan research |
