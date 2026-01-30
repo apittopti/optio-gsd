@@ -44,25 +44,25 @@ progress_bar() {
 }
 
 # Check for opti-gsd project
-GSD_DIR="$CWD/.gsd"
+GSD_DIR="$CWD/.opti-gsd"
 if [ ! -d "$GSD_DIR" ]; then
     # Not an opti-gsd project - show minimal status
     echo "[$MODEL] gsd:--"
     exit 0
 fi
 
-# Read STATE.md if it exists
-STATE_FILE="$GSD_DIR/STATE.md"
+# Read state.json if it exists
+STATE_FILE="$GSD_DIR/state.json"
 if [ ! -f "$STATE_FILE" ]; then
     echo "[$MODEL] gsd:init"
     exit 0
 fi
 
-# Parse state (simple grep-based parsing)
-PHASE=$(grep -oP 'current_phase:\s*\K\d+' "$STATE_FILE" 2>/dev/null || echo "1")
-TOTAL_PHASES=$(grep -oP 'total_phases:\s*\K\d+' "$STATE_FILE" 2>/dev/null || echo "1")
-MILESTONE=$(grep -oP 'milestone:\s*\K\S+' "$STATE_FILE" 2>/dev/null || echo "")
-MODE=$(grep -oP 'mode:\s*\K\w+' "$STATE_FILE" 2>/dev/null || echo "")
+# Parse state.json (jq-based parsing)
+PHASE=$(jq -r '.current_phase // 1' "$STATE_FILE" 2>/dev/null || echo "1")
+TOTAL_PHASES=$(jq -r '.total_phases // 1' "$STATE_FILE" 2>/dev/null || echo "1")
+MILESTONE=$(jq -r '.milestone // ""' "$STATE_FILE" 2>/dev/null || echo "")
+MODE=$(jq -r '.mode // ""' "$STATE_FILE" 2>/dev/null || echo "")
 
 # Calculate overall progress
 if [ "$TOTAL_PHASES" -gt 0 ]; then

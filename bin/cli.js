@@ -29,7 +29,7 @@ const log = {
 const ignoreDirs = new Set([
   'node_modules', '.git', 'vendor', 'venv', '.venv', 'env', '.env',
   'dist', 'build', 'target', '__pycache__', '.next', '.nuxt',
-  'coverage', '.nyc_output', '.cache', '.gsd',
+  'coverage', '.nyc_output', '.cache', '.gsd', '.opti-gsd',
 ]);
 
 function getSourceDir() {
@@ -266,8 +266,10 @@ async function main() {
   }
 
   if (command === 'init') {
-    // Check if already installed
-    const existingInstall = fs.existsSync(path.join(installDir, 'commands', 'opti-gsd'));
+    // Check if already installed (check both old commands/ and new skills/ locations)
+    const existingCommands = fs.existsSync(path.join(installDir, 'commands', 'opti-gsd'));
+    const existingSkills = fs.existsSync(path.join(installDir, 'skills', 'opti-gsd'));
+    const existingInstall = existingCommands || existingSkills;
     const action = existingInstall ? 'Update' : 'Install';
 
     // Confirm before proceeding (if TTY available)
@@ -285,19 +287,53 @@ async function main() {
       fs.mkdirSync(installDir, { recursive: true });
     }
 
+    // Clean up legacy commands/ directory (migrated to skills/ in v2.6.0)
+    const legacyCommandsPath = path.join(installDir, 'commands', 'opti-gsd');
+    if (fs.existsSync(legacyCommandsPath)) {
+      removeRecursive(legacyCommandsPath);
+      log.success('Removed legacy commands/opti-gsd (migrated to skills/)');
+    }
+
+    // Clean up old individual skill directories (consolidated in v2.6.0)
+    // 41 individual skills were consolidated into 15. Remove stale directories.
+    const skillsPath = path.join(installDir, 'skills', 'opti-gsd');
+    if (fs.existsSync(skillsPath)) {
+      const consolidatedSkills = new Set([
+        'codebase', 'config', 'debug', 'execute', 'help', 'init',
+        'milestone', 'plan', 'push', 'roadmap', 'session', 'status',
+        'tools', 'track', 'verify',
+      ]);
+      for (const entry of fs.readdirSync(skillsPath)) {
+        if (!consolidatedSkills.has(entry)) {
+          const staleDir = path.join(skillsPath, entry);
+          if (fs.statSync(staleDir).isDirectory()) {
+            removeRecursive(staleDir);
+          }
+        }
+      }
+      log.success('Cleaned up legacy individual skill directories');
+    }
+
     // Copy opti-gsd files
     log.info('Copying opti-gsd files...');
 
-    // Source structure has namespace folders: commands/opti-gsd/, agents/opti-gsd/
-    // Copy directly to preserve structure: commands/opti-gsd/ -> ~/.claude/commands/opti-gsd/
-    const dirsToVopy = ['commands', 'agents', 'skills', 'docs'];
-    for (const dir of dirsToVopy) {
+    // Skills consolidated in v2.6.0 — 15 skills with subcommand routing
+    const dirsToInstall = ['skills', 'agents', 'docs'];
+    for (const dir of dirsToInstall) {
       const srcPath = path.join(sourceDir, dir, 'opti-gsd');
       const destPath = path.join(installDir, dir, 'opti-gsd');
       if (fs.existsSync(srcPath)) {
         copyRecursive(srcPath, destPath);
         log.success(`Installed ${dir}/opti-gsd`);
       }
+    }
+
+    // Copy scripts (statusline, tool analysis)
+    const scriptsSrc = path.join(sourceDir, 'scripts');
+    if (fs.existsSync(scriptsSrc)) {
+      const scriptsDest = path.join(installDir, 'scripts', 'opti-gsd');
+      copyRecursive(scriptsSrc, scriptsDest);
+      log.success('Installed scripts/opti-gsd');
     }
 
     // Copy CLAUDE.md content

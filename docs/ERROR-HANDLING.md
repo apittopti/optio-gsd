@@ -25,7 +25,7 @@ Triggered when `.opti-gsd/` directory doesn't exist.
 No .opti-gsd/ directory found in this project.
 
 → Run /opti-gsd:init to initialize an existing project
-→ Run /opti-gsd:new-project to start a new project
+→ Run /opti-gsd:init new to start a new project
 ```
 
 ### 2. MISSING_PREREQUISITE
@@ -55,7 +55,7 @@ Triggered when a required file is missing.
 ─────────────────────────────────────
 No plan found for phase {N}.
 
-→ Run /opti-gsd:plan-phase {N} to create a plan
+→ Run /opti-gsd:plan {N} to create a plan
 ```
 
 ### 3. INVALID_STATE
@@ -77,7 +77,7 @@ Current phase: {current}
 ─────────────────────────────────────
 Phase {N} has already been completed.
 
-→ Run /opti-gsd:plan-phase {N+1} for next phase
+→ Run /opti-gsd:plan {N+1} for next phase
 → Run /opti-gsd:verify {N} to re-verify
 ```
 
@@ -102,7 +102,7 @@ Progress:
 | Command Type | Required Files |
 |--------------|----------------|
 | Execution (execute, verify) | .opti-gsd/, state.json, roadmap.md, plan.json |
-| Planning (plan-phase, roadmap) | .opti-gsd/, state.json |
+| Planning (plan, roadmap) | .opti-gsd/, state.json |
 | Session (status, resume, pause) | .opti-gsd/, state.json |
 | Utility (help, context) | None (always work) |
 
@@ -110,12 +110,12 @@ Progress:
 
 | Error Condition | Suggested Next Step |
 |-----------------|---------------------|
-| NOT_INITIALIZED | /opti-gsd:init or /opti-gsd:new-project |
+| NOT_INITIALIZED | /opti-gsd:init or /opti-gsd:init new |
 | No roadmap | /opti-gsd:roadmap |
-| No plan | /opti-gsd:plan-phase N |
+| No plan | /opti-gsd:plan N |
 | Task failed | Fix and retry or /opti-gsd:debug |
 | Phase incomplete | /opti-gsd:execute to resume |
-| Verification failed | /opti-gsd:plan-phase N --gaps |
+| Verification failed | /opti-gsd:plan N --gaps |
 
 ## Implementation Guidelines
 

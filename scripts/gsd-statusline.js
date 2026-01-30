@@ -24,7 +24,7 @@ function progressBar(percent, width = 10) {
     return bar;
 }
 
-// Parse STATE.md for phase info
+// Parse state.json for phase info
 function parseState(stateContent) {
     const result = {
         phase: 1,
@@ -33,17 +33,26 @@ function parseState(stateContent) {
         mode: ''
     };
 
-    const phaseMatch = stateContent.match(/current_phase:\s*(\d+)/);
-    if (phaseMatch) result.phase = parseInt(phaseMatch[1]);
+    try {
+        const state = JSON.parse(stateContent);
+        if (state.current_phase) result.phase = parseInt(state.current_phase);
+        if (state.total_phases) result.totalPhases = parseInt(state.total_phases);
+        if (state.milestone) result.milestone = state.milestone;
+        if (state.mode) result.mode = state.mode;
+    } catch (e) {
+        // Fallback: try regex parsing for backward compatibility
+        const phaseMatch = stateContent.match(/current_phase[":]\s*(\d+)/);
+        if (phaseMatch) result.phase = parseInt(phaseMatch[1]);
 
-    const totalMatch = stateContent.match(/total_phases:\s*(\d+)/);
-    if (totalMatch) result.totalPhases = parseInt(totalMatch[1]);
+        const totalMatch = stateContent.match(/total_phases[":]\s*(\d+)/);
+        if (totalMatch) result.totalPhases = parseInt(totalMatch[1]);
 
-    const milestoneMatch = stateContent.match(/milestone:\s*(\S+)/);
-    if (milestoneMatch) result.milestone = milestoneMatch[1];
+        const milestoneMatch = stateContent.match(/milestone[":]\s*"?(\S+)"?/);
+        if (milestoneMatch) result.milestone = milestoneMatch[1];
 
-    const modeMatch = stateContent.match(/mode:\s*(\w+)/);
-    if (modeMatch) result.mode = modeMatch[1];
+        const modeMatch = stateContent.match(/mode[":]\s*"?(\w+)"?/);
+        if (modeMatch) result.mode = modeMatch[1];
+    }
 
     return result;
 }
@@ -65,14 +74,14 @@ process.stdin.on('end', () => {
     const cwd = data?.workspace?.current_dir || process.cwd();
 
     // Check for opti-gsd project
-    const gsdDir = path.join(cwd, '.gsd');
+    const gsdDir = path.join(cwd, '.opti-gsd');
     if (!fs.existsSync(gsdDir)) {
         console.log(`[${model}] gsd:--`);
         process.exit(0);
     }
 
-    // Read STATE.md
-    const stateFile = path.join(gsdDir, 'STATE.md');
+    // Read state.json
+    const stateFile = path.join(gsdDir, 'state.json');
     if (!fs.existsSync(stateFile)) {
         console.log(`[${model}] gsd:init`);
         process.exit(0);

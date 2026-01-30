@@ -903,7 +903,7 @@ New debt without issue:
   - src/api/stats.ts:45 - TODO: add pagination
 
 To proceed:
-  A) Run /opti-gsd:add-issue to create tracking issue
+  A) Run /opti-gsd:track issue to create tracking issue
   B) Fix the debt before completing phase
   C) Add issue reference: '// TODO(ISS###): description'
 ```
@@ -917,12 +917,12 @@ Example: `// TODO(ISS005): add pagination` → ALLOWED (tracked)
 
 ### Integration with Baseline Scanning
 
-For project-wide baseline tracking, see `/opti-gsd:map-codebase --debt` which maintains `.opti-gsd/debt-baseline.json`.
+For project-wide baseline tracking, see `/opti-gsd:codebase --debt` which maintains `.opti-gsd/debt-baseline.json`.
 
 - **Baseline scanning**: Tracks absolute project debt state
 - **Verification tracking**: Tracks per-phase debt delta
 
 Recommended workflow:
-1. Establish baseline at project start: `/opti-gsd:map-codebase --debt`
+1. Establish baseline at project start: `/opti-gsd:codebase --debt`
 2. Phase verification tracks each phase delta
-3. Re-scan periodically: `/opti-gsd:map-codebase --debt`
+3. Re-scan periodically: `/opti-gsd:codebase --debt`
