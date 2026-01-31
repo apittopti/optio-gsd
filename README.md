@@ -6,8 +6,6 @@ A meta-prompting and context engineering system that makes Claude Code reliable 
 
 ## Installation
 
-### Plugin Install (Recommended)
-
 From inside Claude Code:
 
 ```
@@ -20,10 +18,7 @@ To uninstall: `/plugin uninstall opti-gsd`
 
 ### Private Repo Access
 
-This repo is private. To use it, you need:
-
-1. **GitHub access** — Be added as a collaborator
-2. **Authentication** — Run `gh auth login` once
+This repo is private. You need GitHub collaborator access and `gh auth login`.
 
 ## Usage
 
