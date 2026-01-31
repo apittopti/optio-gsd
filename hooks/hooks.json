@@ -1,8 +1,15 @@
 {
-  "hooks": [
-    {
-      "event": "PostToolUse",
-      "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/log-tool-usage.js\" || true"
-    }
-  ]
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/log-tool-usage.js\" || true"
+          }
+        ]
+      }
+    ]
+  }
 }
