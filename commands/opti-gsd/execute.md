@@ -223,7 +223,9 @@ FOR each wave:
        IF still waiting:
          Brief status update to user: "Tasks running: {count}"
 
-  5. All tasks in wave complete? → Next wave
+  5. All tasks in wave complete? → Step 5b (User Review Checkpoint)
+
+  6. After review checkpoint → Next wave
 ```
 
 **IMPORTANT:** The TaskUpdate calls in steps 3a and 4 are MANDATORY. They drive the visual
@@ -235,6 +237,90 @@ progress display in Claude Code's CLI. Without them, users see no task progress.
 - Can continue working while tasks run (Ctrl+B)
 - TaskOutput provides clean result retrieval
 - Task state persists across session interruptions
+
+### Step 5b: User Review Checkpoint (Between Waves)
+
+After each wave completes, present results and ask for feedback BEFORE starting the next wave. This catches issues early — before later waves build on top of broken work.
+
+**Always show (even in yolo mode):**
+
+```markdown
+## Wave {W} Complete
+
+### What was built:
+{For each completed task in this wave, show user_observable from plan.json}
+- T{id}: {user_observable}
+- T{id}: {user_observable}
+
+### Quick check:
+{If tasks created UI: suggest checking the page}
+{If tasks created API: show example curl command}
+{If tasks created CLI: show example command to run}
+
+**How does this look?**
+→ "good" or Enter — Continue to Wave {W+1}
+→ Describe issues — I'll fix them before moving on
+→ "skip reviews" — Disable review checkpoints for remaining waves
+```
+
+**If user provides feedback:**
+
+1. Categorize each item:
+   - **wrong_behavior** — Works but does the wrong thing
+   - **missing** — Something expected but not present
+   - **visual** — Looks wrong, bad layout, wrong text
+   - **edge_case** — Doesn't handle a scenario
+
+2. Present categorization for confirmation:
+   ```markdown
+   I'll fix these before Wave {W+1}:
+   | # | Issue | Category | Affected Task |
+   |---|-------|----------|---------------|
+   | 1 | Error says "Error" not specific msg | wrong_behavior | T02 |
+   | 2 | Form not centered | visual | T02 |
+
+   Look right? [Y/n]
+   ```
+
+3. Generate and execute inline fix tasks:
+   - Each fix is a fresh subagent (same quality gates: TDD if applicable, verification-before-completion)
+   - Atomic commit per fix with prefix: `fix({phase}-R{round}): {description}`
+   - Fixes execute sequentially within the review round
+
+4. After fixes complete, re-present the wave results:
+   ```markdown
+   ## Wave {W} Fixes Applied
+
+   - [x] R01: Specific error messages (commit abc123)
+   - [x] R02: Centered login form (commit def456)
+
+   **How does this look now?**
+   → "good" or Enter — Continue to Wave {W+1}
+   → More feedback — Another round of fixes
+   ```
+
+5. Loop until user says "good" or presses Enter
+
+**Review state tracking:**
+
+Add to state.json during review:
+```json
+{
+  "loop": {
+    "review": {
+      "wave": 1,
+      "round": 2,
+      "fixes_applied": 3
+    }
+  }
+}
+```
+
+**Yolo mode behavior:**
+In yolo mode, still SHOW the wave results but auto-continue after 3 seconds unless user is typing. The review checkpoint is informational, not blocking. If user starts typing feedback, switch to interactive for that review.
+
+**"skip reviews" flag:**
+If user says "skip reviews" at any checkpoint, set `review_checkpoints: false` in state.json for this execution run. Waves proceed without pausing. The final review at Step 8b still happens.
 
 ### Step 6: Build Subagent Prompt
 
@@ -549,6 +635,55 @@ If user confirms:
 
 If no deployment configured, skip this step.
 
+### Step 8b: Final User Review (MANDATORY)
+
+After all waves complete but BEFORE declaring the phase done, present the full picture and ask for feedback. This is the user's chance to review the whole phase holistically.
+
+```markdown
+## Phase {N} Execution Complete — Your Review
+
+### Everything that was built:
+{For EACH task in plan.json, show user_observable}
+1. {user_observable from T01}
+2. {user_observable from T02}
+3. {user_observable from T03}
+...
+
+### Summary:
+- **Tasks completed:** {count}/{total}
+- **Tests added:** {test_count}
+- **Commits:** {commit_count}
+{If review fixes were applied during waves:}
+- **Review fixes applied:** {fix_count} across {round_count} rounds
+
+### Your turn:
+Please check the results. You can:
+→ "looks good" or Enter — Proceed (I'll run verification next)
+→ Describe what needs changing — I'll fix it now
+→ "verify" — Skip straight to automated verification
+```
+
+**If user provides feedback:**
+
+Follow the same review loop as Step 5b:
+1. Categorize feedback items
+2. Present for confirmation
+3. Generate fix tasks → execute with quality gates → commit
+4. Re-present results
+5. Loop until user says "looks good"
+
+Review fixes at this stage are tracked as `review-plan-final.json` in the phase directory.
+
+**After user approves (or says "verify"):**
+
+Automatically trigger verification:
+```markdown
+Great. Running verification now...
+```
+Then execute the verification flow (spawn verifier agent, same as /opti-gsd:verify).
+
+This means the user doesn't need to manually run `/opti-gsd:verify` — it flows naturally from the review.
+
 ### Step 10: Report
 
 ```markdown
@@ -559,6 +694,7 @@ If no deployment configured, skip this step.
 **Duration:** {approximate}
 
 **Auto-Fixes:** {count if any}
+**Review Fixes:** {review_fix_count if any}
 **Issues Found:** {count if any}
 
 {If pushed and preview deployed:}
@@ -567,7 +703,8 @@ If no deployment configured, skip this step.
 ```
 
 **Next steps:**
-→ /opti-gsd:verify {N}       — Verify phase completion {against preview if pushed}
+→ /opti-gsd:review {N}       — More feedback? Review again anytime
+→ /opti-gsd:verify {N}       — Re-run verification {against preview if pushed}
 → /opti-gsd:push             — Push to trigger preview deployment {if not pushed yet}
 → /opti-gsd:plan-phase {N+1} — Plan next phase
 → /opti-gsd:archive {N}      — Archive phase to free context

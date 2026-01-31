@@ -491,25 +491,150 @@ Write `.opti-gsd/plans/phase-{N}/verification.md`:
 
 **Cleanup:** After writing verification.md, delete `.opti-gsd/plans/phase-{N}/verification-progress.md` (progress file is no longer needed once final report exists).
 
-### Step 7: Handle Result
+### Step 7: Handle Result + User Review
 
-**passed:**
+All three outcomes (passed, gaps_found, human_needed) now flow into a unified user review step. The automated results are presented FIRST, then the user is always asked for their input.
+
+#### 7a: Present Automated Results
+
+**If passed:**
 ```markdown
-## Phase {N} Verified!
+## Phase {N} Verification Results
 
-All checks passed:
+### Automated Checks: ALL PASSED ✓
 - [x] {observable truth 1}
 - [x] {observable truth 2}
 - [x] All artifacts substantive and wired
 
-**Stories Delivered:**
+### Stories Delivered:
 - [x] US001: Export to Excel (all acceptance criteria met)
 - [x] US003: Faster search (all acceptance criteria met)
 
-**Debt Balance:** Net -3 (5 resolved, 2 created) - GOOD
+### Debt Balance: Net -3 (5 resolved, 2 created) - GOOD
+```
+
+**If gaps_found:**
+```markdown
+## Phase {N} Verification Results
+
+### Automated Checks: GAPS FOUND
+
+**Passing:**
+- [x] {passing checks}
+
+**Gaps identified ({count}):**
+| # | Type | File | Issue |
+|---|------|------|-------|
+| 1 | orphan | components/StatsCard.tsx | Not imported anywhere |
+| 2 | broken_link | Dashboard → API | Incorrect endpoint path |
+```
+
+**If human_needed:**
+```markdown
+## Phase {N} Verification Results
+
+### Automated Checks: PASSED (human verification needed)
+
+**Code checks passed**, but these need your eyes:
+- [ ] Visual: {description}
+- [ ] Behavior: {description}
+- [ ] External: {description}
+```
+
+#### 7b: User Review (ALWAYS — regardless of automated result)
+
+After presenting automated results, ALWAYS ask the user for their assessment:
+
+```markdown
+### Your Review
+
+The automated checks are above. Now it's your turn.
+
+**Please check the actual behavior** — does it match what you expected?
+{Compile user_observable from plan.json tasks:}
+1. {user_observable from T01}
+2. {user_observable from T02}
+3. {user_observable from T03}
+
+{If browser MCP available:}
+Tip: I can screenshot pages for you — just ask.
+
+{If API endpoints exist:}
+Tip: Want me to hit the API endpoints and show responses?
+
+**What do you think?**
+→ "looks good" — Mark phase as verified, move on
+→ Describe issues — I'll fix them (automated gaps + your feedback together)
+→ "show me [page/endpoint/component]" — I'll check it for you
+```
+
+#### 7c: Process Combined Feedback
+
+If the user provides feedback OR automated gaps were found, combine them into a single fix round:
+
+1. **Merge all issues** — automated gaps + user feedback:
+   ```markdown
+   ## Issues to Fix
+
+   ### From automated verification:
+   | # | Type | Issue |
+   |---|------|-------|
+   | A1 | orphan | StatsCard not imported |
+   | A2 | broken_link | Dashboard → API path wrong |
+
+   ### From your review:
+   | # | Category | Issue |
+   |---|----------|-------|
+   | U1 | wrong_behavior | Error messages too generic |
+   | U2 | missing | No forgot password link |
+
+   **Fix all {count} issues now?** [Y/n]
+   ```
+
+2. **Generate combined fix plan** — `review-fix-plan.json`:
+   - Automated gaps get fix tasks (same as plan-fix logic)
+   - User feedback gets categorized fix tasks (same as review logic)
+   - All tasks get quality gates (TDD if applicable, verification-before-completion)
+
+3. **Execute fixes** — spawn executor subagents for each fix task
+
+4. **Re-verify** — after fixes complete, re-run automated checks (CI, artifacts, links)
+
+5. **Re-present to user:**
+   ```markdown
+   ## Fixes Applied + Re-Verification
+
+   ### Fixes completed:
+   - [x] A1: Imported StatsCard in Dashboard (commit abc123)
+   - [x] A2: Fixed API endpoint path (commit def456)
+   - [x] U1: Added specific error messages (commit ghi789)
+   - [x] U2: Added forgot password link (commit jkl012)
+
+   ### Re-verification: ALL PASSED ✓
+   - [x] CI checks pass
+   - [x] All artifacts wired
+   - [x] No orphans
+
+   **How does this look now?**
+   → "looks good" — Phase verified, move on
+   → More feedback — Another fix round
+   ```
+
+6. **Loop** until user says "looks good"
+
+#### 7d: Phase Verified
+
+When user approves:
+
+```markdown
+## Phase {N} Verified! ✓
+
+**Automated checks:** All passed
+**User review:** Approved
+**Fix rounds:** {count} (if any)
+**Total fixes applied:** {count} (if any)
 
 Phase {N} is ready for milestone completion.
-
 ```
 
 **Next steps:**
@@ -520,71 +645,22 @@ Phase {N} is ready for milestone completion.
 
 💾 State saved. Safe to /compact or start new session if needed.
 
-Mark phase as verified in state.json.
-
-**gaps_found:**
-```markdown
-## Phase {N} Verification: Gaps Found
-
-**Issues:**
-1. {gap 1 description}
-2. {gap 2 description}
-
-**Options:**
-A) Run /opti-gsd:plan-phase {N} --gaps to create gap closure plan
-B) Fix manually and re-verify
-
-Recommended: Option A for systematic closure
-
-**With Loop Enabled (default):**
-Proceed to Step 7a for automatic gap fixing.
+Mark phase as verified in state.json with review metadata:
+```json
+{
+  "phases": {
+    "{N}": {
+      "status": "verified",
+      "review": {
+        "rounds": 2,
+        "automated_fixes": 2,
+        "user_fixes": 3,
+        "approved_at": "2026-01-31T10:30:00Z"
+      }
+    }
+  }
+}
 ```
-
-**human_needed:**
-```markdown
-## Phase {N} Verification: Human Check Required
-
-Code verification passed, but these need human verification:
-- [ ] Visual: {description}
-- [ ] Behavior: {description}
-- [ ] External: {description}
-
-Please verify manually and confirm:
-> "Verified" or "Issues found: {description}"
-```
-
-### Step 7a: Report Gaps (No Auto-Loop)
-
-When verification reports `gaps_found`, report to user and suggest next action.
-
-**Philosophy:** Human judgment gates continuation. No automatic fix loops.
-
-**Gap Report:**
-```markdown
-## Verification: Gaps Found
-
-**Phase {N} verification identified {count} gaps:**
-
-| # | Type | File | Issue |
-|---|------|------|-------|
-| 1 | orphan | components/StatsCard.tsx | Not imported anywhere |
-| 2 | broken_link | Dashboard → API | Incorrect endpoint path |
-
-**Next Steps:**
-→ /opti-gsd:plan-fix {N} — Generate fix plan for these gaps
-→ Fix manually and re-run /opti-gsd:verify
-→ /opti-gsd:rollback {N} — Revert phase if fundamentally broken
-```
-
-**Gap Types Reference:**
-
-| Gap Type | Description | Typical Fix |
-|----------|-------------|-------------|
-| orphan | File exists but not imported | Add import + usage |
-| broken_link | Connection fails | Fix path/typo |
-| stub | Placeholder implementation | Implement fully |
-| missing_export | Symbol not exported | Add export |
-| ci_failure | CI check failed | Fix specific error |
 
 ### Step 8: Commit
 

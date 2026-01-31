@@ -190,10 +190,11 @@ Show the primary action, with alternatives when choices exist:
 | No plan for phase | /opti-gsd:plan-phase {N} | /opti-gsd:discuss-phase first |
 | Plan exists, not executed | /opti-gsd:execute | — |
 | Execution in progress | /opti-gsd:execute (continue) | /opti-gsd:recover if stuck |
-| **Phase executed** | /opti-gsd:push | or /opti-gsd:verify (local) |
-| Pushed, not verified | /opti-gsd:verify {N} | — |
-| **Gaps found** | /opti-gsd:plan-fix | or /opti-gsd:rollback |
-| Verified, more phases | /opti-gsd:plan-phase {N+1} | /opti-gsd:archive {N} |
+| **Phase executed** | /opti-gsd:review {N} | or /opti-gsd:push, /opti-gsd:verify |
+| **In review** | /opti-gsd:review {N} (continue) | "looks good" to finish review |
+| Pushed, not verified | /opti-gsd:verify {N} | /opti-gsd:review {N} for more feedback |
+| **Gaps found** | /opti-gsd:review {N} | or /opti-gsd:plan-fix, /opti-gsd:rollback |
+| Verified, more phases | /opti-gsd:plan-phase {N+1} | /opti-gsd:review {N}, /opti-gsd:archive {N} |
 | All phases done | /opti-gsd:complete-milestone | — |
 
 **When there are choices, show both:**

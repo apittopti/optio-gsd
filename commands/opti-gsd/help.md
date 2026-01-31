@@ -49,11 +49,17 @@ Project: Not initialized
 ┌──────────────────────────────────────────────────────────────┐
 │                    THE opti-gsd WORKFLOW                     │
 │                                                              │
-│     ┌──────┐     ┌─────────┐     ┌──────┐     ┌─────────┐   │
-│  ──►│ PLAN │────►│ EXECUTE │────►│ PUSH │────►│ VERIFY  │   │
-│     └──────┘     └─────────┘     └──────┘     └─────────┘   │
-│         │                                          │         │
-│         └──────────── repeat per phase ◄───────────┘         │
+│  ┌──────┐  ┌─────────┐  ┌────────┐  ┌──────┐  ┌─────────┐  │
+│  │ PLAN │─►│ EXECUTE │─►│ REVIEW │─►│ PUSH │─►│ VERIFY  │  │
+│  └──────┘  └─────────┘  └────────┘  └──────┘  └─────────┘  │
+│      │          │    ▲       │                     │    ▲    │
+│      │          │    │       │                     │    │    │
+│      │          └────┘       │                     └────┘    │
+│      │        feedback       │                   feedback    │
+│      │        between        │                   after       │
+│      │        waves          │                   verify      │
+│      │                       │                               │
+│      └──────────── repeat per phase ◄────────────────────┘   │
 │                                                              │
 └──────────────────────────────────────────────────────────────┘
 ```
@@ -62,11 +68,15 @@ Project: Not initialized
 |------|---------|--------------|
 | 0 | /opti-gsd:roadmap | Define what you're building (phases) |
 | 1 | /opti-gsd:plan-phase | Generate execution plan for current phase |
-| 2 | /opti-gsd:execute | Run the plan (TDD, parallel tasks, auto-commit) |
-| 3 | /opti-gsd:push | Push to trigger preview deployment |
-| 4 | /opti-gsd:verify | Verify everything works |
+| 2 | /opti-gsd:execute | Run the plan (TDD, parallel tasks, auto-commit) — **asks for your review between waves and after completion** |
+| 3 | /opti-gsd:review | Review results and provide feedback for fixes (also built into execute and verify) |
+| 4 | /opti-gsd:push | Push to trigger preview deployment |
+| 5 | /opti-gsd:verify | Verify everything works — **asks for your review after automated checks** |
 
-**That's it.** Run /opti-gsd:status anytime to see where you are and what to do next.
+**Review is built in.** After every wave and after verification, you'll be asked "how does this look?"
+Say "looks good" to continue, or describe what needs fixing.
+
+Run /opti-gsd:status anytime to see where you are and what to do next.
 
 ---
 
