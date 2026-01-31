@@ -16,7 +16,7 @@
         "url": "https://github.com/apittopti/opti-gsd.git"
       },
       "description": "Spec-driven development with fresh context execution — plan, execute, review, verify",
-      "version": "2.5.0",
+      "version": "2.6.0",
       "strict": true
     }
   ]

@@ -1,6 +1,6 @@
 {
   "name": "opti-gsd",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "Spec-driven development with fresh context execution for Claude Code",
   "repository": {
     "type": "git",

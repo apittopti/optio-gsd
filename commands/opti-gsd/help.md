@@ -139,6 +139,7 @@ End:         complete-milestone → PR → merge → finalize
 | Command | Description |
 |---------|-------------|
 | /opti-gsd:status | **Start here** — shows where you are + next action |
+| /opti-gsd:quick [task] | Quick ad-hoc task without full ceremony |
 | /opti-gsd:add-feature | Capture a feature idea without interrupting work |
 | /opti-gsd:add-story | Capture a user request or feature |
 | /opti-gsd:debug | Systematic bug investigation |
