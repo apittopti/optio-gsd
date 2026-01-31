@@ -12,8 +12,8 @@ This is the opti-gsd source repository. You are using opti-gsd to develop opti-g
 **Key rules:**
 - The installed version guides your workflow (commands, agents, skills)
 - The source version is what you're changing
-- After completing a milestone, the user should reinstall: `npx github:apittopti/opti-gsd init`
-- Never modify installed files directly — only modify source, then reinstall
+- After completing a milestone, the user should update: `/plugin update opti-gsd`
+- Never modify installed files directly — only modify source, then update plugin
 
 ## Workflow Requirements
 

@@ -2,9 +2,6 @@
   "name": "opti-gsd",
   "version": "2.5.0",
   "description": "Spec-driven development with fresh context execution for Claude Code",
-  "bin": {
-    "opti-gsd": "./bin/cli.js"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/apittopti/opti-gsd.git"
@@ -15,11 +12,9 @@
     "gsd",
     "development",
     "workflow",
-    "ai"
+    "ai",
+    "plugin"
   ],
   "author": "apittopti",
-  "license": "MIT",
-  "engines": {
-    "node": ">=18.0.0"
-  }
+  "license": "MIT"
 }

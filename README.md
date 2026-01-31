@@ -18,17 +18,6 @@ From inside Claude Code:
 To update: `/plugin update opti-gsd`
 To uninstall: `/plugin uninstall opti-gsd`
 
-### Alternative: npx Install
-
-```bash
-npx github:apittopti/opti-gsd init              # Interactive prompt
-npx github:apittopti/opti-gsd init --global     # Install to ~/.claude/
-npx github:apittopti/opti-gsd init --local      # Install to ./.claude/
-```
-
-Uninstall: `npx github:apittopti/opti-gsd uninstall`
-Update: Just run `init` again — npx always fetches the latest.
-
 ### Private Repo Access
 
 This repo is private. To use it, you need:
@@ -104,7 +93,6 @@ No hardcoded tool references - agents adapt to whatever you have installed.
 
 ## Requirements
 
-- Node.js 18+
 - Claude Code installed
 - GitHub access (for private repo installation)
 
