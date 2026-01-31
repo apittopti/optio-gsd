@@ -1,0 +1,15 @@
+{
+  "name": "opti-gsd-marketplace",
+  "owner": {
+    "name": "apittopti",
+    "url": "https://github.com/apittopti"
+  },
+  "plugins": [
+    {
+      "name": "opti-gsd",
+      "source": ".",
+      "description": "Spec-driven development with fresh context execution — plan, execute, review, verify",
+      "version": "2.5.0"
+    }
+  ]
+}

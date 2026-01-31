@@ -83,6 +83,19 @@ Compile from phase summaries:
 
 Write to `.opti-gsd/changelog-{milestone}.md`.
 
+### Step 3b: Update Version Files
+
+Update version in both `package.json` and `.claude-plugin/plugin.json` to match the milestone version:
+
+```bash
+# Extract version from milestone name (e.g., "v2.6.0" → "2.6.0")
+# Update package.json .version field
+# Update .claude-plugin/plugin.json .version field
+# Update .claude-plugin/marketplace.json plugins[0].version field
+```
+
+All three files must have matching version strings.
+
 ### Step 4: Update roadmap.md
 
 ```markdown

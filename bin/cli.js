@@ -191,7 +191,12 @@ function printHelp() {
   console.log(`
 ${colors.blue}opti-gsd${colors.reset} - Spec-driven development for Claude Code
 
-${colors.yellow}Usage:${colors.reset}
+${colors.yellow}Plugin Install (Recommended):${colors.reset}
+  In Claude Code, run:
+    /plugin marketplace add apittopti/opti-gsd
+    /plugin install opti-gsd
+
+${colors.yellow}npx Install (Alternative):${colors.reset}
   npx github:apittopti/opti-gsd init [options]
   npx github:apittopti/opti-gsd uninstall [options]
 
@@ -371,6 +376,10 @@ async function main() {
   console.log(`  2. Run: ${colors.blue}/opti-gsd:init${colors.reset} (auto-detects tools)`);
   console.log(`  3. Run: ${colors.blue}/opti-gsd:status${colors.reset}`);
   console.log(`${colors.green}════════════════════════════════════════${colors.reset}`);
+  console.log('');
+  console.log(`${colors.dim}Tip: You can also install as a Claude Code plugin for easier updates:${colors.reset}`);
+  console.log(`  ${colors.cyan}/plugin marketplace add apittopti/opti-gsd${colors.reset}`);
+  console.log(`  ${colors.cyan}/plugin install opti-gsd${colors.reset}`);
 }
 
 main().catch((err) => {
