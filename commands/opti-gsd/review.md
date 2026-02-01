@@ -231,7 +231,7 @@ If confirmed, execute with SAME quality gates as normal execution:
 - TDD for behavior changes (test_required: true)
 - Verification-before-completion on every fix
 - Atomic commit per fix: `fix({phase}-R{round}): {description}`
-- TodoWrite for visual progress tracking
+- Claude Code Task integration (TaskCreate/TaskUpdate for progress)
 
 ### Step 6: Present Results and Loop
 

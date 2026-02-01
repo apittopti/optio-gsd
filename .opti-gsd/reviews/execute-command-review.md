@@ -1,7 +1,7 @@
 # Execute Command Review — Full Flow Validation
 
 **Date:** 2026-02-01
-**Revision:** 3 — complete end-to-end flow trace with cross-file validation
+**Revision:** 4 — corrected finding #1 (TaskCreate/TaskUpdate/TaskOutput ARE real tools), retracted #9
 **Reviewer:** Claude (automated review)
 
 **Files Reviewed:**
@@ -19,23 +19,21 @@
 
 ## Summary
 
-14 findings confirmed from previous review. 7 new findings discovered during full flow trace, bringing the total to **21 findings** (5 high, 9 medium, 7 low).
+**19 valid findings** (4 high, 8 medium, 7 low). 2 findings retracted from original 21.
 
-The most critical systemic issue: the orchestrator is designed around tools that don't exist in Claude Code (`TaskCreate`, `TaskUpdate`, `TaskOutput`, `ToolSearch`). This affects execute, recover, review, verify, and the executor agent. Until these references are replaced with actual Claude Code patterns, the flow cannot work as documented.
+**CORRECTION:** Finding #1 (TaskCreate/TaskUpdate/TaskOutput "don't exist") was **wrong**. These are real Claude Code tools introduced in v2.1 (January 2026). The original execute.md was correct to use them. Finding #9 (synchronous polling) is also retracted — TaskOutput handles this natively.
 
-The second systemic issue is data integrity: Step 8 marks the phase as complete and commits metadata *before* Step 8b's mandatory review. If the review produces fixes, the summary and state are stale.
+The most critical real issue: data integrity — Step 8 marks the phase complete and commits metadata *before* Step 8b's mandatory review. If the review produces fixes, the summary and state are stale.
+
+ToolSearch remains non-existent. The executor agent still can't call TaskCreate/TaskUpdate (not in its tool list, runs in isolated subagent context). These findings stand.
 
 ---
 
-## HIGH Severity (5)
+## HIGH Severity (4)
 
-### 1. Non-existent tools: TaskCreate, TaskUpdate, TaskOutput, TaskList
+### ~~1. Non-existent tools: TaskCreate, TaskUpdate, TaskOutput, TaskList~~ — RETRACTED
 
-**Scope:** execute.md (Steps 4c, 5), opti-gsd-executor.md (startup, per-task), review.md (Step 5), recover.md (Steps 1-4), features/F002.md, roadmap.md
-
-These tools are not in Claude Code's tool set. Available tools: `Task`, `Read`, `Write`, `Edit`, `Bash`, `Glob`, `Grep`, `TodoWrite`, `WebFetch`, `WebSearch`, `NotebookEdit`. The project invested two milestones (v2.2.0, v2.5.0) building around APIs that don't exist.
-
-**Fix:** Replace `TaskCreate`/`TaskUpdate` with `TodoWrite` for visual progress. Replace `TaskOutput` polling with `Read` on the `output_file` path returned by `Task(run_in_background=true)`.
+**This finding was wrong.** TaskCreate, TaskUpdate, TaskOutput, and TaskList are real Claude Code tools introduced in v2.1 (January 22, 2026). The original execute.md was correct to use them. The reviewer's session did not have access to these tools, leading to an incorrect conclusion.
 
 ### 2. Step 8 marks phase complete BEFORE Step 8b mandatory review
 
@@ -65,17 +63,15 @@ The executor agent has zero `git tag` commands. Per-task tags are never created 
 **Impact:** `/opti-gsd:rollback 2-03` always fails. Only whole-phase rollback works.
 **Fix:** Add per-task tag creation after each task commit — either in the executor or the orchestrator's result handler.
 
-### 4. recover.md is non-functional and architecturally misplaced
+### 4. recover.md is architecturally misplaced (session-scoped IDs don't survive restarts)
 
-Recover has two fundamental problems:
+TaskOutput exists (finding #1 correction), but recover.md's core assumption is still flawed:
 
-**a) Built on non-existent tools:** Every step uses `TaskOutput(task_id, block=false)` which doesn't exist.
+**Task IDs don't survive sessions.** The `loop.background_tasks` array in state.json stores task IDs from the `Task` tool. These IDs are session-scoped — they exist only within the Claude Code session that created them. When a session ends (the exact scenario recover is meant to handle), those IDs are meaningless. There's nothing to poll.
 
-**b) Task IDs don't survive sessions:** The `loop.background_tasks` array in state.json stores task IDs from the `Task` tool. These IDs are ephemeral — they exist only within the Claude Code session that created them. When a session ends (the exact scenario recover is meant to handle), those IDs are meaningless. There's nothing to poll.
+The *useful* part of recover — detecting mismatches between state.json and git reality — is standard git inspection. This belongs in the orchestrator's resume logic (execute.md Step 3b), not as a separate command.
 
-The *useful* part of recover — detecting mismatches between state.json and git reality (Steps 2-4) — is just standard git inspection. This belongs in the orchestrator's resume logic (execute.md Step 3b), not as a separate command.
-
-**Recommendation:** Fold recover's git-inspection logic into execute.md Step 3b. Remove the TaskOutput polling entirely. The execute command's resume flow (task > 0 in state.json) should handle all recovery scenarios.
+**Recommendation:** Fold recover's git-inspection logic into execute.md Step 3b. Recovery should rely on git state, not session-scoped task IDs.
 
 ### 5. No handling for parallel task git conflicts
 
@@ -117,13 +113,9 @@ Both trigger between waves. Step 5b is a full review checkpoint with feedback co
 
 **Fix:** Remove point 2. Step 5b already gates wave transitions and includes a "Continue to Wave {W+1}" option.
 
-### 9. Synchronous polling loop incompatible with Claude Code's execution model
+### ~~9. Synchronous polling loop incompatible with Claude Code's execution model~~ — RETRACTED
 
-Step 5, point 4 (lines 216-230) describes a `WHILE` loop that polls `TaskOutput` repeatedly. Claude Code is turn-based — it can't busy-wait in a synchronous loop. Even with the correct `Read(output_file)` pattern, you can't write `WHILE any tasks pending: poll()` as a single continuous operation.
-
-The actual pattern would be: spawn all background tasks → for each, `Read` the output file → if not done, use `Bash(sleep N)` then `Read` again. But this consumes API turns and is fundamentally different from the synchronous loop described.
-
-**Fix:** Rewrite the polling section to reflect Claude Code's turn-based reality. For single-task waves, use `Task(run_in_background=false)` (blocking). For multi-task waves, spawn all with `run_in_background=true`, then sequentially `Read` each output file (they'll block until done).
+**This finding was wrong.** TaskOutput is a real Claude Code tool that handles polling natively. The synchronous loop described in execute.md using TaskOutput is the correct pattern.
 
 ### 10. Step 6 subagent prompt references non-existent config fields
 
@@ -190,22 +182,15 @@ Lines 811-818 specify "Orchestrator budget: 15%" with breakdowns. These are aspi
 
 ## Recover Command Assessment
 
-**Current state:** `recover.md` is a 111-line command entirely built around `TaskOutput` polling of `loop.background_tasks`. Both the tool and the persistence model are non-functional.
+**Current state:** `recover.md` was a 111-line command built around `TaskOutput` polling of `loop.background_tasks`. While TaskOutput is a real tool (correction from finding #1), the fundamental problem remains: task IDs are session-scoped and don't survive the session restarts that recovery is designed for.
 
-**What it tries to do:**
+**What it tried to do:**
 1. Poll background task IDs from state.json → IDs don't survive sessions
-2. Use TaskOutput to check results → tool doesn't exist
+2. Use TaskOutput to check results → tool exists but IDs are stale
 3. Compare state.json to git reality → this part is useful
 4. Auto-fix state mismatches → this part is useful
 
-**Recommendation:** Recover should not exist as a separate command. Its useful functionality (git reality check, state.json repair) belongs in the orchestrator's resume logic (execute.md Step 3b). When `execute` runs and finds `task > 0` in state.json, it should:
-
-1. Compare state.json claims against actual git commits
-2. If state is ahead of reality → warn user and offer rollback
-3. If uncommitted work exists → offer to commit, discard, or stash
-4. Resume from the correct position
-
-This is simpler, more reliable, and doesn't depend on ephemeral task IDs or non-existent tools.
+**Action taken:** Removed recover.md. Its git-inspection logic was folded into execute.md Step 3b, which now compares state.json against git reality on resume and handles mismatches.
 
 ---
 
@@ -225,13 +210,13 @@ This is simpler, more reliable, and doesn't depend on ephemeral task IDs or non-
 
 ## Recommendations (Priority Order)
 
-1. **Replace all non-existent tool references** — `TaskCreate`/`TaskUpdate` → `TodoWrite`; `TaskOutput` → `Read(output_file)`; `ToolSearch` → direct MCP calls. This is blocking — nothing works until this is done.
-2. **Fix step ordering and data integrity** — Move Step 8b before Step 8. Only write summary/update state AFTER user approves the final review.
-3. **Fold recover into execute's resume logic** — Remove recover.md as a separate command. Add git-reality-check to execute.md Step 3b.
-4. **Add per-task checkpoint tags** — `git tag -f "gsd/checkpoint/phase-{N}/T{id}" HEAD` after each task commit.
-5. **Fix double-commit** — Remove orchestrator commit from Step 7; executor already commits.
+1. **Fix step ordering and data integrity** — Move Step 8b before Step 8. Only write summary/update state AFTER user approves the final review.
+2. **Fold recover into execute's resume logic** — Remove recover.md as a separate command. Add git-reality-check to execute.md Step 3b.
+3. **Add per-task checkpoint tags** — `git tag -f "gsd/checkpoint/phase-{N}/T{id}" HEAD` after each task commit.
+4. **Fix double-commit** — Remove orchestrator commit from Step 7; executor already commits.
+5. **Replace ToolSearch references** — ToolSearch doesn't exist. MCP tools are auto-available; call them directly. Affects 6 files.
 6. **Remove redundant wave gate** — Delete Step 5 point 2; Step 5b handles wave transitions.
 7. **Fix config structure references** — Step 0 branching check, Step 6 browser/base_url fields.
-8. **Rewrite polling model** — Replace synchronous WHILE loop with turn-based pattern using Read on output files.
-9. **Single owner for task tracking** — Orchestrator only. Remove from executor.
-10. **Fix yolo mode** — Immediate continue, no timed wait.
+8. **Single owner for task tracking** — Orchestrator owns TaskCreate/TaskUpdate. Remove task management from executor (runs in isolated subagent context, can't access orchestrator's tasks).
+9. **Fix yolo mode** — Immediate continue, no timed wait.
+10. **Fix duplicate step numbering** — Step 5b has two items numbered "3."

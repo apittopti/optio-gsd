@@ -14,15 +14,15 @@ Always zero-pad: `String(N).padStart(2, '0')` → phase 1 = `phase-01`, phase 10
 
 ## Behavior
 
-This is the core execution engine. It uses Claude Code's **Task tool** to spawn subagents for each task, with support for **background execution** and **Read** on output files for result retrieval.
+This is the core execution engine. It uses Claude Code's **Task tool** to spawn subagents for each task, with support for **background execution** and **TaskOutput** polling.
 
-### Progress Tracking
+### Claude Code Task Integration
 
-opti-gsd uses **TodoWrite** for real-time visual progress and **plan.json** as the persistent source of truth.
+opti-gsd integrates with Claude Code's native task system (TaskCreate/TaskUpdate/TaskOutput) for real-time visual progress.
 
 **Two-Layer Architecture:**
 - **plan.json** — Persistent source of truth, workflow history, survives sessions
-- **TodoWrite** — Visual progress in CLI, updated as tasks complete
+- **Claude Code Tasks** — Ephemeral visual progress in CLI (Ctrl+T to view), session-scoped
 
 ### Step 0: Validate Branch (CRITICAL - Protected Branch Check)
 
@@ -175,32 +175,41 @@ git tag -f "gsd/checkpoint/phase-{N}/pre" HEAD
 
 This enables /opti-gsd:rollback {N} to revert to before the phase started.
 
-### Step 4c: Initialize Progress Tracking (MANDATORY)
+### Step 4c: Create Claude Code Tasks (MANDATORY)
 
-**Use TodoWrite to create the visual task list before executing any waves.**
+**You MUST call TaskCreate for every task in plan.json before executing any waves.**
+This makes tasks visible in Claude Code's CLI task list (Ctrl+T).
 
 ```
-Build todos array from plan.json:
 FOR each task in plan.json:
-  todos.push({
-    content: "P{phase} T{task.id}: {task.title}",
-    status: "pending",
-    activeForm: "{task.title in present participle form}"
-  })
-
-TodoWrite(todos=todos)
+  TaskCreate(
+    subject="P{phase} T{task.id}: {task.title}",
+    description="{task.action}",
+    activeForm="{task.title in present participle form}"
+  )
+  → Store returned taskId mapped to task.id (e.g., T01 → taskId "1")
 ```
 
-**Example:**
+**Example calls:**
 ```python
-TodoWrite(todos=[
-  {"content": "P1 T01: Setup authentication schema", "status": "pending", "activeForm": "Setting up authentication schema"},
-  {"content": "P1 T02: Create API endpoints", "status": "pending", "activeForm": "Creating API endpoints"},
-  {"content": "P1 T03: Add validation", "status": "pending", "activeForm": "Adding validation"}
-])
+TaskCreate(
+  subject="P1 T01: Setup authentication schema",
+  description="Create user table with email, password_hash, created_at fields...",
+  activeForm="Setting up authentication schema"
+)
+# Returns taskId "1" → map T01 to "1"
+
+TaskCreate(
+  subject="P1 T02: Create API endpoints",
+  description="Add login and register endpoints...",
+  activeForm="Creating API endpoints"
+)
+# Returns taskId "2" → map T02 to "2"
 ```
 
-After this step, the user sees all tasks listed as `pending` in the progress display.
+After this step, the user sees all tasks listed as `pending` in Ctrl+T.
+
+**Store the mapping** of plan task IDs to Claude Code task IDs for use in Step 5.
 
 ### Step 5: Execute Waves with Background Tasks
 
@@ -209,41 +218,48 @@ FOR each wave:
   1. Identify tasks in this wave
 
   2. FOR each task in wave:
-     a. Update TodoWrite — mark task as in_progress
+     a. Mark task as in_progress (MANDATORY):
+        TaskUpdate(
+          taskId="{claude_task_id for this task}",
+          status="in_progress"
+        )
      b. Build subagent prompt (see Step 6 below)
      c. Spawn via Task tool:
          Task(
            description="P{phase} T{id}: {short_title}",
            prompt="{subagent_prompt}",
            subagent_type="opti-gsd-executor",
-           run_in_background=true  # for multi-task waves
+           run_in_background=true
          )
-     d. Store returned output_file path for result retrieval
+     d. Store returned agent_task_id for polling
      e. Update state.json with current wave position
 
-  3. Collect results:
-     - For single-task waves: use run_in_background=false (blocking)
-     - For multi-task waves: Read each output_file to get results
-       (Read blocks until the background task completes and writes output)
-     - FOR each completed task:
+  3. Poll for completion using TaskOutput:
+     FOR each agent_task_id in spawned tasks:
+       result = TaskOutput(agent_task_id)
        - Parse result (COMPLETE | FAILED | CHECKPOINT)
        - Process result (see Step 7)
        - Create per-task checkpoint tag:
          git tag -f "gsd/checkpoint/phase-{N}/T{task_id}" HEAD
-       - Update TodoWrite — mark task as completed
+       - Mark Claude Code task as completed (MANDATORY):
+         TaskUpdate(
+           taskId="{claude_task_id for this task}",
+           status="completed"
+         )
 
   4. All tasks in wave complete? → Step 5b (User Review Checkpoint)
 
   5. After review checkpoint → Next wave
 ```
 
-**IMPORTANT:** Update TodoWrite after each task status change. This drives the visual
-progress display in Claude Code's CLI.
+**IMPORTANT:** The TaskUpdate calls in steps 2a and 3 are MANDATORY. They drive the visual
+progress display in Claude Code's CLI. Without them, users see no task progress.
 
 **Why Background Tasks:**
+- User sees real-time progress (Ctrl+T to toggle task list)
 - Each agent gets fresh context
-- Parallel execution is truly parallel for multi-task waves
-- Clean result retrieval via Read on output files
+- Parallel execution is truly parallel
+- TaskOutput provides clean result retrieval
 
 ### Step 5b: User Review Checkpoint (Between Waves)
 
@@ -460,7 +476,7 @@ You are a focused implementation agent for opti-gsd. Complete ONLY this task.
 
 The executor subagent handles the git commit. The orchestrator only updates tracking:
 - Update state.json task counter
-- Update TodoWrite to mark task as completed
+- TaskUpdate(taskId="{claude_task_id}", status="completed")
 
 **TASK FAILED:**
 ```markdown
@@ -748,46 +764,43 @@ Wave 1: [Task 01, Task 02, Task 03]
         run_in_background=true
       )          )           )        ← Parallel background spawns
          ↓         ↓         ↓
-      output_1   output_2   output_3  ← Store output_file paths
+      task_id_1  task_id_2  task_id_3  ← Store IDs
          ↓         ↓         ↓
-      Read(output_1) Read(output_2) Read(output_3) ← Collect results
+      [User sees progress via Ctrl+T]
+         ↓         ↓         ↓
+      TaskOutput  TaskOutput  TaskOutput  ← Collect results
          ↓         ↓         ↓
       [Per-task checkpoint tags]      ← git tag for each
 
 Wave 2: [Task 04]
          ↓
-      Task(run_in_background=false)   ← Single task: use blocking mode
+      Task(run_in_background=true)
          ↓
-      [Result returned directly]
+      TaskOutput(task_id_4)  ← Collect result
          ↓
       [Per-task checkpoint tag]
 ```
 
 **Key Benefits:**
-- Each agent gets fresh context
-- Truly parallel execution for multi-task waves
-- Clean result retrieval via Read on output files
+- Each agent gets fresh 100% context
+- User sees real-time progress in Claude Code's task list (Ctrl+T)
+- Truly parallel execution, not sequential spawns
+- TaskOutput provides clean result retrieval without context bloat
 - Per-task checkpoint tags enable granular rollback
 
 **Task Tool Calls:**
 ```python
-# Multi-task wave: spawn background tasks
-result = Task(
+# Spawn background task — description appears in Claude's task list (Ctrl+T)
+Task(
   description="P{phase} T{task_num}: {task_title}",
   prompt="{subagent_prompt}",
   subagent_type="opti-gsd-executor",
   run_in_background=True
 )
-# Returns: output_file path — use Read(output_file) to get results
+# Returns: task_id — store for TaskOutput
 
-# Single-task wave: use blocking mode
-result = Task(
-  description="P{phase} T{task_num}: {task_title}",
-  prompt="{subagent_prompt}",
-  subagent_type="opti-gsd-executor",
-  run_in_background=False  # Blocks until complete
-)
-# Returns: result directly
+# Collect result
+TaskOutput(task_id="{returned_task_id}")
 ```
 
 ---
@@ -814,6 +827,10 @@ Execute tracks state in state.json:
     "type": "execute",
     "phase": 1,
     "wave": 2,
+    "background_tasks": [
+      {"task_id": "abc123", "task_num": 1, "status": "running"},
+      {"task_id": "def456", "task_num": 2, "status": "running"}
+    ],
     "task_retries": {"T01": 0, "T02": 1},
     "last_error": "Type error in auth.ts",
     "started": "2026-01-19T10:30:00"
@@ -821,8 +838,12 @@ Execute tracks state in state.json:
 }
 ```
 
+**Background Task Tracking:**
+- `background_tasks` array tracks all spawned Task tool instances
+- Each entry has `task_id` (for TaskOutput), `task_num`, and `status`
+
 **Recovery on session interrupt:**
-If a session ends mid-execution, running `/opti-gsd:execute` again will trigger Step 3b's recovery logic — it compares state.json against git reality and resumes from the correct position.
+If a session ends mid-execution, running `/opti-gsd:execute` again will trigger Step 3b's recovery logic — it compares state.json against git reality and resumes from the correct position. Note: background task IDs are session-scoped and won't survive restarts, so recovery relies on git state rather than polling.
 
 **Note on TDD Loop:**
 The TDD Red-Green-Refactor loop runs INSIDE subagents as natural control flow. The subagent only returns when:
